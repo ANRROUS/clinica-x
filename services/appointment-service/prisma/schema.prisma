@@ -20,7 +20,9 @@ datasource db {
 model Especialidad {
   id        String   @id @default(uuid())
   nombre    String   @unique
+  activo    Boolean  @default(true)
   createdAt DateTime @default(now()) @map("creado_en")
+  updatedAt DateTime @updatedAt @map("actualizado_en")
 
   medicos Medico[]
 

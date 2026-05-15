@@ -45,6 +45,7 @@ app.get('/health', (_req, res) => {
 
 import { medicosAdminRouter } from '@/modules/medicos/infrastructure/di';
 import { citasRouter } from '@/modules/citas/infrastructure/di';
+import { especialidadesAdminRouter } from '@/modules/especialidades/infrastructure/di';
 
 // Rutas de negocio — Fase 2 (admin médicos)
 app.use(
@@ -52,6 +53,14 @@ app.use(
   jwtMiddleware({ secret: env.JWT_SECRET }),
   requireRole(['ADMIN']),
   medicosAdminRouter,
+);
+
+// Rutas de negocio — Admin especialidades
+app.use(
+  '/api/admin/specialties',
+  jwtMiddleware({ secret: env.JWT_SECRET }),
+  requireRole(['ADMIN']),
+  especialidadesAdminRouter,
 );
 
 // Rutas de negocio — Fase 3 (booking + calendario)

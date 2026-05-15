@@ -1227,19 +1227,25 @@ export namespace Prisma {
   export type EspecialidadMinAggregateOutputType = {
     id: string | null
     nombre: string | null
+    activo: boolean | null
     createdAt: Date | null
+    updatedAt: Date | null
   }
 
   export type EspecialidadMaxAggregateOutputType = {
     id: string | null
     nombre: string | null
+    activo: boolean | null
     createdAt: Date | null
+    updatedAt: Date | null
   }
 
   export type EspecialidadCountAggregateOutputType = {
     id: number
     nombre: number
+    activo: number
     createdAt: number
+    updatedAt: number
     _all: number
   }
 
@@ -1247,19 +1253,25 @@ export namespace Prisma {
   export type EspecialidadMinAggregateInputType = {
     id?: true
     nombre?: true
+    activo?: true
     createdAt?: true
+    updatedAt?: true
   }
 
   export type EspecialidadMaxAggregateInputType = {
     id?: true
     nombre?: true
+    activo?: true
     createdAt?: true
+    updatedAt?: true
   }
 
   export type EspecialidadCountAggregateInputType = {
     id?: true
     nombre?: true
+    activo?: true
     createdAt?: true
+    updatedAt?: true
     _all?: true
   }
 
@@ -1338,7 +1350,9 @@ export namespace Prisma {
   export type EspecialidadGroupByOutputType = {
     id: string
     nombre: string
+    activo: boolean
     createdAt: Date
+    updatedAt: Date
     _count: EspecialidadCountAggregateOutputType | null
     _min: EspecialidadMinAggregateOutputType | null
     _max: EspecialidadMaxAggregateOutputType | null
@@ -1361,7 +1375,9 @@ export namespace Prisma {
   export type EspecialidadSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     nombre?: boolean
+    activo?: boolean
     createdAt?: boolean
+    updatedAt?: boolean
     medicos?: boolean | Especialidad$medicosArgs<ExtArgs>
     _count?: boolean | EspecialidadCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["especialidad"]>
@@ -1369,13 +1385,17 @@ export namespace Prisma {
   export type EspecialidadSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     nombre?: boolean
+    activo?: boolean
     createdAt?: boolean
+    updatedAt?: boolean
   }, ExtArgs["result"]["especialidad"]>
 
   export type EspecialidadSelectScalar = {
     id?: boolean
     nombre?: boolean
+    activo?: boolean
     createdAt?: boolean
+    updatedAt?: boolean
   }
 
   export type EspecialidadInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -1392,7 +1412,9 @@ export namespace Prisma {
     scalars: $Extensions.GetPayloadResult<{
       id: string
       nombre: string
+      activo: boolean
       createdAt: Date
+      updatedAt: Date
     }, ExtArgs["result"]["especialidad"]>
     composites: {}
   }
@@ -1789,7 +1811,9 @@ export namespace Prisma {
   interface EspecialidadFieldRefs {
     readonly id: FieldRef<"Especialidad", 'String'>
     readonly nombre: FieldRef<"Especialidad", 'String'>
+    readonly activo: FieldRef<"Especialidad", 'Boolean'>
     readonly createdAt: FieldRef<"Especialidad", 'DateTime'>
+    readonly updatedAt: FieldRef<"Especialidad", 'DateTime'>
   }
     
 
@@ -5150,7 +5174,9 @@ export namespace Prisma {
   export const EspecialidadScalarFieldEnum: {
     id: 'id',
     nombre: 'nombre',
-    createdAt: 'createdAt'
+    activo: 'activo',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
   };
 
   export type EspecialidadScalarFieldEnum = (typeof EspecialidadScalarFieldEnum)[keyof typeof EspecialidadScalarFieldEnum]
@@ -5242,6 +5268,13 @@ export namespace Prisma {
 
 
   /**
+   * Reference to a field of type 'Boolean'
+   */
+  export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>
+    
+
+
+  /**
    * Reference to a field of type 'DateTime'
    */
   export type DateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DateTime'>
@@ -5266,13 +5299,6 @@ export namespace Prisma {
    * Reference to a field of type 'Turno[]'
    */
   export type ListEnumTurnoFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Turno[]'>
-    
-
-
-  /**
-   * Reference to a field of type 'Boolean'
-   */
-  export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>
     
 
 
@@ -5341,14 +5367,18 @@ export namespace Prisma {
     NOT?: EspecialidadWhereInput | EspecialidadWhereInput[]
     id?: StringFilter<"Especialidad"> | string
     nombre?: StringFilter<"Especialidad"> | string
+    activo?: BoolFilter<"Especialidad"> | boolean
     createdAt?: DateTimeFilter<"Especialidad"> | Date | string
+    updatedAt?: DateTimeFilter<"Especialidad"> | Date | string
     medicos?: MedicoListRelationFilter
   }
 
   export type EspecialidadOrderByWithRelationInput = {
     id?: SortOrder
     nombre?: SortOrder
+    activo?: SortOrder
     createdAt?: SortOrder
+    updatedAt?: SortOrder
     medicos?: MedicoOrderByRelationAggregateInput
   }
 
@@ -5358,14 +5388,18 @@ export namespace Prisma {
     AND?: EspecialidadWhereInput | EspecialidadWhereInput[]
     OR?: EspecialidadWhereInput[]
     NOT?: EspecialidadWhereInput | EspecialidadWhereInput[]
+    activo?: BoolFilter<"Especialidad"> | boolean
     createdAt?: DateTimeFilter<"Especialidad"> | Date | string
+    updatedAt?: DateTimeFilter<"Especialidad"> | Date | string
     medicos?: MedicoListRelationFilter
   }, "id" | "nombre">
 
   export type EspecialidadOrderByWithAggregationInput = {
     id?: SortOrder
     nombre?: SortOrder
+    activo?: SortOrder
     createdAt?: SortOrder
+    updatedAt?: SortOrder
     _count?: EspecialidadCountOrderByAggregateInput
     _max?: EspecialidadMaxOrderByAggregateInput
     _min?: EspecialidadMinOrderByAggregateInput
@@ -5377,7 +5411,9 @@ export namespace Prisma {
     NOT?: EspecialidadScalarWhereWithAggregatesInput | EspecialidadScalarWhereWithAggregatesInput[]
     id?: StringWithAggregatesFilter<"Especialidad"> | string
     nombre?: StringWithAggregatesFilter<"Especialidad"> | string
+    activo?: BoolWithAggregatesFilter<"Especialidad"> | boolean
     createdAt?: DateTimeWithAggregatesFilter<"Especialidad"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"Especialidad"> | Date | string
   }
 
   export type MedicoWhereInput = {
@@ -5602,47 +5638,61 @@ export namespace Prisma {
   export type EspecialidadCreateInput = {
     id?: string
     nombre: string
+    activo?: boolean
     createdAt?: Date | string
+    updatedAt?: Date | string
     medicos?: MedicoCreateNestedManyWithoutEspecialidadInput
   }
 
   export type EspecialidadUncheckedCreateInput = {
     id?: string
     nombre: string
+    activo?: boolean
     createdAt?: Date | string
+    updatedAt?: Date | string
     medicos?: MedicoUncheckedCreateNestedManyWithoutEspecialidadInput
   }
 
   export type EspecialidadUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     nombre?: StringFieldUpdateOperationsInput | string
+    activo?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     medicos?: MedicoUpdateManyWithoutEspecialidadNestedInput
   }
 
   export type EspecialidadUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     nombre?: StringFieldUpdateOperationsInput | string
+    activo?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     medicos?: MedicoUncheckedUpdateManyWithoutEspecialidadNestedInput
   }
 
   export type EspecialidadCreateManyInput = {
     id?: string
     nombre: string
+    activo?: boolean
     createdAt?: Date | string
+    updatedAt?: Date | string
   }
 
   export type EspecialidadUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
     nombre?: StringFieldUpdateOperationsInput | string
+    activo?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type EspecialidadUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
     nombre?: StringFieldUpdateOperationsInput | string
+    activo?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type MedicoCreateInput = {
@@ -5896,6 +5946,11 @@ export namespace Prisma {
     not?: NestedStringFilter<$PrismaModel> | string
   }
 
+  export type BoolFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolFilter<$PrismaModel> | boolean
+  }
+
   export type DateTimeFilter<$PrismaModel = never> = {
     equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
@@ -5920,19 +5975,25 @@ export namespace Prisma {
   export type EspecialidadCountOrderByAggregateInput = {
     id?: SortOrder
     nombre?: SortOrder
+    activo?: SortOrder
     createdAt?: SortOrder
+    updatedAt?: SortOrder
   }
 
   export type EspecialidadMaxOrderByAggregateInput = {
     id?: SortOrder
     nombre?: SortOrder
+    activo?: SortOrder
     createdAt?: SortOrder
+    updatedAt?: SortOrder
   }
 
   export type EspecialidadMinOrderByAggregateInput = {
     id?: SortOrder
     nombre?: SortOrder
+    activo?: SortOrder
     createdAt?: SortOrder
+    updatedAt?: SortOrder
   }
 
   export type StringWithAggregatesFilter<$PrismaModel = never> = {
@@ -5951,6 +6012,14 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedStringFilter<$PrismaModel>
     _max?: NestedStringFilter<$PrismaModel>
+  }
+
+  export type BoolWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedBoolFilter<$PrismaModel>
+    _max?: NestedBoolFilter<$PrismaModel>
   }
 
   export type DateTimeWithAggregatesFilter<$PrismaModel = never> = {
@@ -5972,11 +6041,6 @@ export namespace Prisma {
     in?: $Enums.Turno[] | ListEnumTurnoFieldRefInput<$PrismaModel>
     notIn?: $Enums.Turno[] | ListEnumTurnoFieldRefInput<$PrismaModel>
     not?: NestedEnumTurnoFilter<$PrismaModel> | $Enums.Turno
-  }
-
-  export type BoolFilter<$PrismaModel = never> = {
-    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
-    not?: NestedBoolFilter<$PrismaModel> | boolean
   }
 
   export type EspecialidadRelationFilter = {
@@ -6045,14 +6109,6 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumTurnoFilter<$PrismaModel>
     _max?: NestedEnumTurnoFilter<$PrismaModel>
-  }
-
-  export type BoolWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
-    not?: NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedBoolFilter<$PrismaModel>
-    _max?: NestedBoolFilter<$PrismaModel>
   }
 
   export type IntFilter<$PrismaModel = never> = {
@@ -6259,6 +6315,10 @@ export namespace Prisma {
     set?: string
   }
 
+  export type BoolFieldUpdateOperationsInput = {
+    set?: boolean
+  }
+
   export type DateTimeFieldUpdateOperationsInput = {
     set?: Date | string
   }
@@ -6327,10 +6387,6 @@ export namespace Prisma {
 
   export type EnumTurnoFieldUpdateOperationsInput = {
     set?: $Enums.Turno
-  }
-
-  export type BoolFieldUpdateOperationsInput = {
-    set?: boolean
   }
 
   export type EspecialidadUpdateOneRequiredWithoutMedicosNestedInput = {
@@ -6459,6 +6515,11 @@ export namespace Prisma {
     not?: NestedStringFilter<$PrismaModel> | string
   }
 
+  export type NestedBoolFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolFilter<$PrismaModel> | boolean
+  }
+
   export type NestedDateTimeFilter<$PrismaModel = never> = {
     equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
@@ -6498,6 +6559,14 @@ export namespace Prisma {
     not?: NestedIntFilter<$PrismaModel> | number
   }
 
+  export type NestedBoolWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedBoolFilter<$PrismaModel>
+    _max?: NestedBoolFilter<$PrismaModel>
+  }
+
   export type NestedDateTimeWithAggregatesFilter<$PrismaModel = never> = {
     equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
@@ -6519,11 +6588,6 @@ export namespace Prisma {
     not?: NestedEnumTurnoFilter<$PrismaModel> | $Enums.Turno
   }
 
-  export type NestedBoolFilter<$PrismaModel = never> = {
-    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
-    not?: NestedBoolFilter<$PrismaModel> | boolean
-  }
-
   export type NestedEnumTurnoWithAggregatesFilter<$PrismaModel = never> = {
     equals?: $Enums.Turno | EnumTurnoFieldRefInput<$PrismaModel>
     in?: $Enums.Turno[] | ListEnumTurnoFieldRefInput<$PrismaModel>
@@ -6532,14 +6596,6 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumTurnoFilter<$PrismaModel>
     _max?: NestedEnumTurnoFilter<$PrismaModel>
-  }
-
-  export type NestedBoolWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
-    not?: NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedBoolFilter<$PrismaModel>
-    _max?: NestedBoolFilter<$PrismaModel>
   }
 
   export type NestedIntWithAggregatesFilter<$PrismaModel = never> = {
@@ -6712,13 +6768,17 @@ export namespace Prisma {
   export type EspecialidadCreateWithoutMedicosInput = {
     id?: string
     nombre: string
+    activo?: boolean
     createdAt?: Date | string
+    updatedAt?: Date | string
   }
 
   export type EspecialidadUncheckedCreateWithoutMedicosInput = {
     id?: string
     nombre: string
+    activo?: boolean
     createdAt?: Date | string
+    updatedAt?: Date | string
   }
 
   export type EspecialidadCreateOrConnectWithoutMedicosInput = {
@@ -6800,13 +6860,17 @@ export namespace Prisma {
   export type EspecialidadUpdateWithoutMedicosInput = {
     id?: StringFieldUpdateOperationsInput | string
     nombre?: StringFieldUpdateOperationsInput | string
+    activo?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type EspecialidadUncheckedUpdateWithoutMedicosInput = {
     id?: StringFieldUpdateOperationsInput | string
     nombre?: StringFieldUpdateOperationsInput | string
+    activo?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type HorarioMedicoUpsertWithWhereUniqueWithoutMedicoInput = {

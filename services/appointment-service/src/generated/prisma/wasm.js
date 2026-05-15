@@ -125,7 +125,9 @@ exports.Prisma.TransactionIsolationLevel = makeStrictEnum({
 exports.Prisma.EspecialidadScalarFieldEnum = {
   id: 'id',
   nombre: 'nombre',
-  createdAt: 'createdAt'
+  activo: 'activo',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
 };
 
 exports.Prisma.MedicoScalarFieldEnum = {

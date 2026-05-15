@@ -1,9 +1,11 @@
 'use client';
 
+import { useState } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { LayoutDashboard, Users, LogOut, Shield } from 'lucide-react';
+import { LayoutDashboard, Users, LogOut, Shield, Stethoscope } from 'lucide-react';
 import { useAdminAuthStore } from '@/store/useAdminAuthStore';
+import SpecialtyModal from './SpecialtyModal';
 
 const navItems = [
   { href: '/admin/dashboard', label: 'Dashboard', icon: LayoutDashboard },
@@ -14,6 +16,7 @@ export default function AdminSidebar() {
   const { user, clearAuth } = useAdminAuthStore();
   const pathname = usePathname();
   const router = useRouter();
+  const [specialtyModalOpen, setSpecialtyModalOpen] = useState(false);
 
   const handleLogout = () => {
     clearAuth();
@@ -59,6 +62,13 @@ export default function AdminSidebar() {
             </Link>
           );
         })}
+        <button
+          onClick={() => setSpecialtyModalOpen(true)}
+          className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-100 hover:text-gray-900"
+        >
+          <Stethoscope className="h-5 w-5" />
+          Especialidades
+        </button>
       </nav>
 
       <div className="border-t border-gray-200 px-3 py-4">
@@ -70,6 +80,8 @@ export default function AdminSidebar() {
           Cerrar sesión
         </button>
       </div>
+
+      <SpecialtyModal open={specialtyModalOpen} onClose={() => setSpecialtyModalOpen(false)} />
     </aside>
   );
 }

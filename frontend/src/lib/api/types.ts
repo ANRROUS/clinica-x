@@ -11,6 +11,7 @@ export interface UsuarioDTO {
 export interface EspecialidadDTO {
   id: string;
   nombre: string;
+  activo: boolean;
 }
 
 export interface SlotDTO {
