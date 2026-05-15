@@ -1,8 +1,8 @@
 # Plan Clínica X — Resumen de Sesión
 
 > **Fecha:** 2026-05-15  
-> **Estado actual:** Fase 0 ✅ + Fase 1 ✅ + Fase 2 ✅ + Fase 3 ✅ + Fase 4 ✅ completadas  
-> **Próxima fase:** Fase 5 (Frontend paciente)
+> **Estado actual:** Fase 0 ✅ + Fase 1 ✅ + Fase 2 ✅ + Fase 3 ✅ + Fase 4 ✅ + Fase 5 ✅ completadas  
+> **Próxima fase:** Fase 6 (Frontend médico)
 
 ---
 
@@ -223,7 +223,7 @@ clinica-x/
 | 2 | **appointment-service (admin)** | Módulos `medicos`, `especialidades`, `dashboard-admin`: CRUD médicos, horarios (grid interactivo), métricas KPI | ✅ **COMPLETADO** |
 | 3 | **appointment-service (booking)** | Módulos `disponibilidad`, `reservas`, `calendario-medico`: slots, reserva manual/automática, reprogramar, cancelar, calendario 3 vistas | ✅ **COMPLETADO** |
 | 4 | **clinical + file** | Módulos `consultas`, `archivos`: FSM consulta (ACTIVA→FINALIZADA), uploads S3 multipart, signed URLs, validación MIME/tamaño | ✅ **COMPLETADO** |
-| 5 | **Frontend paciente** | Landing, login/register, reservar cita (manual + automático), perfil (3 tabs), visualización PDFs | Pendiente |
+| 5 | **Frontend paciente** | Landing, login/register, reservar cita (manual + automático), perfil (3 tabs), visualización PDFs | ✅ **COMPLETADO** |
 | 6 | **Frontend médico** | Login, calendario (3 vistas), sidebar pacientes, consulta activa (diagnóstico + análisis + medicamentos), historial con chat "Próximamente" | Pendiente |
 | 7 | **Frontend admin** | Login, dashboard con métricas KPI, tabla de médicos con filtro/toggle, formulario médico (datos + grid horario), zona de peligro | Pendiente |
 | 8 | **Integración E2E** | Seed de datos demo, flujos end-to-end, ajustes de UI, pulido de responsive | Pendiente |

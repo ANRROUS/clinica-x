@@ -85,6 +85,16 @@ export class CitasController {
     });
   }
 
+  // ─── GET /api/appointments/specialties ────────────────────────────────────
+  listarEspecialidades = async (_req: Request, res: Response, next: NextFunction): Promise<void> => {
+    try {
+      const especialidades = await this.medicoReader.listarEspecialidades();
+      res.status(200).json({ success: true, data: especialidades });
+    } catch (err) {
+      next(err);
+    }
+  };
+
   // ─── GET /api/appointments/availability?medicoId=&fecha= ────────────────────
   disponibilidad = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {

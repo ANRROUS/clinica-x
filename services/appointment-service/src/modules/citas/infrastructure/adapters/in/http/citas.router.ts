@@ -13,6 +13,9 @@ import type { CitasController } from './citas.controller';
 export function createCitasRouter(controller: CitasController): Router {
   const router = Router();
 
+  // ─── Especialidades ────────────────────────────────────────────────────────
+  router.get('/specialties', requireRole(['PACIENTE', 'MEDICO']), controller.listarEspecialidades);
+
   // ─── Paciente ─────────────────────────────────────────────────────────────
   router.get('/availability', requireRole(['PACIENTE']), controller.disponibilidad);
   router.get('/availability/specialty/:especialidadId', requireRole(['PACIENTE']), controller.disponibilidadPorEspecialidad);

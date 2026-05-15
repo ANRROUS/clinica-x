@@ -1,8 +1,0 @@
-# Stores Zustand (uno por rol + temporales para formularios):
-# - useAuthStore (paciente)
-# - useDoctorAuthStore
-# - useAdminAuthStore
-# - useBookingStore (temporal)
-# - useConsultationStore (temporal)
-# - useDoctorFormStore (temporal)
-# - useCalendarStore (vista del calendario médico)
