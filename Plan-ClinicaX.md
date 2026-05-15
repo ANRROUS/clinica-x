@@ -1,8 +1,8 @@
 # Plan Clínica X — Resumen de Sesión
 
 > **Fecha:** 2026-05-15  
-> **Estado actual:** Fase 0 ✅ + Fase 1 ✅ + Fase 2 ✅ + Fase 3 ✅ + Fase 4 ✅ + Fase 5 ✅ + Fase 6 ✅ completadas  
-> **Próxima fase:** Fase 7 (Frontend admin)
+> **Estado actual:** Fase 0 ✅ + Fase 1 ✅ + Fase 2 ✅ + Fase 3 ✅ + Fase 4 ✅ + Fase 5 ✅ + Fase 6 ✅ + Fase 7 ✅ completadas  
+> **Próxima fase:** Fase 8 (Integración E2E)
 
 ---
 
@@ -129,8 +129,14 @@ clinica-x/
 │   │   │       ├── pacientes/page.tsx  # Historial de pacientes
 │   │   │       └── consulta/page.tsx   # Consulta médica activa
 │   │   ├── admin/
-│   │   │   ├── login/page.tsx         # Placeholder
-│   │   │   └── dashboard/page.tsx    # Placeholder
+│   │   │   ├── layout.tsx             # Root layout admin (solo Providers)
+│   │   │   ├── login/page.tsx         # Login admin (valida rol ADMIN)
+│   │   │   └── (portal)/
+│   │   │       ├── layout.tsx         # Auth layout con sidebar
+│   │   │       ├── dashboard/page.tsx # Dashboard KPI + tabla médicos
+│   │   │       ├── medicos/page.tsx   # Lista de médicos con filtros
+│   │   │       ├── medicos/nuevo/page.tsx  # Crear médico
+│   │   │       └── medicos/[id]/editar/page.tsx  # Editar médico
 │   ├── src/components/
 │   │   ├── shared/
 │   │   │   ├── Header.tsx             # Header dinámico (paciente)
@@ -157,22 +163,31 @@ clinica-x/
 │   │   │   ├── DoctorCalendar.tsx      # Contenedor calendario (3 vistas)
 │   │   │   ├── CalendarMonth.tsx       # Vista mensual grilla
 │   │   │   ├── CalendarWeek.tsx        # Vista semanal timeline
-│   │   │   ├── CalendarDay.tsx         # Vista diaria con acciones
+│   │   │   ├── CalendarDay.tsx          # Vista diaria con acciones
 │   │   │   ├── ConsultationPanel.tsx   # Panel iniciar/finalizar consulta
 │   │   │   └── PatientHistory.tsx      # Historial agrupado por paciente
+│   │   ├── admin/
+│   │   │   ├── AdminLoginForm.tsx     # Login admin con validación de rol
+│   │   │   ├── AdminSidebar.tsx       # Sidebar navegación portal admin
+│   │   │   ├── DashboardKPI.tsx      # Tarjetas métricas KPI
+│   │   │   ├── DoctorsTable.tsx       # Tabla médicos con filtros y toggle
+│   │   │   ├── DoctorForm.tsx         # Formulario crear/editar médico
+│   │   │   └── ScheduleGrid.tsx      # Grid horarios dinámico
 │   │   └── Providers.tsx
 │   ├── src/hooks/                     # (pendiente)
 │   ├── src/lib/api/
 │   │   ├── axios.ts                   # Cliente HTTP con 3 tokens + interceptor JWT
-│   │   ├── types.ts                   # DTOs compartidos + CitaCalendarioDTO, ConsultaMedicoDTO
+│   │   ├── types.ts                   # DTOs compartidos + MedicoDTO, MetricasDashboardDTO, etc.
 │   │   ├── auth.api.ts                # login, register, getMe, updateMe
 │   │   ├── appointments.api.ts        # endpoints paciente
 │   │   ├── medical.api.ts             # endpoints paciente
-│   │   └── doctor.api.ts              # 6 endpoints médico (calendario, consulta, pacientes)
+│   │   ├── doctor.api.ts              # 6 endpoints médico
+│   │   └── admin.api.ts               # 7 endpoints admin
 │   ├── src/store/
 │   │   ├── useAuthStore.ts            # Zustand paciente
 │   │   ├── useBookingStore.ts         # Zustand flujo de reserva
-│   │   └── useDoctorAuthStore.ts      # Zustand médico
+│   │   ├── useDoctorAuthStore.ts      # Zustand médico
+│   │   └── useAdminAuthStore.ts       # Zustand admin
 │   └── tailwind.config.ts             # Paleta teal/indigo
 │
 ├── services/
@@ -276,7 +291,7 @@ clinica-x/
 | 4 | **clinical + file** | Módulos `consultas`, `archivos`: FSM consulta (ACTIVA→FINALIZADA), uploads S3 multipart, signed URLs, validación MIME/tamaño | ✅ **COMPLETADO** |
 | 5 | **Frontend paciente** | Landing, login/register, reservar cita (manual + automático), perfil (3 tabs), visualización PDFs | ✅ **COMPLETADO** |
 | 6 | **Frontend médico** | Login médico, calendario (3 vistas), sidebar pacientes, consulta activa (diagnóstico + notas), historial agrupado, placeholder Agente X | ✅ **COMPLETADO** |
-| 7 | **Frontend admin** | Login, dashboard con métricas KPI, tabla de médicos con filtro/toggle, formulario médico (datos + grid horario), zona de peligro | Pendiente |
+| 7 | **Frontend admin** | Login, dashboard con métricas KPI, tabla de médicos con filtro/toggle, formulario médico (datos + grid horario), zona de peligro | ✅ **COMPLETADO** |
 | 8 | **Integración E2E** | Seed de datos demo, flujos end-to-end, ajustes de UI, pulido de responsive | Pendiente |
 
 ---
@@ -576,20 +591,83 @@ CORS_ORIGIN=http://localhost:3100
 
 ---
 
-## 15. Próximos pasos (Fase 7: Frontend admin)
+## 15. Qué se completó en Fase 7
 
-1. **Portal admin:**
-   - Login admin (reusar LoginForm con rol ADMIN)
-   - Store `useAdminAuthStore` con `clinica_x_admin_token`
-   - Dashboard con métricas KPI (`GET /api/admin/dashboard/metrics`)
-   - Tabla de médicos con filtros y toggle de estado
-   - Formulario de creación/edición de médico con grid de horarios
-   - Zona de peligro (desactivar médico)
+### Store admin
+- [x] `useAdminAuthStore`: gestiona user, token, isAuthenticated para rol ADMIN
+- [x] Persiste en localStorage bajo `clinica_x_admin_token` y `clinica_x_admin_user`
+- [x] Valida que el rol sea `ADMIN` al cargar auth persistida (si no, limpia storage)
+- [x] Acciones: `setAuth`, `clearAuth`, `updateUser`
 
-2. **Preparación Fase 8 (Integración E2E):**
-   - Seed de datos demo
-   - Pulido responsive
-   - Tests manuales de flujos completos
+### API admin (`lib/api/admin.api.ts`)
+- [x] `getAdminDashboard()` → `GET /api/admin/doctors` (doctors + metrics)
+- [x] `getAdminDoctors()` → `GET /api/admin/doctors` (alias)
+- [x] `getAdminDoctor(id)` → `GET /api/admin/doctors/:id`
+- [x] `createDoctor(data)` → `POST /api/admin/doctors`
+- [x] `updateDoctor(id, data)` → `PUT /api/admin/doctors/:id`
+- [x] `toggleDoctorStatus(id, activo)` → `PATCH /api/admin/doctors/:id/status`
+- [x] `getSpecialties()` → `GET /api/appointments/specialties`
+
+### Tipos nuevos (`lib/api/types.ts`)
+- [x] `HorarioMedicoDTO`: input para crear/editar horarios (diaSemana, horaInicio, horaFin)
+- [x] `HorarioMedicoResponseDTO`: respuesta con id y duracionSlot
+- [x] `MedicoDTO`: doctor completo con specialty, schedules, activo
+- [x] `MetricasDashboardDTO`: totalDoctors, activeDoctors, inactiveDoctors, totalSpecialties
+- [x] `DashboardDataDTO`: doctors + metrics
+- [x] `CrearMedicoDTO`: datos para crear médico (con password y schedules)
+- [x] `ActualizarMedicoDTO`: datos para actualizar (todos opcionales)
+
+### Route groups Next.js
+- [x] `/admin/layout.tsx`: Root layout (solo Providers, sin sidebar)
+- [x] `/admin/login/page.tsx`: Login fuera del portal autenticado
+- [x] `/admin/(portal)/layout.tsx`: Auth layout con sidebar y redirección
+- [x] `/admin/(portal)/dashboard/page.tsx`: Dashboard con KPIs + tabla médicos
+- [x] `/admin/(portal)/medicos/page.tsx`: Lista de médicos con filtros
+- [x] `/admin/(portal)/medicos/nuevo/page.tsx`: Crear médico
+- [x] `/admin/(portal)/medicos/[id]/editar/page.tsx`: Editar médico (ruta dinámica)
+
+### Componentes admin
+- [x] `AdminLoginForm.tsx`: Login con validación Zod (DNI + Email + Password), verifica rol ADMIN
+- [x] `AdminSidebar.tsx`: Navegación lateral con avatar, links (Dashboard, Médicos), logout
+- [x] `DashboardKPI.tsx`: 4 tarjetas de métricas (total médicos, activos, inactivos, especialidades)
+- [x] `DoctorsTable.tsx`: Tabla con búsqueda, filtro por estado, toggle activo/inactivo, badges turno, resumen horarios
+- [x] `DoctorForm.tsx`: Formulario crear/editar con React Hook Form + Zod, 3 secciones (personales, profesionales, horarios)
+- [x] `ScheduleGrid.tsx`: Grid de horarios dinámico con agregar/eliminar filas
+
+### Funcionalidades del portal admin
+- [x] Login admin con validación de rol (solo ADMIN puede acceder)
+- [x] Dashboard con 4 KPIs en tarjetas visuales
+- [x] Tabla de médicos con búsqueda por nombre, username, especialidad
+- [x] Filtro por estado (Todos/Activos/Inactivos)
+- [x] Toggle de estado (activo/inactivo) con un click
+- [x] Botón crear nuevo médico con formulario completo
+- [x] Botón editar médico con formulario precargado
+- [x] Grid de horarios dinámico (agregar/eliminar días y horas)
+- [x] Zona de peligro visual cuando el médico está inactivo
+- [x] React Query para fetch y mutations con invalidación de cache
+- [x] Auto-logout en 401 redirige a `/admin/login`
+
+### Build y lint
+- [x] `next build` exitoso sin errores (16 rutas generadas)
+- [x] `next lint` sin warnings ni errores
+
+---
+
+## 16. Próximos pasos (Fase 8: Integración E2E)
+
+1. **Seed de datos demo:**
+   - Crear script de seed con usuarios admin, médicos y pacientes de ejemplo
+   - Datos coherentes que permitan probar los 3 flujos completos
+
+2. **Pulido:**
+   - Responsive: verificar que tablas y formularios funcionen en mobile
+   - Loading states: skeletons o spinners en todas las páginas
+   - Error boundaries: manejar errores de red gracefulmente
+
+3. **Tests manuales de flujos completos:**
+   - Flujo paciente: registro → login → reservar cita → ver perfil
+   - Flujo médico: login → calendario → iniciar consulta → finalizar
+   - Flujo admin: login → dashboard → crear médico → editar → toggle estado
 
 ---
 
@@ -603,7 +681,8 @@ CORS_ORIGIN=http://localhost:3100
 | 4 | 2026-05-15 | 4 | clinical-service: módulo `consultas/` hexagonal completo. file-service: módulo `archivos/` con upload multipart a S3, signed URLs, validación MIME/tamaño. Schemas Prisma sincronizados. tsc-alias agregado a servicios faltantes. Todo compila y levanta. |
 | 5 | 2026-05-15 | 5 | Frontend paciente: landing mejorada, login/registro con Zod, stores Zustand, wizard de reservas, perfil con 3 tabs, React Query + Sonner. 14 rutas generadas sin errores. |
 | 6 | 2026-05-15 | 6 | Frontend médico: login con validación de rol, store `useDoctorAuthStore`, calendario 3 vistas (mensual/semanal/diaria), consulta activa (iniciar/finalizar), historial pacientes agrupado, route groups `(portal)`, 7 componentes nuevos, `doctor.api.ts` con 6 endpoints. Build y lint limpios. |
+| 7 | 2026-05-15 | 7 | Frontend admin: login con validación de rol ADMIN, store `useAdminAuthStore`, dashboard con 4 KPIs, tabla médicos con búsqueda/filtro/toggle, formulario crear/editar médico con grid horarios dinámico, route groups `(portal)`, 6 componentes nuevos, `admin.api.ts` con 7 endpoints. Build y lint limpios. |
 
 ---
 
-*Documento actualizado al finalizar la Fase 6 del proyecto Clínica X.*
+*Documento actualizado al finalizar la Fase 7 del proyecto Clínica X.*

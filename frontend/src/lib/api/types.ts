@@ -85,3 +85,73 @@ export interface PacienteHistorialDTO {
   totalConsultas: number;
   ultimaConsulta?: string;
 }
+
+export interface HorarioMedicoDTO {
+  id?: string;
+  diaSemana: number;
+  horaInicio: string;
+  horaFin: string;
+  duracionSlot?: number;
+}
+
+export interface HorarioMedicoResponseDTO {
+  id: string;
+  diaSemana: number;
+  horaInicio: string;
+  horaFin: string;
+  duracionSlot: number;
+}
+
+export interface MedicoDTO {
+  id: string;
+  usuarioId: string;
+  nombre: string;
+  apellido: string;
+  dni: string;
+  email: string;
+  telefono?: string;
+  username: string;
+  specialty: string;
+  specialtyId: string;
+  shift: 'MANANA' | 'TARDE';
+  activo: boolean;
+  schedules: HorarioMedicoResponseDTO[];
+}
+
+export interface MetricasDashboardDTO {
+  totalDoctors: number;
+  activeDoctors: number;
+  inactiveDoctors: number;
+  totalSpecialties: number;
+}
+
+export interface DashboardDataDTO {
+  doctors: MedicoDTO[];
+  metrics: MetricasDashboardDTO;
+}
+
+export interface CrearMedicoDTO {
+  nombre: string;
+  apellido: string;
+  dni: string;
+  email: string;
+  telefono?: string;
+  username: string;
+  specialtyId: string;
+  shift: 'MANANA' | 'TARDE';
+  password: string;
+  schedules: HorarioMedicoDTO[];
+}
+
+export interface ActualizarMedicoDTO {
+  nombre?: string;
+  apellido?: string;
+  dni?: string;
+  email?: string;
+  telefono?: string;
+  username?: string;
+  specialtyId?: string;
+  shift?: 'MANANA' | 'TARDE';
+  password?: string;
+  schedules?: HorarioMedicoDTO[];
+}
