@@ -66,3 +66,22 @@ export interface ApiResponse<T> {
     detalles?: { campo: string; mensaje: string }[];
   };
 }
+
+export interface CitaCalendarioDTO extends CitaDTO {
+  pacienteNombre?: string;
+  pacienteApellido?: string;
+  especialidad?: string;
+}
+
+export interface ConsultaMedicoDTO extends ConsultaDTO {
+  pacienteNombre?: string;
+  pacienteApellido?: string;
+}
+
+export interface PacienteHistorialDTO {
+  pacienteId: string;
+  pacienteNombre: string;
+  pacienteApellido: string;
+  totalConsultas: number;
+  ultimaConsulta?: string;
+}

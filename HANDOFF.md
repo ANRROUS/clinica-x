@@ -1,33 +1,35 @@
 # HANDOFF — Clínica X
 
 > **Fecha de sesión:** 2026-05-15
-> **Sesión #:** 5 (Fase 5 Frontend paciente)
-> **Estado:** Fase 0 ✅ | Fase 1 ✅ | Fase 2 ✅ | Fase 3 ✅ | Fase 4 ✅ | Fase 5 ✅ | Listo para Fase 6
+> **Sesión #:** 6 (Fase 6 Frontend médico)
+> **Estado:** Fase 0 ✅ | Fase 1 ✅ | Fase 2 ✅ | Fase 3 ✅ | Fase 4 ✅ | Fase 5 ✅ | Fase 6 ✅ | Listo para Fase 7
 
 ---
 
 ## Resumen ejecutivo
 
-En la sesión #5 se implementó el **frontend del paciente** (Fase 5), incluyendo la landing page mejorada, autenticación, reserva de citas y perfil con tabs.
+En la sesión #6 se implementó el **frontend del médico** (Fase 6), incluyendo login médico, calendario con 3 vistas, gestión de consultas y historial de pacientes.
 
 **Logros clave de esta sesión:**
-- Landing page mejorada con hero, sección de características y formulario de contacto
-- Login/Registro completos con validación Zod + React Hook Form
-- Stores Zustand: `useAuthStore` (auth persistido en localStorage) y `useBookingStore` (flujo de reserva)
-- Cliente axios configurado con interceptor de JWT y auto-logout en 401
-- Página de reserva de citas con wizard paso a paso:
-  - Panel izquierdo con lista de especialidades (desde API)
-  - Selección de médico, día y horario (desde API de disponibilidad)
-  - Modal de confirmación de reserva
-  - Modo automático (reserva el primer slot disponible)
-- Página de perfil con 3 tabs:
-  - **Consultas**: Historial de consultas médicas (`GET /api/medical/patient/history`)
-  - **Tratamiento**: Placeholder (se implementará en Fase 6/8)
-  - **Reservas**: Citas activas con opción de cancelar (`GET /api/appointments/patient/me`)
-- Header dinámico (estado autenticado vs no autenticado) con soporte responsive
-- React Query Provider + Sonner para notificaciones toast
-- Nuevo endpoint backend: `GET /api/appointments/specialties` (lista especialidades)
-- Componentes reutilizables: LoginForm, RegisterForm, SpecialtySidebar, DoctorSelector, DaySelector, SlotSelector, ConfirmBookingModal, ProfileHeader, ProfileTabs
+- Login médico con validación de rol (solo MEDICO puede acceder al portal médico)
+- Store Zustand `useDoctorAuthStore` con persistencia en localStorage bajo `clinica_x_doctor_token` y `clinica_x_doctor_user`
+- Layout del portal médico con sidebar de navegación (Calendario, Pacientes, Cerrar sesión)
+- Calendario del médico con 3 vistas intercambiables:
+  - **Mensual**: grilla con citas por día, colores por estado
+  - **Semanal**: timeline horario con tarjetas de cita clickeables
+  - **Diaria**: lista detallada con acciones (iniciar atención, completar, cancelar)
+- Página de consulta médica:
+  - Iniciar consulta (envía `POST /api/medical/doctor/consultation/start`)
+  - Panel de consulta activa con campos de diagnóstico y notas
+  - Finalizar consulta (envía `POST /api/medical/doctor/consultation/:id/finalize`)
+  - Cambio de estado de cita (`PATCH /api/appointments/doctor/:id/status`)
+  - Placeholder del Agente X (chat IA "Próximamente")
+- Página de pacientes con historial agrupado por paciente
+  - Filtro por rango de fechas
+  - Indicador de consulta activa con botón rápido
+  - Expandible para ver consultas por paciente
+- API functions: `doctor.api.ts` con 6 endpoints médicos
+- Route groups de Next.js para separar login del portal autenticado
 - Toda la app compila sin errores TypeScript y linting pasa limpio
 
 ---
@@ -41,8 +43,8 @@ En la sesión #5 se implementó el **frontend del paciente** (Fase 5), incluyend
 | **2** | appointment-service (admin) | ✅ Completa | CRUD médicos, horarios, dashboard KPI, cross-service auth |
 | **3** | appointment-service (booking) | ✅ Completa | Reservas manual/automática, disponibilidad, cancelar, reprogramar, calendario médico |
 | **4** | clinical-service + file-service | ✅ Completa | Módulo consultas (iniciar/finalizar/historial), uploads S3, signed URLs |
-| **5** | Frontend paciente | ✅ **Completa** | Landing, auth, reservas, perfil con 3 tabs |
-| **6** | Frontend médico | ⏳ Pendiente | Calendario, pacientes, consulta, historial |
+| **5** | Frontend paciente | ✅ Completa | Landing, auth, reservas, perfil con 3 tabs |
+| **6** | Frontend médico | ✅ **Completa** | Login médico, calendario 3 vistas, consulta, historial pacientes |
 | **7** | Frontend admin | ⏳ Pendiente | Dashboard, form médico, grid horario |
 | **8** | Integración E2E | ⏳ Pendiente | Seed demo, pulido, tests manuales |
 
@@ -64,11 +66,12 @@ En la sesión #5 se implementó el **frontend del paciente** (Fase 5), incluyend
 | Chat IA | Stub "Próximamente" (`AI_ENABLED=false`) |
 | Alias de imports | `@/` para rutas absolutas dentro de cada servicio |
 | Build post-proceso | **`tsc-alias`** reescribe `@/` a rutas relativas en `dist/` |
-| Estado frontend | **Zustand** (auth store, booking store) |
+| Estado frontend | **Zustand** (3 stores: paciente, médico, admin) |
 | Data fetching frontend | **TanStack React Query** |
 | Validación forms | **React Hook Form + Zod** |
 | Notificaciones frontend | **Sonner** |
 | HTTP cliente frontend | **axios** (3 tokens: paciente, médico, admin) |
+| Route groups doctor | `(portal)` agrupa rutas autenticadas con sidebar; `/login` fuera |
 
 ---
 
@@ -78,68 +81,69 @@ En la sesión #5 se implementó el **frontend del paciente** (Fase 5), incluyend
 clinica-x/
 ├── frontend/                          # Next.js 14 (puerto 3100)
 │   ├── src/app/
-│   │   ├── page.tsx                   # Landing mejorada (hero + features + contacto)
+│   │   ├── page.tsx                   # Landing mejorada
 │   │   ├── layout.tsx                 # Root layout con Providers + Toaster
 │   │   ├── globals.css
-│   │   ├── login/page.tsx             # Login paciente (DNI + Email + Password)
+│   │   ├── login/page.tsx             # Login paciente
 │   │   ├── register/page.tsx          # Registro paciente
-│   │   ├── reservar-cita/page.tsx     # Wizard de reserva completo
-│   │   ├── perfil/page.tsx            # Perfil con 3 tabs
-│   │   ├── doctor/login/page.tsx      # Placeholder
-│   │   ├── doctor/calendario/page.tsx # Placeholder
-│   │   ├── doctor/pacientes/page.tsx  # Placeholder
-│   │   ├── admin/login/page.tsx       # Placeholder
-│   │   └── admin/dashboard/page.tsx   # Placeholder
+│   │   ├── reservar-cita/page.tsx    # Wizard de reserva
+│   │   ├── perfil/page.tsx            # Perfil paciente (3 tabs)
+│   │   ├── doctor/
+│   │   │   ├── layout.tsx             # Root layout doctor (solo Providers)
+│   │   │   ├── login/page.tsx         # Login médico (fuera del portal)
+│   │   │   └── (portal)/
+│   │   │       ├── layout.tsx         # Layout autenticado con sidebar
+│   │   │       ├── calendario/page.tsx # Calendario médico (3 vistas)
+│   │   │       ├── pacientes/page.tsx  # Historial de pacientes
+│   │   │       └── consulta/page.tsx   # Consulta médica activa
+│   │   ├── admin/
+│   │   │   ├── login/page.tsx         # Placeholder
+│   │   │   └── dashboard/page.tsx     # Placeholder
 │   ├── src/components/
 │   │   ├── shared/
-│   │   │   ├── Header.tsx             # Header dinámico (auth/no-auth, responsive)
+│   │   │   ├── Header.tsx             # Header dinámico (paciente)
 │   │   │   └── Footer.tsx
-│   │   ├── landing/
-│   │   │   └── ContactForm.tsx        # Formulario de contacto
+│   │   ├── landing/ContactForm.tsx
 │   │   ├── auth/
-│   │   │   ├── LoginForm.tsx          # Formulario login con Zod
-│   │   │   └── RegisterForm.tsx       # Formulario registro con Zod
+│   │   │   ├── LoginForm.tsx
+│   │   │   └── RegisterForm.tsx
 │   │   ├── booking/
-│   │   │   ├── SpecialtySidebar.tsx   # Panel de especialidades con búsqueda
-│   │   │   ├── DoctorSelector.tsx     # Grid de médicos
-│   │   │   ├── DaySelector.tsx        # Chips de días disponibles
-│   │   │   ├── SlotSelector.tsx      # Chips de horarios disponibles
-│   │   │   └── ConfirmBookingModal.tsx # Modal confirmación reserva
+│   │   │   ├── SpecialtySidebar.tsx
+│   │   │   ├── DoctorSelector.tsx
+│   │   │   ├── DaySelector.tsx
+│   │   │   ├── SlotSelector.tsx
+│   │   │   └── ConfirmBookingModal.tsx
 │   │   ├── patient-profile/
-│   │   │   ├── ProfileHeader.tsx      # Avatar + datos editables
-│   │   │   ├── ProfileTabs.tsx        # Tabs (Consultas/Tratamiento/Reservas)
-│   │   │   ├── ConsultationsTab.tsx    # Historial de consultas
-│   │   │   ├── TreatmentTab.tsx        # Placeholder tratamiento
-│   │   │   └── AppointmentsTab.tsx     # Reservas activas con cancelar
-│   │   └── Providers.tsx              # React Query + Sonner providers
-│   ├── src/hooks/                     # Hooks personalizados (pendiente)
+│   │   │   ├── ProfileHeader.tsx
+│   │   │   ├── ProfileTabs.tsx
+│   │   │   ├── ConsultationsTab.tsx
+│   │   │   ├── TreatmentTab.tsx
+│   │   │   └── AppointmentsTab.tsx
+│   │   ├── doctor/
+│   │   │   ├── DoctorLoginForm.tsx     # **NUEVO** Login médico con validación de rol
+│   │   │   ├── DoctorSidebar.tsx       # **NUEVO** Sidebar navegación portal médico
+│   │   │   ├── DoctorCalendar.tsx      # **NUEVO** Contenedor calendario (3 vistas)
+│   │   │   ├── CalendarMonth.tsx       # **NUEVO** Vista mensual
+│   │   │   ├── CalendarWeek.tsx         # **NUEVO** Vista semanal
+│   │   │   ├── CalendarDay.tsx          # **NUEVO** Vista diaria con acciones
+│   │   │   ├── ConsultationPanel.tsx    # **NUEVO** Panel iniciar/finalizar consulta
+│   │   │   └── PatientHistory.tsx       # **NUEVO** Historial agrupado por paciente
+│   │   └── Providers.tsx
 │   ├── src/lib/api/
-│   │   ├── axios.ts                   # Cliente HTTP con interceptor JWT + auto-logout
-│   │   ├── types.ts                   # DTOs compartidos del frontend
-│   │   ├── auth.api.ts                # login, register, getMe, updateMe
-│   │   ├── appointments.api.ts        # specialties, availability, booking, cancel
-│   │   └── medical.api.ts             # patientHistory, consultation, file upload
+│   │   ├── axios.ts                   # Cliente con interceptor JWT (3 tokens)
+│   │   ├── types.ts                   # DTOs (ampliado con CitaCalendarioDTO, ConsultaMedicoDTO, PacienteHistorialDTO)
+│   │   ├── auth.api.ts
+│   │   ├── appointments.api.ts
+│   │   ├── medical.api.ts
+│   │   └── doctor.api.ts              # **NUEVO** 6 endpoints médicos
 │   ├── src/store/
-│   │   ├── useAuthStore.ts            # Zustand: user, token, isAuthenticated, persist localStorage
-│   │   └── useBookingStore.ts         # Zustand: flujo de reserva temporal
+│   │   ├── useAuthStore.ts            # Zustand paciente
+│   │   ├── useBookingStore.ts
+│   │   └── useDoctorAuthStore.ts      # **NUEVO** Zustand médico
 │   └── tailwind.config.ts             # Paleta teal/indigo
 │
-├── services/
-│   ├── auth-service/                  # 3000 → /api/auth/*
-│   │   └── ... (sin cambios)
-│   ├── appointment-service/           # 3001 → /api/admin/* + /api/appointments/*
-│   │   └── ... (nuevo endpoint GET /specialties)
-│   ├── clinical-service/              # 3002 → /api/medical/*
-│   │   └── ... (sin cambios)
-│   ├── file-service/                   # 3003 → /api/files/*
-│   │   └── ... (sin cambios)
-│   └── api-gateway/                   # 8080 → Proxy + JWT + rate limit
-│
-├── packages/
-│   ├── shared-kernel/                 # Result<T,E>, ErrorDominio, EntidadBase, VOBase
-│   ├── shared-middleware/             # jwtMiddleware, requireRole, errorHandler, requestId
-│   └── shared-types/                  # Rol, UsuarioDTO, ApiResponse, enums de estados
-│
+├── services/                           # (sin cambios)
+├── packages/                           # (sin cambios)
 ├── scripts/
 ├── plantilla/
 ├── docker-compose.yml
@@ -155,115 +159,126 @@ clinica-x/
 
 ---
 
-## Cambios de esta sesión (Fase 5)
-
-### Backend
-
-1. **Nuevo endpoint `GET /api/appointments/specialties`** en appointment-service:
-   - Agregado `EspecialidadDTO` y método `listarEspecialidades()` al puerto `IMedicoConsultaPort`
-   - Implementado en `PrismaMedicoConsulta` (consulta `prisma.especialidad.findMany`)
-   - Agregado método `listarEspecialidades` al `CitasController`
-   - Agregada ruta en `citas.router.ts` con `requireRole(['PACIENTE', 'MEDICO'])`
+## Cambios de esta sesión (Fase 6)
 
 ### Frontend
 
-2. **Stores Zustand**:
-   - `useAuthStore`: gestiona user, token, isAuthenticated; persiste en localStorage bajo `clinica_x_token` y `clinica_x_user`
-   - `useBookingStore`: gestiona el flujo de reserva (especialidad, médico, fecha, slot, modo)
+1. **Nuevo store `useDoctorAuthStore`**:
+   - Claves localStorage: `clinica_x_doctor_token`, `clinica_x_doctor_user`
+   - Valida que el rol sea `MEDICO` al cargar auth persistida
+   - Mismas acciones que `useAuthStore`: `setAuth`, `clearAuth`, `updateUser`
 
-3. **Módulos API** (`lib/api/`):
-   - `axios.ts`: cliente configurado con interceptor que agrega JWT y redirige en 401
-   - `types.ts`: DTOs tipados (UsuarioDTO, EspecialidadDTO, SlotDTO, CitaDTO, ConsultaDTO, ApiResponse)
-   - `auth.api.ts`: login, register, getMe, updateMe
-   - `appointments.api.ts`: specialties, availability, booking (manual + auto), reschedule, cancel
-   - `medical.api.ts`: patientHistory, consultationById, file upload/signed URL
+2. **Nuevo archivo `lib/api/doctor.api.ts`** con 6 funciones:
+   - `getDoctorCalendar(params?)` → `GET /api/appointments/doctor/calendar`
+   - `changeAppointmentStatus(id, estado)` → `PATCH /api/appointments/doctor/:id/status`
+   - `startConsultation(data)` → `POST /api/medical/doctor/consultation/start`
+   - `finalizeConsultation(id, data)` → `POST /api/medical/doctor/consultation/:id/finalize`
+   - `getActivePatient()` → `GET /api/medical/doctor/active-patient`
+   - `getDoctorPatients(params?)` → `GET /api/medical/doctor/patients`
 
-4. **Providers**: `QueryClientProvider` (React Query) + `Toaster` (Sonner)
+3. **Nuevos tipos en `lib/api/types.ts`**:
+   - `CitaCalendarioDTO` (extiende CitaDTO con datos del paciente)
+   - `ConsultaMedicoDTO` (extiende ConsultaDTO con datos del paciente)
+   - `PacienteHistorialDTO` (resumen por paciente)
 
-5. **Componentes compartidos**:
-   - `Header.tsx`: responsive, muestra navegación según auth state, avatar con iniciales, logout
-   - `Footer.tsx`: footer simple con links
-   - `ContactForm.tsx`: formulario de contacto con validación
+4. **Route groups en Next.js**:
+   - `/doctor/login` → sin sidebar, sin auth check
+   - `/doctor/(portal)/calendario`, `/doctor/(portal)/pacientes`, `/doctor/(portal)/consulta` → con sidebar + auth check
 
-6. **Auth components**:
-   - `LoginForm.tsx`: formulario con DNI + Email + Password, validación Zod, redirect post-login
-   - `RegisterForm.tsx`: formulario con nombre, apellido, DNI, email, teléfono, contraseña
+5. **Componentes doctor nuevos** (7 archivos):
+   - `DoctorLoginForm.tsx`: Login con validación Zod, verificación de rol MEDICO
+   - `DoctorSidebar.tsx`: Navegación lateral con avatar, links y logout
+   - `DoctorCalendar.tsx`: Contenedor con selector de vista y navegación de fechas
+   - `CalendarMonth.tsx`: Grilla mensual con citas coloreadas por estado
+   - `CalendarWeek.tsx`: Timeline semanal 7am-8pm con tarjetas de cita
+   - `CalendarDay.tsx`: Vista diaria con lista detallada y botones de acción
+   - `ConsultationPanel.tsx`: Panel de iniciar/finalizar consulta con form Zod
+   - `PatientHistory.tsx`: Historial agrupado por paciente, expandible
 
-7. **Booking components**:
-   - `SpecialtySidebar.tsx`: panel con búsqueda de especialidades
-   - `DoctorSelector.tsx`: grid de médicos disponibles
-   - `DaySelector.tsx`: chips de días con disponibilidad
-   - `SlotSelector.tsx`: chips de horarios disponibles
-   - `ConfirmBookingModal.tsx`: modal de confirmación con resumen
+6. **Páginas** (3 rutas nuevas):
+   - `/doctor/calendario` → Calendario con 3 vistas, React Query para citas
+   - `/doctor/pacientes` → Historial de pacientes con filtro de fechas
+   - `/doctor/consulta` → Consulta activa (recibe `pacienteId`, `citaId` via query params)
 
-8. **Profile components**:
-   - `ProfileHeader.tsx`: avatar + datos editables (email, teléfono) inline
-   - `ProfileTabs.tsx`: tabs navegables (Consultas/Tratamiento/Reservas)
-   - `ConsultationsTab.tsx`: historial de consultas médicas con detalle expandible
-   - `TreatmentTab.tsx`: placeholder
-   - `AppointmentsTab.tsx`: reservas activas con cancelar y confirmación
-
-9. **Pages actualizadas**:
-   - Landing page mejorada con hero, features, contacto
-   - `/login` → LoginForm
-   - `/register` → RegisterForm
-   - `/reservar-cita` → wizard completo con React Query
-   - `/perfil` → ProfileHeader + tabs
-   - Páginas doctor/admin permanecen como placeholders
+7. **Layouts**:
+   - `/doctor/layout.tsx` → Root layout (solo Providers, sin sidebar)
+   - `/doctor/(portal)/layout.tsx` → Auth layout con sidebar y redirección
 
 ---
 
-## Endpoints funcionales (testeados, sin cambios nuevos excepto specialties)
+## Endpoints funcionales (sin cambios nuevos en backend)
 
-| Endpoint | Método | Auth | Estado |
+Todos los endpoints de Fases 1-4 siguen funcionando. Los endpoints usados por el portal médico ya existían:
+
+| Endpoint | Método | Auth | Uso en frontend |
 |---|---|---|---|
-| *(todos los de Fase 4)* | | | ✅ Sin cambios |
-| `GET /api/appointments/specialties` | GET | JWT + PACIENTE/MEDICO | ✅ **Nuevo** |
+| `POST /api/auth/login` | POST | Público | Login médico |
+| `GET /api/auth/me` | GET | JWT | Verificar sesión |
+| `GET /api/appointments/specialties` | GET | JWT + PACIENTE/MEDICO | No usado en médico |
+| `GET /api/appointments/doctor/calendar` | GET | JWT + MEDICO | Calendario médico |
+| `PATCH /api/appointments/doctor/:id/status` | PATCH | JWT + MEDICO | Cambiar estado cita |
+| `POST /api/medical/doctor/consultation/start` | POST | JWT + MEDICO | Iniciar consulta |
+| `POST /api/medical/doctor/consultation/:id/finalize` | POST | JWT + MEDICO | Finalizar consulta |
+| `GET /api/medical/doctor/active-patient` | GET | JWT + MEDICO | Consulta activa |
+| `GET /api/medical/doctor/patients` | GET | JWT + MEDICO | Historial pacientes |
 
 ---
 
-## Próximos pasos (Fase 6: Frontend médico)
+## Próximos pasos (Fase 7: Frontend admin)
 
-### 1. Portal médico
-- [ ] Login médico (reusar LoginForm con rol)
-- [ ] Calendario del médico (3 vistas: mensual/semanal/diaria)
-- [ ] Sidebar de pacientes del día
-- [ ] Vista de consulta activa (diagnóstico + notas)
-- [ ] Historial de pacientes
+### 1. Portal admin
+- [ ] Login admin (reusar LoginForm con rol)
+- [ ] Dashboard con métricas KPI (`GET /api/admin/dashboard/metrics`)
+- [ ] Tabla de médicos con filtros y toggle de estado
+- [ ] Formulario de creación/edición de médico con grid de horarios
+- [ ] Zona de peligro (desactivar médico)
 
-### 2. Preparación Fase 7 (Frontend admin)
-- [ ] Reutilizar componentes de calendario para vista admin
+### 2. Preparación Fase 8 (Integración E2E)
+- [ ] Seed de datos demo
+- [ ] Pulido responsive
+- [ ] Tests manuales de flujos completos
 
 ---
 
 ## Notas para el siguiente desarrollador
 
-1. **El `useAuthStore` persiste en localStorage.** Se usa `clinica_x_token` para el JWT y `clinica_x_user` para el objeto usuario. El interceptor de axios en `lib/api/axios.ts` usa la key correspondiente según la ruta.
+1. **Tres stores Zustand separados.** `useAuthStore` (paciente), `useDoctorAuthStore` (médico). Faltará `useAdminAuthStore` en Fase 7. Cada uno usa su propia key de localStorage.
 
-2. **Las páginas doctor/admin siguen siendo placeholders.** Están en `src/app/doctor/` y `src/app/admin/`.
+2. **El `axios.ts` ya maneja los 3 tokens** según el path (`/doctor` → `clinica_x_doctor_token`, `/admin` → `clinica_x_admin_token`, default → `clinica_x_token`).
 
-3. **El tab de Tratamiento es un placeholder.** Requiere que el backend tenga endpoints de recetas y órdenes de análisis, que no están implementados todavía (solo está el modelo `OrdenAnalisis` en Prisma, sin endpoints).
+3. **Los route groups de Next.js** (`(portal)`) no afectan la URL. Las rutas siguen siendo `/doctor/calendario`, `/doctor/pacientes`, `/doctor/consulta`.
 
-4. **El modo "Reprogramar cita" no está implementado en el frontend.** El botón está deshabilitado. Se necesita un modal similar al de reserva pero pre-seleccionando médico y especialidad, y usando `PUT /api/appointments/patient/:id`.
+4. **El login médico valida el rol.** Si el JWT no tiene `rol: 'MEDICO'`, se muestra un error y no se persiste la sesión.
 
-5. **El formulario de contacto en la landing page es demo.** No tiene endpoint backend.
+5. **La vista diaria del calendario** muestra botones de acción contextuales según el estado de la cita:
+   - `CONFIRMADA` → "Iniciar atención" (cambia a EN_ATENCION) + "Iniciar consulta" (navega a `/doctor/consulta`)
+   - `EN_ATENCION` → "Completar" (cambia a COMPLETADA)
+   - `CANCELADA`/`COMPLETADA` → sin acciones
 
-6. **Para probar el flujo completo:**
+6. **El panel de consulta** permite iniciar y finalizar una consulta. Al finalizar, navega de vuelta al calendario.
+
+7. **El placeholder del Agente X** está en la página de consulta. El chat IA es un stub visual; se implementará cuando `AI_ENABLED=true`.
+
+8. **Para probar el flujo completo del médico:**
    ```bash
    # 1. Levantar servicios
    pnpm dev:services
-   
+
    # 2. En otra terminal, levantar frontend
    pnpm dev:frontend
-   
-   # 3. Registrar un paciente en POST /api/auth/register
-   # 4. Login en /login
-   # 5. Navegar a /reservar-cita y reservar
-   # 6. Ver reservas en /perfil → tab Reservas
+
+   # 3. Crear un médico vía admin API (o usar un usuario con rol MEDICO)
+   # 4. Login en /doctor/login
+   # 5. Ver calendario en /doctor/calendario
+   # 6. Gestionar citas y consultas
+   # 7. Ver historial en /doctor/pacientes
    ```
 
-7. **Si se agrega un nuevo servicio o módulo:** seguir la plantilla hexagonal. Ver notas en HANDOFF previo.
+9. **Limitaciones conocidas:**
+   - El nombre del paciente en las citas (`pacienteNombre`, `pacienteApellido`) no viene del backend actualmente. El backend del calendario médico devuelve solo `pacienteId`. Se necesita un cross-service lookup o agregar estos campos al endpoint.
+   - No hay paginación en el historial de pacientes.
+   - No hay soporte para reprogramar citas desde el portal médico.
 
 ---
 
-*Documento actualizado al finalizar la sesión #5 (Fase 5 completada).*
+*Documento actualizado al finalizar la sesión #6 (Fase 6 completada).*
