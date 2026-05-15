@@ -21,7 +21,10 @@
     "format": "prettier --write \"**/*.{ts,tsx,js,json,md}\" --ignore-path .gitignore",
     "prisma:generate:all": "pnpm --filter auth-service prisma:generate && pnpm --filter appointment-service prisma:generate && pnpm --filter clinical-service prisma:generate && pnpm --filter file-service prisma:generate",
     "prisma:migrate:all": "pnpm --filter auth-service prisma:migrate && pnpm --filter appointment-service prisma:migrate && pnpm --filter clinical-service prisma:migrate && pnpm --filter file-service prisma:migrate",
-    "db:reset": "node scripts/clean-schemas.js"
+    "db:reset": "node scripts/clean-schemas.js",
+    "seed:demo": "node scripts/seed-demo.js",
+    "seed:all": "pnpm --filter auth-service seed && pnpm --filter appointment-service seed && node scripts/seed-demo.js",
+    "test:e2e": "node scripts/test-e2e.js"
   },
   "devDependencies": {
     "@types/node": "^20.11.0",

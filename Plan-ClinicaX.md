@@ -292,7 +292,7 @@ clinica-x/
 | 5 | **Frontend paciente** | Landing, login/register, reservar cita (manual + automático), perfil (3 tabs), visualización PDFs | ✅ **COMPLETADO** |
 | 6 | **Frontend médico** | Login médico, calendario (3 vistas), sidebar pacientes, consulta activa (diagnóstico + notas), historial agrupado, placeholder Agente X | ✅ **COMPLETADO** |
 | 7 | **Frontend admin** | Login, dashboard con métricas KPI, tabla de médicos con filtro/toggle, formulario médico (datos + grid horario), zona de peligro | ✅ **COMPLETADO** |
-| 8 | **Integración E2E** | Seed de datos demo, flujos end-to-end, ajustes de UI, pulido de responsive | Pendiente |
+| 8 | **Integración E2E** | Seed de datos demo, flujos end-to-end, ajustes de UI, pulido de responsive | 🔄 **En progreso** |
 
 ---
 
@@ -653,21 +653,48 @@ CORS_ORIGIN=http://localhost:3100
 
 ---
 
-## 16. Próximos pasos (Fase 8: Integración E2E)
+## 16. Qué se completó en Fase 8 (parcial)
 
-1. **Seed de datos demo:**
-   - Crear script de seed con usuarios admin, médicos y pacientes de ejemplo
-   - Datos coherentes que permitan probar los 3 flujos completos
+### Scripts de seed y tests E2E
+- [x] `scripts/seed-demo.js`: Script que genera datos coherentes para los 3 flujos (admin, médico, paciente)
+  - Login admin existente
+  - Obtiene especialidades de la API
+  - Crea 5 médicos con horarios variados (0-5 días/semana, turnos MAÑANA/TARDE)
+  - Login de cada médico
+  - Registra 4 pacientes vía API
+  - Crea citas manuales y automáticas
+  - Inicia y finaliza consultas para historial
+  - Imprime credenciales demo al finalizar
+- [x] `scripts/test-e2e.js`: Tests E2E automatizados para los 3 flujos
+  - Flujo admin: login → me → dashboard → crear médico → editar → toggle estado
+  - Flujo paciente: login → perfil → especialidades → disponibilidad → reservar → listar → cancelar → historial
+  - Flujo médico: login → me → calendario → consulta activa → iniciar → finalizar → historial
+  - Reporte final con PASARON / FALLARON
+- [x] Scripts agregados al `package.json` raíz:
+  - `pnpm seed:all` — Ejecuta Prisma seeds + seed demo
+  - `pnpm seed:demo` — Ejecuta solo el seed demo
+  - `pnpm test:e2e` — Ejecuta tests E2E automatizados
 
-2. **Pulido:**
-   - Responsive: verificar que tablas y formularios funcionen en mobile
-   - Loading states: skeletons o spinners en todas las páginas
-   - Error boundaries: manejar errores de red gracefulmente
+### Datos demo generados
 
-3. **Tests manuales de flujos completos:**
-   - Flujo paciente: registro → login → reservar cita → ver perfil
-   - Flujo médico: login → calendario → iniciar consulta → finalizar
-   - Flujo admin: login → dashboard → crear médico → editar → toggle estado
+| Rol | DNI | Email | Password | Portal |
+|---|---|---|---|---|
+| ADMIN | 00000000 | admin@clinicax.com | Admin123! | /admin/login |
+| Médico | 10101010 | maria.garcia@clinicax.com | Medico123! | /doctor/login |
+| Médico | 20202020 | carlos.lopez@clinicax.com | Medico123! | /doctor/login |
+| Médico | 30303030 | ana.martinez@clinicax.com | Medico123! | /doctor/login |
+| Médico | 40404040 | roberto.sanchez@clinicax.com | Medico123! | /doctor/login |
+| Médico | 50505050 | laura.fernandez@clinicax.com | Medico123! | /doctor/login |
+| Paciente | 60606060 | juan.perez@email.com | Paciente123! | /login |
+| Paciente | 70707070 | lucia.rodriguez@email.com | Paciente123! | /login |
+| Paciente | 80808080 | pedro.gomez@email.com | Paciente123! | /login |
+| Paciente | 90909090 | sofia.torres@email.com | Paciente123! | /login |
+
+### Pendientes (resto de Fase 8)
+- [ ] Responsive: verificar que tablas y formularios funcionen en mobile
+- [ ] Loading states: skeletons o spinners en todas las páginas
+- [ ] Error boundaries: manejar errores de red gracefulmente
+- [ ] Tests manuales con los 3 flujos completos usando los datos demo
 
 ---
 
@@ -682,6 +709,7 @@ CORS_ORIGIN=http://localhost:3100
 | 5 | 2026-05-15 | 5 | Frontend paciente: landing mejorada, login/registro con Zod, stores Zustand, wizard de reservas, perfil con 3 tabs, React Query + Sonner. 14 rutas generadas sin errores. |
 | 6 | 2026-05-15 | 6 | Frontend médico: login con validación de rol, store `useDoctorAuthStore`, calendario 3 vistas (mensual/semanal/diaria), consulta activa (iniciar/finalizar), historial pacientes agrupado, route groups `(portal)`, 7 componentes nuevos, `doctor.api.ts` con 6 endpoints. Build y lint limpios. |
 | 7 | 2026-05-15 | 7 | Frontend admin: login con validación de rol ADMIN, store `useAdminAuthStore`, dashboard con 4 KPIs, tabla médicos con búsqueda/filtro/toggle, formulario crear/editar médico con grid horarios dinámico, route groups `(portal)`, 6 componentes nuevos, `admin.api.ts` con 7 endpoints. Build y lint limpios. |
+| 8 | 2026-05-15 | 8 | Integración E2E parcial: script `seed-demo.js` con 5 médicos + 4 pacientes + citas + consultas, script `test-e2e.js` con 3 flujos automatizados, scripts raíz `seed:all`/`seed:demo`/`test:e2e`. Pendiente: pulido UI/responsive, loading states, error boundaries. |
 
 ---
 

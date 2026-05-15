@@ -1,35 +1,25 @@
 # HANDOFF — Clínica X
 
 > **Fecha de sesión:** 2026-05-15
-> **Sesión #:** 7 (Fase 7 Frontend admin)
-> **Estado:** Fase 0 ✅ | Fase 1 ✅ | Fase 2 ✅ | Fase 3 ✅ | Fase 4 ✅ | Fase 5 ✅ | Fase 6 ✅ | Fase 7 ✅ | Listo para Fase 8
+> **Sesión #:** 8 (Fase 8 Integración E2E - Seed y Tests)
+> **Estado:** Fase 0 ✅ | Fase 1 ✅ | Fase 2 ✅ | Fase 3 ✅ | Fase 4 ✅ | Fase 5 ✅ | Fase 6 ✅ | Fase 7 ✅ | Fase 8 🔄 En progreso
 
 ---
 
 ## Resumen ejecutivo
 
-En la sesión #7 se implementó el **frontend del administrador** (Fase 7), incluyendo login admin, dashboard con KPIs, tabla de médicos con filtros/toggle, formulario de creación/edición con grid de horarios.
+En la sesión #8 se inició la **Fase 8 (Integración E2E)** con la creación de scripts de seed demo y tests E2E automatizados.
 
 **Logros clave de esta sesión:**
-- Login admin con validación de rol (solo ADMIN puede acceder al portal admin)
-- Store Zustand `useAdminAuthStore` con persistencia en localStorage bajo `clinica_x_admin_token` y `clinica_x_admin_user`
-- Layout del portal admin con sidebar de navegación (Dashboard, Médicos, Cerrar sesión)
-- Dashboard con 4 KPIs: total médicos, activos, inactivos, especialidades con datos
-- Tabla de médicos con:
-  - Búsqueda por nombre, username, especialidad
-  - Filtro por estado (Todos/Activos/Inactivos)
-  - Toggle de estado (activo/inactivo) directo en tabla
-  - Badges de turno (Mañana/Tarde)
-  - Resumen de horarios por médico
-  - Links a editar y eliminar
-- Formulario de creación/edición de médico:
-  - Datos personales (nombre, apellido, DNI, email, teléfono, contraseña)
-  - Datos profesionales (username, especialidad, turno)
-  - Grid de horarios dinámico (agregar/eliminar filas, selector día + hora inicio/fin)
-  - Zona de peligro cuando el médico está inactivo
-- API functions: `admin.api.ts` con 7 endpoints admin
-- Route groups de Next.js para separar login del portal autenticado
-- Toda la app compila sin errores TypeScript y linting pasa limpio
+- Script `scripts/seed-demo.js` que genera datos coherentes para los 3 flujos (admin, médico, paciente):
+  - Admin existente (del Prisma seed)
+  - 5 médicos con horarios variados (Medicina General, Cardiología, Dermatología, Traumatología, Pediatría)
+  - 4 pacientes
+  - Citas entre pacientes y médicos
+  - Consultas finalizadas para el historial
+- Script `scripts/test-e2e.js` que valida automáticamente los 3 flujos completos
+- Scripts agregados al `package.json` raíz: `seed:all`, `seed:demo`, `test:e2e`
+- Credenciales demo documentadas para testing manual
 
 ---
 
@@ -45,7 +35,7 @@ En la sesión #7 se implementó el **frontend del administrador** (Fase 7), incl
 | **5** | Frontend paciente | ✅ Completa | Landing, auth, reservas, perfil con 3 tabs |
 | **6** | Frontend médico | ✅ **Completa** | Login médico, calendario 3 vistas, consulta, historial pacientes |
 | **7** | Frontend admin | ✅ **Completa** | Login admin, dashboard KPI, tabla médicos, formulario médico con grid horarios |
-| **8** | Integración E2E | ⏳ Pendiente | Seed demo, pulido, tests manuales |
+| **8** | Integración E2E | 🔄 En progreso | Seed demo, tests E2E, pulido |
 
 ## Decisiones arquitectónicas (consolidadas)
 
@@ -171,51 +161,45 @@ clinica-x/
 
 ---
 
-## Cambios de esta sesión (Fase 7)
+## Cambios de esta sesión (Fase 8 - parcial)
 
-### Frontend
+### Scripts nuevos
 
-1. **Nuevo store `useAdminAuthStore`**:
-   - Claves localStorage: `clinica_x_admin_token`, `clinica_x_admin_user`
-   - Valida que el rol sea `ADMIN` al cargar auth persistida
-   - Mismas acciones que los otros stores: `setAuth`, `clearAuth`, `updateUser`
+1. **`scripts/seed-demo.js`** — Seed E2E completo:
+   - Login admin existente
+   - Obtiene especialidades de la API
+   - Crea 5 médicos con horarios variados (0-5 días/semana, turnos MAÑANA/TARDE)
+   - Login de cada médico para obtener tokens
+   - Registra 4 pacientes vía API
+   - Crea citas manuales y automáticas entre pacientes y médicos
+   - Inicia y finaliza consultas para tener historial
+   - Imprime credenciales demo al finalizar
 
-2. **Nuevo archivo `lib/api/admin.api.ts`** con 7 funciones:
-   - `getAdminDashboard()` → `GET /api/admin/doctors` (doctors + metrics)
-   - `getAdminDoctors()` → `GET /api/admin/doctors` (alias)
-   - `getAdminDoctor(id)` → `GET /api/admin/doctors/:id`
-   - `createDoctor(data)` → `POST /api/admin/doctors`
-   - `updateDoctor(id, data)` → `PUT /api/admin/doctors/:id`
-   - `toggleDoctorStatus(id, activo)` → `PATCH /api/admin/doctors/:id/status`
-   - `getSpecialties()` → `GET /api/appointments/specialties`
+2. **`scripts/test-e2e.js`** — Tests E2E automatizados (3 flujos):
+   - Flujo admin: login → me → dashboard → crear médico → editar → toggle estado
+   - Flujo paciente: login → perfil → especialidades → disponibilidad → reservar → listar → cancelar → historial
+   - Flujo médico: login → me → calendario → consulta activa → iniciar → finalizar → historial
+   - Reporte final con PASARON / FALLARON
 
-3. **Nuevos tipos en `lib/api/types.ts`**:
-   - `HorarioMedicoDTO` (input: diaSemana, horaInicio, horaFin)
-   - `HorarioMedicoResponseDTO` (con id y duracionSlot)
-   - `MedicoDTO` (doctor completo con schedules y specialty)
-   - `MetricasDashboardDTO` (totalDoctors, activeDoctors, inactiveDoctors, totalSpecialties)
-   - `DashboardDataDTO` (doctors + metrics)
-   - `CrearMedicoDTO` (datos para crear médico)
-   - `ActualizarMedicoDTO` (datos para actualizar médico, todos opcionales)
+3. **Scripts en `package.json` raíz:**
+   - `pnpm seed:demo` — Ejecuta `node scripts/seed-demo.js`
+   - `pnpm seed:all` — Ejecuta Prisma seeds + seed demo
+   - `pnpm test:e2e` — Ejecuta `node scripts/test-e2e.js`
 
-4. **Route groups en Next.js**:
-   - `/admin/login` → sin sidebar, sin auth check
-   - `/admin/(portal)/dashboard` → Dashboard con KPIs y tabla médicos
-   - `/admin/(portal)/medicos` → Lista de médicos con filtros
-   - `/admin/(portal)/medicos/nuevo` → Crear médico
-   - `/admin/(portal)/medicos/[id]/editar` → Editar médico
+### Datos demo generados
 
-5. **Componentes admin nuevos** (6 archivos):
-   - `AdminLoginForm.tsx`: Login con validación Zod, verificación de rol ADMIN, paleta emerald
-   - `AdminSidebar.tsx`: Navegación lateral con avatar, links (Dashboard, Médicos), logout
-   - `DashboardKPI.tsx`: 4 tarjetas KPI (total médicos, activos, inactivos, especialidades)
-   - `DoctorsTable.tsx`: Tabla con búsqueda, filtro estado, toggle activo/inactivo, badges turno, resumen horarios
-   - `DoctorForm.tsx`: Formulario crear/editar médico con 3 secciones (datos personales, profesionales, horarios)
-   - `ScheduleGrid.tsx`: Grid de horarios dinámico con agregar/eliminar filas
-
-6. **Layouts**:
-   - `/admin/layout.tsx` → Root layout (solo Providers, sin sidebar)
-   - `/admin/(portal)/layout.tsx` → Auth layout con sidebar y redirección
+| Rol | DNI | Email | Password | Portal |
+|---|---|---|---|---|
+| ADMIN | 00000000 | admin@clinicax.com | Admin123! | /admin/login |
+| Médico | 10101010 | maria.garcia@clinicax.com | Medico123! | /doctor/login |
+| Médico | 20202020 | carlos.lopez@clinicax.com | Medico123! | /doctor/login |
+| Médico | 30303030 | ana.martinez@clinicax.com | Medico123! | /doctor/login |
+| Médico | 40404040 | roberto.sanchez@clinicax.com | Medico123! | /doctor/login |
+| Médico | 50505050 | laura.fernandez@clinicax.com | Medico123! | /doctor/login |
+| Paciente | 60606060 | juan.perez@email.com | Paciente123! | /login |
+| Paciente | 70707070 | lucia.rodriguez@email.com | Paciente123! | /login |
+| Paciente | 80808080 | pedro.gomez@email.com | Paciente123! | /login |
+| Paciente | 90909090 | sofia.torres@email.com | Paciente123! | /login |
 
 ---
 
@@ -242,11 +226,7 @@ Todos los endpoints de Fases 1-4 siguen funcionando. Los endpoints usados por lo
 
 ---
 
-## Próximos pasos (Fase 8: Integración E2E)
-
-### 1. Seed de datos demo
-- [ ] Crear script de seed con usuarios admin, médicos y pacientes de ejemplo
-- [ ] Datos coherentes que permitan probar los 3 flujos completos
+## Próximos pasos (Fase 8: continuar)
 
 ### 2. Pulido
 - [ ] Responsive: verificar que las tablas y formularios funcionen en mobile
@@ -291,17 +271,25 @@ Todos los endpoints de Fases 1-4 siguen funcionando. Los endpoints usados por lo
     # 2. En otra terminal, levantar frontend
     pnpm dev:frontend
 
-    # 3. Crear un usuario admin ( Insert directo en auth-service o via seed)
-    # 4. Login en /admin/login con credenciales ADMIN
-    # 5. Ver dashboard en /admin/dashboard
-    # 6. Crear médicos en /admin/medicos/nuevo
-    # 7. Editar médicos en /admin/medicos/[id]/editar
-    # 8. Toggle estado desde la tabla de médicos
+    # 3. Ejecutar seed completo (Prisma seeds + datos demo)
+    pnpm seed:all
+
+    # 4. Ejecutar tests E2E automatizados
+    pnpm test:e2e
+
+    # O ejecutar solo el seed demo (si ya corriste los Prisma seeds antes)
+    pnpm seed:demo
     ```
 
-11. **Limitaciones conocidas:**
+11. **Credenciales demo** (ver tabla arriba en esta sección):
+    - Admin: `00000000` / `admin@clinicax.com` / `Admin123!`
+    - Médico: `10101010` / `maria.garcia@clinicax.com` / `Medico123!`
+    - Paciente: `60606060` / `juan.perez@email.com` / `Paciente123!`
+
+12. **Limitaciones conocidas:**
     - Los datos personales (nombre, apellido, dni, email) del listado de médicos vienen como `"--"` desde el backend. Se necesita un cross-service lookup o agregar estos campos al endpoint de listado.
     - No hay paginación en la lista de médicos.
     - No hay confirmación modal antes de desactivar un médico (toggle directo).
+    - El seed de datos usa la API Gateway, por lo que requiere que todos los servicios estén levantados.
 
-*Documento actualizado al finalizar la sesión #7 (Fase 7 completada).*
+*Documento actualizado al finalizar la sesión #8 (Fase 8 parcial - seed y tests E2E completados).*
