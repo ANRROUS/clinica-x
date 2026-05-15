@@ -1,8 +1,8 @@
 # Plan Clínica X — Resumen de Sesión
 
 > **Fecha:** 2026-05-15  
-> **Estado actual:** Fase 0 ✅ + Fase 1 ✅ + Fase 2 ✅ + Fase 3 ✅ + Fase 4 ✅ + Fase 5 ✅ + Fase 6 ✅ + Fase 7 ✅ completadas  
-> **Próxima fase:** Fase 8 (Integración E2E)
+> **Estado actual:** Fase 0 ✅ + Fase 1 ✅ + Fase 2 ✅ + Fase 3 ✅ + Fase 4 ✅ + Fase 5 ✅ + Fase 6 ✅ + Fase 7 ✅ + Fase 8 🔄 en progreso  
+> **Próxima fase:** Fase 8 (Pulido UI, responsive, loading states, error boundaries)
 
 ---
 
@@ -226,8 +226,15 @@ clinica-x/
 │   └── shared-types/                  # Rol, UsuarioDTO, ApiResponse, enums de estados
 │
 ├── scripts/
-│   ├── clean-schemas.sql              # DROP/CREATE de los 4 schemas
-│   └── clean-schemas.js               # Wrapper Node (usa `pg`)
+│   ├── clean-schemas.sql          # DROP/CREATE de los 4 schemas
+│   ├── clean-schemas.js           # Wrapper Node (usa `pg`)
+│   ├── seed-demo.js               # Seed E2E: 5 médicos + 4 pacientes + citas + consultas
+│   ├── test-e2e.js                # Tests E2E automatizados (3 flujos)
+│   ├── test-fase2.js              # Test E2E Fase 2 (admin)
+│   ├── test-fase3-e2e.js          # Test E2E Fase 3 (booking)
+│   ├── test-fase3-e2e-simple.js   # Test E2E Fase 3 simplificado
+│   ├── test-fase4-e2e.js          # Test E2E Fase 4 (clinical + file)
+│   └── ...                         # Otros scripts de debug/get
 │
 ├── plantilla/                         # Plantilla de referencia DDD/Hexagonal
 ├── docker-compose.yml
@@ -300,7 +307,7 @@ clinica-x/
 
 ### Raíz del monorepo
 - [x] `pnpm-workspace.yaml` con 3 grupos (`packages/*`, `services/*`, `frontend`)
-- [x] `package.json` raíz con scripts globales (`dev`, `build`, `prisma:generate:all`, `prisma:migrate:all`, `db:reset`)
+- [x] `package.json` raíz con scripts globales (`dev`, `build`, `prisma:generate:all`, `prisma:migrate:all`, `db:reset`, `seed:all`, `seed:demo`, `test:e2e`)
 - [x] `tsconfig.base.json` extendido por todos los proyectos
 - [x] `.gitignore`, `.dockerignore`, `.editorconfig`, `.prettierrc`, `.prettierignore`, `.eslintrc.json`, `.npmrc`
 - [x] `.env` raíz con credenciales reales de Supabase (no se comitea)
@@ -698,7 +705,7 @@ CORS_ORIGIN=http://localhost:3100
 
 ---
 
-## 16. Historial de sesiones
+## 17. Historial de sesiones
 
 | # | Fecha | Fases | Logros clave |
 |---|---|---|---|
@@ -713,4 +720,4 @@ CORS_ORIGIN=http://localhost:3100
 
 ---
 
-*Documento actualizado al finalizar la Fase 7 del proyecto Clínica X.*
+*Documento actualizado al finalizar la sesión #8 del proyecto Clínica X (Fase 8 parcial).*

@@ -147,6 +147,11 @@ clinica-x/
 ├── services/                           # (sin cambios)
 ├── packages/                           # (sin cambios)
 ├── scripts/
+│   ├── clean-schemas.sql              # DROP/CREATE de los 4 schemas
+│   ├── clean-schemas.js               # Wrapper Node (usa `pg`)
+│   ├── seed-demo.js                   # **NUEVO** Seed E2E completo
+│   ├── test-e2e.js                    # **NUEVO** Tests E2E automatizados
+│   └── ...                             # Otros scripts test/debug
 ├── plantilla/
 ├── docker-compose.yml
 ├── pnpm-workspace.yaml
