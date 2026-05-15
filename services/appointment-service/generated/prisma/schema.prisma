@@ -1,0 +1,99 @@
+// =============================================================================
+// appointment-service — Prisma schema
+// =============================================================================
+// Schema Postgres: appointment_service
+// Tablas: especialidades, medicos, horarios_medico, citas
+// =============================================================================
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+// ─── Especialidad ───────────────────────────────────────────────────────────
+model Especialidad {
+  id        String   @id @default(uuid())
+  nombre    String   @unique
+  createdAt DateTime @default(now()) @map("creado_en")
+
+  medicos Medico[]
+
+  @@map("especialidades")
+}
+
+// ─── Turno enum (mapeado a tabla para Prisma) ───────────────────────────────
+enum Turno {
+  MANANA @map("MANANA")
+  TARDE  @map("TARDE")
+}
+
+// ─── Medico ───────────────────────────────────────────────────────────────────
+model Medico {
+  id             String   @id @default(uuid())
+  usuarioId      String   @unique @map("usuario_id")
+  nombreUsuario  String   @unique @map("nombre_usuario")
+  especialidadId String   @map("especialidad_id")
+  turno          Turno
+  activo         Boolean  @default(true)
+  createdAt      DateTime @default(now()) @map("creado_en")
+  updatedAt      DateTime @updatedAt @map("actualizado_en")
+
+  especialidad Especialidad    @relation(fields: [especialidadId], references: [id])
+  horarios     HorarioMedico[]
+  citas        Cita[]
+
+  @@map("medicos")
+}
+
+// ─── HorarioMedico ────────────────────────────────────────────────────────────
+model HorarioMedico {
+  id           String   @id @default(uuid())
+  medicoId     String   @map("medico_id")
+  diaSemana    Int      @map("dia_semana") // 1=Lunes ... 7=Domingo
+  horaInicio   String   @map("hora_inicio") // "08:00"
+  horaFin      String   @map("hora_fin") // "08:30"
+  duracionSlot Int      @default(30) @map("duracion_slot") // minutos
+  createdAt    DateTime @default(now()) @map("creado_en")
+
+  medico Medico @relation(fields: [medicoId], references: [id], onDelete: Cascade)
+
+  @@unique([medicoId, diaSemana, horaInicio])
+  @@map("horarios_medico")
+}
+
+// ─── Cita ─────────────────────────────────────────────────────────────────────
+enum EstadoCita {
+  CONFIRMADA  @map("CONFIRMADA")
+  EN_ATENCION @map("EN_ATENCION")
+  COMPLETADA  @map("COMPLETADA")
+  CANCELADA   @map("CANCELADA")
+}
+
+enum TipoReserva {
+  MANUAL     @map("MANUAL")
+  AUTOMATICA @map("AUTOMATICA")
+}
+
+model Cita {
+  id          String      @id @default(uuid())
+  pacienteId  String      @map("paciente_id")
+  medicoId    String      @map("medico_id")
+  fechaHora   DateTime    @map("fecha_hora")
+  estado      EstadoCita  @default(CONFIRMADA)
+  tipoReserva TipoReserva @default(MANUAL) @map("tipo_reserva")
+  motivo      String?
+  createdAt   DateTime    @default(now()) @map("creado_en")
+  updatedAt   DateTime    @updatedAt @map("actualizado_en")
+
+  medico Medico @relation(fields: [medicoId], references: [id])
+
+  @@index([medicoId, fechaHora])
+  @@index([pacienteId, fechaHora])
+  @@map("citas")
+}

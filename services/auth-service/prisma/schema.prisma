@@ -2,13 +2,11 @@
 // auth-service — Prisma schema
 // =============================================================================
 // Schema Postgres: auth_service
-// Las tablas reales se agregan en Fase 1 (módulo de usuarios).
-// El modelo _Placeholder existe SOLO para que `prisma generate` funcione en
-// Fase 0. Se eliminará al definir el primer modelo real.
 // =============================================================================
 
 generator client {
   provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
 }
 
 datasource db {
@@ -17,13 +15,26 @@ datasource db {
   directUrl = env("DIRECT_URL")
 }
 
-// ─── PLACEHOLDER (Fase 0) — eliminar en Fase 1 ──────────────────────────────
-// Este modelo NO se debe migrar a Postgres en Fase 0.
-// Solo está aquí para que el comando `prisma generate` no falle.
-// El schema destino (auth_service) viene dado por el parámetro `?schema=`
-// en DATABASE_URL/DIRECT_URL.
-model Placeholder {
-  id String @id @default(uuid())
+// ─── Enum de roles del sistema ──────────────────────────────────────────────
+// Coincide con el enum Rol de @clinica-x/shared-types
+enum Rol {
+  PACIENTE
+  MEDICO
+  ADMIN
+}
 
-  @@map("_placeholder_fase0")
+// ─── Entidad Usuario ────────────────────────────────────────────────────────
+model Usuario {
+  id           String   @id @default(uuid())
+  dni          String   @unique
+  email        String   @unique
+  passwordHash String   @map("password_hash")
+  nombre       String
+  apellido     String
+  telefono     String?
+  rol          Rol      @default(PACIENTE)
+  creadoEn     DateTime @default(now()) @map("creado_en")
+  actualizadoEn DateTime @updatedAt @map("actualizado_en")
+
+  @@map("usuarios")
 }

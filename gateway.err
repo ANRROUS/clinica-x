@@ -1,0 +1,7 @@
+[api-gateway] ❌ Variables de entorno inválidas:
+{
+  AUTH_SERVICE_URL: [ 'Required' ],
+  APPOINTMENT_SERVICE_URL: [ 'Required' ],
+  CLINICAL_SERVICE_URL: [ 'Required' ],
+  FILE_SERVICE_URL: [ 'Required' ]
+}

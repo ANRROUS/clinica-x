@@ -2,12 +2,11 @@
 // clinical-service — Prisma schema
 // =============================================================================
 // Schema Postgres: clinical_service
-// Tablas a definir: consultas, diagnosticos, recetas, medicamentos,
-// ordenes_analisis, resultados_analisis, mensajes_chat_ia.
 // =============================================================================
 
 generator client {
   provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
 }
 
 datasource db {
@@ -16,9 +15,38 @@ datasource db {
   directUrl = env("DIRECT_URL")
 }
 
-// ─── PLACEHOLDER (Fase 0) — eliminar en Fase 4 ──────────────────────────────
-model Placeholder {
-  id String @id @default(uuid())
+// ─── Consulta médica ─────────────────────────────────────────────────────────
+model Consulta {
+  id             String    @id @default(uuid())
+  pacienteId     String
+  medicoId       String
+  citaId         String?   // Referencia opcional a cita en appointment-service
+  estado         String    // ACTIVA | FINALIZADA
+  motivoConsulta String?
+  diagnostico    String?
+  notas          String?
+  fechaInicio    DateTime  @default(now())
+  fechaFin       DateTime?
+  creadoEn       DateTime  @default(now())
+  actualizadoEn  DateTime  @updatedAt
 
-  @@map("_placeholder_fase0")
+  ordenesAnalisis OrdenAnalisis[]
+
+  @@map("consultas")
+}
+
+// ─── Orden de análisis clínico ───────────────────────────────────────────────
+model OrdenAnalisis {
+  id           String   @id @default(uuid())
+  consultaId   String
+  consulta     Consulta @relation(fields: [consultaId], references: [id])
+  tipoAnalisis String
+  descripcion  String?
+  estado       String   // PENDIENTE | COMPLETADA
+  resultado    String?
+  archivoId    String?  // Referencia al archivo en file-service
+  creadoEn     DateTime @default(now())
+  actualizadoEn DateTime @updatedAt
+
+  @@map("ordenes_analisis")
 }

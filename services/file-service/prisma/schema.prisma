@@ -2,12 +2,11 @@
 // file-service — Prisma schema
 // =============================================================================
 // Schema Postgres: file_service
-// Tablas a definir: archivos (id, propietario_servicio, propietario_recurso_id,
-// bucket, key_s3, nombre_original, mime_type, tamano_bytes, subido_en).
 // =============================================================================
 
 generator client {
   provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
 }
 
 datasource db {
@@ -16,9 +15,17 @@ datasource db {
   directUrl = env("DIRECT_URL")
 }
 
-// ─── PLACEHOLDER (Fase 0) — eliminar en Fase 4 ──────────────────────────────
-model Placeholder {
-  id String @id @default(uuid())
+// ─── Archivo subido a S3 ─────────────────────────────────────────────────────
+model Archivo {
+  id                   String   @id @default(uuid())
+  propietarioServicio  String   // Ej: 'clinical-service', 'auth-service'
+  propietarioRecursoId String   // ID del recurso al que pertenece
+  bucket               String
+  keyS3                String   @unique
+  nombreOriginal       String
+  mimeType             String
+  tamanoBytes          Int
+  subidoEn             DateTime @default(now())
 
-  @@map("_placeholder_fase0")
+  @@map("archivos")
 }

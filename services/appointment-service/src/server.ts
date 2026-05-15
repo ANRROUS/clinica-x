@@ -20,7 +20,7 @@
 import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
-import { requestIdMiddleware, errorHandler } from '@clinica-x/shared-middleware';
+import { requestIdMiddleware, errorHandler, jwtMiddleware, requireRole } from '@clinica-x/shared-middleware';
 import { env } from './env';
 import { logger } from './shared/logger';
 import { disconnectPrisma } from './shared/prisma-client';
@@ -43,9 +43,23 @@ app.get('/health', (_req, res) => {
   });
 });
 
-// Rutas de negocio a montar en Fase 2 y 3:
-// app.use('/api/admin', medicosAdminRouter);
-// app.use('/api/appointments', reservasRouter);
+import { medicosAdminRouter } from '@/modules/medicos/infrastructure/di';
+import { citasRouter } from '@/modules/citas/infrastructure/di';
+
+// Rutas de negocio — Fase 2 (admin médicos)
+app.use(
+  '/api/admin/doctors',
+  jwtMiddleware({ secret: env.JWT_SECRET }),
+  requireRole(['ADMIN']),
+  medicosAdminRouter,
+);
+
+// Rutas de negocio — Fase 3 (booking + calendario)
+app.use(
+  '/api/appointments',
+  jwtMiddleware({ secret: env.JWT_SECRET }),
+  citasRouter,
+);
 
 app.use(errorHandler);
 

@@ -38,8 +38,9 @@ app.get('/health', (_req, res) => {
   });
 });
 
-// ─── Rutas de negocio (se montarán en Fase 1) ──────────────────────────────
-// app.use('/api/auth', usuariosRouter);
+// ─── Rutas de negocio ───────────────────────────────────────────────────────
+import { usuariosRouter } from './modules/usuarios/infrastructure/di';
+app.use('/api/auth', usuariosRouter);
 
 // ─── Manejador global de errores (al final) ─────────────────────────────────
 app.use(errorHandler);

@@ -18,7 +18,7 @@
 import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
-import { requestIdMiddleware, errorHandler } from '@clinica-x/shared-middleware';
+import { requestIdMiddleware, errorHandler, jwtMiddleware } from '@clinica-x/shared-middleware';
 import { env } from './env';
 import { logger } from './shared/logger';
 import { disconnectPrisma } from './shared/prisma-client';
@@ -44,8 +44,14 @@ app.get('/health', (_req, res) => {
   });
 });
 
-// Rutas de negocio a montar en Fase 4:
-// app.use('/api/files', archivosRouter);
+import { archivosRouter } from '@/modules/archivos/infrastructure/di';
+
+// Rutas de negocio — Fase 4 (archivos)
+app.use(
+  '/api/files',
+  jwtMiddleware({ secret: env.JWT_SECRET }),
+  archivosRouter,
+);
 
 app.use(errorHandler);
 

@@ -20,7 +20,7 @@
 import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
-import { requestIdMiddleware, errorHandler } from '@clinica-x/shared-middleware';
+import { requestIdMiddleware, errorHandler, jwtMiddleware } from '@clinica-x/shared-middleware';
 import { env } from './env';
 import { logger } from './shared/logger';
 import { disconnectPrisma } from './shared/prisma-client';
@@ -57,8 +57,14 @@ app.post('/api/medical/doctor/ai/chat', (_req, res) => {
   });
 });
 
-// Rutas de negocio a montar en Fase 4:
-// app.use('/api/medical', consultasRouter);
+import { consultasRouter } from '@/modules/consultas/infrastructure/di';
+
+// Rutas de negocio — Fase 4 (consultas)
+app.use(
+  '/api/medical',
+  jwtMiddleware({ secret: env.JWT_SECRET }),
+  consultasRouter,
+);
 
 app.use(errorHandler);
 

@@ -5,7 +5,8 @@
   "description": "Servicio de archivos de Clínica X — uploads a S3 (resultados de análisis PDF/imágenes)",
   "main": "dist/server.js",
   "scripts": {
-    "build": "tsc -p tsconfig.json",
+    "build": "tsc -p tsconfig.json && tsc-alias -p tsconfig.json && pnpm postbuild:prisma",
+    "postbuild:prisma": "node -e \"const fs=require('fs'); const path=require('path'); const src='src/generated/prisma'; const dst='dist/generated/prisma'; if(fs.existsSync(src)){fs.cpSync(src,dst,{recursive:true,force:true});}\"",
     "dev": "tsx watch src/server.ts",
     "start": "node dist/server.js",
     "lint": "eslint src --ext .ts",
@@ -40,6 +41,7 @@
     "@types/node": "^20.11.0",
     "prisma": "^5.18.0",
     "rimraf": "^5.0.0",
+    "tsc-alias": "^1.8.17",
     "tsx": "^4.7.0",
     "typescript": "^5.4.0"
   }

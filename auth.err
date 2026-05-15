@@ -1,0 +1,2 @@
+[auth-service] ❌ Variables de entorno inválidas:
+{ DATABASE_URL: [ 'Required' ], DIRECT_URL: [ 'Required' ] }

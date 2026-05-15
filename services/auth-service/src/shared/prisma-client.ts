@@ -3,7 +3,7 @@
  * En Fase 0 el cliente apunta al schema `auth_service` pero todavía no hay
  * modelos. Cuando se agreguen, basta con regenerar (`prisma:generate`).
  */
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient } from '../generated/prisma';
 
 export const prisma = new PrismaClient({
   log: ['warn', 'error'],

@@ -14,6 +14,7 @@ const envSchema = z.object({
   JWT_SECRET: z.string().min(8, 'JWT_SECRET debe tener al menos 8 caracteres'),
   JWT_EXPIRES_IN: z.string().default('1d'),
   NODE_ENV: z.enum(['development', 'production', 'test']).default('development'),
+  INTERNAL_API_KEY: z.string().min(8).default('internal-dev-key-change-in-prod'),
 });
 
 const parsed = envSchema.safeParse(process.env);

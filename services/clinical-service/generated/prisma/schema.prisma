@@ -1,0 +1,25 @@
+// =============================================================================
+// clinical-service — Prisma schema
+// =============================================================================
+// Schema Postgres: clinical_service
+// Tablas a definir: consultas, diagnosticos, recetas, medicamentos,
+// ordenes_analisis, resultados_analisis, mensajes_chat_ia.
+// =============================================================================
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+// ─── PLACEHOLDER (Fase 0) — eliminar en Fase 4 ──────────────────────────────
+model Placeholder {
+  id String @id @default(uuid())
+
+  @@map("_placeholder_fase0")
+}
