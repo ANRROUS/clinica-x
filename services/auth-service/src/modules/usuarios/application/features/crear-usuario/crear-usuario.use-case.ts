@@ -12,6 +12,7 @@
  * ============================================================================
  */
 
+import jwt from 'jsonwebtoken';
 import { Result, Ok, Err } from '@clinica-x/shared-kernel';
 import { Dni } from '../../../domain/value-objects/dni.vo';
 import { Email } from '../../../domain/value-objects/email.vo';
@@ -23,18 +24,24 @@ import {
 import type {
   ICrearUsuarioPort,
   CrearUsuarioDto,
-  UsuarioResponseDto,
+  SesionResponseDto,
 } from '../../../domain/ports/in/usuarios.port';
 import type { IUsuarioRepository, IHashService } from '../../../domain/ports/out/usuario.repository.port';
 import { toUsuarioResponseDto } from '../../mapper';
+
+export interface CrearUsuarioConfig {
+  jwtSecret: string;
+  jwtExpiresIn: string;
+}
 
 export class CrearUsuarioUseCase implements ICrearUsuarioPort {
   constructor(
     private readonly repo: IUsuarioRepository,
     private readonly hashService: IHashService,
+    private readonly config: CrearUsuarioConfig,
   ) {}
 
-  async execute(dto: CrearUsuarioDto): Promise<Result<UsuarioResponseDto, Error>> {
+  async execute(dto: CrearUsuarioDto): Promise<Result<SesionResponseDto, Error>> {
     // ─── 1. Crear Value Objects ─────────────────────────────────────────────
     const dniResult = Dni.create(dto.dni);
     if (dniResult.isErr) return Err(dniResult.error);
@@ -75,7 +82,20 @@ export class CrearUsuarioUseCase implements ICrearUsuarioPort {
     // ─── 5. Persistir ───────────────────────────────────────────────────────
     await this.repo.guardar(usuarioResult.value);
 
-    // ─── 6. Retornar DTO ────────────────────────────────────────────────────
-    return Ok(toUsuarioResponseDto(usuarioResult.value));
+    // ─── 6. Generar JWT y retornar ──────────────────────────────────────────
+    const token = jwt.sign(
+      {
+        sub: usuarioResult.value.id,
+        rol: usuarioResult.value.rol,
+        email: usuarioResult.value.email.value,
+      },
+      this.config.jwtSecret,
+      { expiresIn: this.config.jwtExpiresIn as any },
+    );
+
+    return Ok({
+      token,
+      usuario: toUsuarioResponseDto(usuarioResult.value),
+    });
   }
 }

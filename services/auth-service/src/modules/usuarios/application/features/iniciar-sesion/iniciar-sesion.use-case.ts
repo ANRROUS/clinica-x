@@ -35,7 +35,8 @@ export class IniciarSesionUseCase implements IIniciarSesionPort {
 
   async execute(dto: IniciarSesionDto): Promise<Result<SesionResponseDto, Error>> {
     // ─── 1. Buscar usuario por DNI + email ──────────────────────────────────
-    const usuario = await this.repo.buscarPorDniYEmail(dto.dni, dto.email);
+    const emailNormalizado = dto.email.trim().toLowerCase();
+    const usuario = await this.repo.buscarPorDniYEmail(dto.dni.trim(), emailNormalizado);
     if (!usuario) {
       return Err(new CredencialesInvalidasError());
     }

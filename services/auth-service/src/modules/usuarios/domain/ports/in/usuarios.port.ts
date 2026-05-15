@@ -55,7 +55,7 @@ export interface SesionResponseDto {
 // ─── Puertos de entrada (contratos de casos de uso) ─────────────────────────
 
 export interface ICrearUsuarioPort {
-  execute(dto: CrearUsuarioDto): Promise<Result<UsuarioResponseDto, Error>>;
+  execute(dto: CrearUsuarioDto): Promise<Result<SesionResponseDto, Error>>;
 }
 
 export interface IIniciarSesionPort {

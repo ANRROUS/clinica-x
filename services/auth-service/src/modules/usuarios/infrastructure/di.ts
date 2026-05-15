@@ -22,7 +22,10 @@ const usuarioRepository = new PrismaUsuarioRepository();
 const hashService = new BcryptHashAdapter();
 
 // ─── Casos de uso ───────────────────────────────────────────────────────────
-const crearUsuarioUseCase = new CrearUsuarioUseCase(usuarioRepository, hashService);
+const crearUsuarioUseCase = new CrearUsuarioUseCase(usuarioRepository, hashService, {
+  jwtSecret: env.JWT_SECRET,
+  jwtExpiresIn: env.JWT_EXPIRES_IN,
+});
 const iniciarSesionUseCase = new IniciarSesionUseCase(usuarioRepository, hashService, {
   jwtSecret: env.JWT_SECRET,
   jwtExpiresIn: env.JWT_EXPIRES_IN,
