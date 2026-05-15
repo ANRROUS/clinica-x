@@ -1,0 +1,5 @@
+# Clientes HTTP por servicio:
+# - auth.api.ts
+# - appointments.api.ts (incluye admin)
+# - medical.api.ts
+# - files.api.ts

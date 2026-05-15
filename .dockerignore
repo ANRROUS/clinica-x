@@ -1,0 +1,16 @@
+node_modules
+**/node_modules
+**/dist
+**/.next
+**/build
+**/out
+**/coverage
+.git
+.gitignore
+README.md
+*.md
+.env
+.env.local
+**/.env
+**/.env.local
+plantilla

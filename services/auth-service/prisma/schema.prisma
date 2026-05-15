@@ -1,0 +1,29 @@
+// =============================================================================
+// auth-service — Prisma schema
+// =============================================================================
+// Schema Postgres: auth_service
+// Las tablas reales se agregan en Fase 1 (módulo de usuarios).
+// El modelo _Placeholder existe SOLO para que `prisma generate` funcione en
+// Fase 0. Se eliminará al definir el primer modelo real.
+// =============================================================================
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+// ─── PLACEHOLDER (Fase 0) — eliminar en Fase 1 ──────────────────────────────
+// Este modelo NO se debe migrar a Postgres en Fase 0.
+// Solo está aquí para que el comando `prisma generate` no falle.
+// El schema destino (auth_service) viene dado por el parámetro `?schema=`
+// en DATABASE_URL/DIRECT_URL.
+model Placeholder {
+  id String @id @default(uuid())
+
+  @@map("_placeholder_fase0")
+}

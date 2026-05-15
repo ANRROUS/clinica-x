@@ -1,0 +1,32 @@
+{
+  "name": "clinica-x",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Monorepo Clínica X — Microservicios con Arquitectura Hexagonal + DDD",
+  "engines": {
+    "node": ">=20.0.0",
+    "pnpm": ">=8.0.0"
+  },
+  "scripts": {
+    "build": "pnpm -r --filter \"@clinica-x/*\" --filter \"./services/*\" run build",
+    "dev": "pnpm -r --parallel --filter \"./services/*\" --filter frontend run dev",
+    "dev:services": "pnpm -r --parallel --filter \"./services/*\" run dev",
+    "dev:auth": "pnpm --filter auth-service dev",
+    "dev:appointment": "pnpm --filter appointment-service dev",
+    "dev:clinical": "pnpm --filter clinical-service dev",
+    "dev:file": "pnpm --filter file-service dev",
+    "dev:gateway": "pnpm --filter api-gateway dev",
+    "dev:frontend": "pnpm --filter frontend dev",
+    "lint": "pnpm -r run lint",
+    "format": "prettier --write \"**/*.{ts,tsx,js,json,md}\" --ignore-path .gitignore",
+    "prisma:generate:all": "pnpm --filter auth-service prisma:generate && pnpm --filter appointment-service prisma:generate && pnpm --filter clinical-service prisma:generate && pnpm --filter file-service prisma:generate",
+    "prisma:migrate:all": "pnpm --filter auth-service prisma:migrate && pnpm --filter appointment-service prisma:migrate && pnpm --filter clinical-service prisma:migrate && pnpm --filter file-service prisma:migrate",
+    "db:reset": "node scripts/clean-schemas.js"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.0",
+    "pg": "^8.12.0",
+    "prettier": "^3.2.0",
+    "typescript": "^5.4.0"
+  }
+}

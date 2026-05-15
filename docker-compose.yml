@@ -1,0 +1,116 @@
+# =============================================================================
+# Clínica X — Docker Compose
+# =============================================================================
+# Levanta los 5 servicios del backend bindeados a 127.0.0.1 (no expone a la red).
+# El frontend Next.js se ejecuta por separado con `pnpm dev:frontend` o se
+# levanta también si descomentas el servicio `frontend` al final.
+# =============================================================================
+
+services:
+  # ─── auth-service ─────────────────────────────────────────────────────────
+  auth-service:
+    build:
+      context: .
+      dockerfile: services/auth-service/Dockerfile
+    container_name: clinica-x-auth
+    restart: unless-stopped
+    env_file:
+      - ./services/auth-service/.env
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+    ports:
+      - "${HOST_BIND_IP:-127.0.0.1}:${HOST_AUTH_PORT:-3000}:3000"
+    networks:
+      - clinica-x-net
+
+  # ─── appointment-service ──────────────────────────────────────────────────
+  appointment-service:
+    build:
+      context: .
+      dockerfile: services/appointment-service/Dockerfile
+    container_name: clinica-x-appointment
+    restart: unless-stopped
+    env_file:
+      - ./services/appointment-service/.env
+    environment:
+      - NODE_ENV=production
+      - PORT=3001
+      - AUTH_SERVICE_URL=http://auth-service:3000
+    ports:
+      - "${HOST_BIND_IP:-127.0.0.1}:${HOST_APPOINTMENT_PORT:-3001}:3001"
+    networks:
+      - clinica-x-net
+    depends_on:
+      - auth-service
+
+  # ─── clinical-service ─────────────────────────────────────────────────────
+  clinical-service:
+    build:
+      context: .
+      dockerfile: services/clinical-service/Dockerfile
+    container_name: clinica-x-clinical
+    restart: unless-stopped
+    env_file:
+      - ./services/clinical-service/.env
+    environment:
+      - NODE_ENV=production
+      - PORT=3002
+      - AUTH_SERVICE_URL=http://auth-service:3000
+      - APPOINTMENT_SERVICE_URL=http://appointment-service:3001
+      - FILE_SERVICE_URL=http://file-service:3003
+    ports:
+      - "${HOST_BIND_IP:-127.0.0.1}:${HOST_CLINICAL_PORT:-3002}:3002"
+    networks:
+      - clinica-x-net
+    depends_on:
+      - auth-service
+      - appointment-service
+      - file-service
+
+  # ─── file-service ─────────────────────────────────────────────────────────
+  file-service:
+    build:
+      context: .
+      dockerfile: services/file-service/Dockerfile
+    container_name: clinica-x-file
+    restart: unless-stopped
+    env_file:
+      - ./services/file-service/.env
+    environment:
+      - NODE_ENV=production
+      - PORT=3003
+    ports:
+      - "${HOST_BIND_IP:-127.0.0.1}:${HOST_FILE_PORT:-3003}:3003"
+    networks:
+      - clinica-x-net
+
+  # ─── api-gateway ──────────────────────────────────────────────────────────
+  api-gateway:
+    build:
+      context: .
+      dockerfile: services/api-gateway/Dockerfile
+    container_name: clinica-x-gateway
+    restart: unless-stopped
+    env_file:
+      - ./services/api-gateway/.env
+    environment:
+      - NODE_ENV=production
+      - PORT=8080
+      - AUTH_SERVICE_URL=http://auth-service:3000
+      - APPOINTMENT_SERVICE_URL=http://appointment-service:3001
+      - CLINICAL_SERVICE_URL=http://clinical-service:3002
+      - FILE_SERVICE_URL=http://file-service:3003
+    ports:
+      - "${HOST_BIND_IP:-127.0.0.1}:${HOST_GATEWAY_PORT:-8080}:8080"
+    networks:
+      - clinica-x-net
+    depends_on:
+      - auth-service
+      - appointment-service
+      - clinical-service
+      - file-service
+
+networks:
+  clinica-x-net:
+    driver: bridge

@@ -1,0 +1,67 @@
+/**
+ * ============================================================================
+ * file-service — Bootstrap del servidor Express
+ * ============================================================================
+ *
+ * Responsabilidad:
+ *  - Recibir uploads multipart (PDFs / imágenes)
+ *  - Validar MIME type y tamaño
+ *  - Subir a S3 y guardar referencia en Postgres
+ *  - Generar signed URLs para descarga
+ *
+ * Endpoints: /api/files/*
+ *
+ * En Fase 0 solo expone /health.
+ * ============================================================================
+ */
+
+import express from 'express';
+import cors from 'cors';
+import helmet from 'helmet';
+import { requestIdMiddleware, errorHandler } from '@clinica-x/shared-middleware';
+import { env } from './env';
+import { logger } from './shared/logger';
+import { disconnectPrisma } from './shared/prisma-client';
+
+const app = express();
+
+app.use(helmet());
+app.use(cors());
+app.use(express.json({ limit: '1mb' }));
+app.use(requestIdMiddleware());
+
+app.get('/health', (_req, res) => {
+  res.json({
+    success: true,
+    data: {
+      service: 'file-service',
+      status: 'ok',
+      bucket: env.AWS_BUCKET,
+      max_size_bytes: env.MAX_FILE_SIZE_BYTES,
+      allowed_mime_types: env.ALLOWED_MIME_TYPES,
+      timestamp: new Date().toISOString(),
+    },
+  });
+});
+
+// Rutas de negocio a montar en Fase 4:
+// app.use('/api/files', archivosRouter);
+
+app.use(errorHandler);
+
+const server = app.listen(env.PORT, () => {
+  logger.info(`📁 file-service escuchando en http://localhost:${env.PORT}`);
+  logger.info(`   Bucket S3: ${env.AWS_BUCKET} (region: ${env.AWS_REGION})`);
+});
+
+const shutdown = async (signal: string): Promise<void> => {
+  logger.info(`${signal} recibido, cerrando file-service...`);
+  server.close(async () => {
+    await disconnectPrisma();
+    logger.info('file-service cerrado correctamente');
+    process.exit(0);
+  });
+};
+
+process.on('SIGTERM', () => void shutdown('SIGTERM'));
+process.on('SIGINT', () => void shutdown('SIGINT'));

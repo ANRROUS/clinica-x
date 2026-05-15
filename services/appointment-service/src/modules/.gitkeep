@@ -1,0 +1,7 @@
+# Carpeta de módulos. En Fase 2-3 se agregan:
+# - medicos/ (admin CRUD)
+# - especialidades/ (catálogo)
+# - dashboard-admin/ (métricas)
+# - disponibilidad/ (slots para paciente)
+# - reservas/ (book/reschedule/cancel)
+# - calendario-medico/ (vistas mensual/semanal/diaria)

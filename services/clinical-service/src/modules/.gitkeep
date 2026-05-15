@@ -1,0 +1,5 @@
+# Carpeta de módulos. En Fase 4 se agregan:
+# - consultas/ (iniciar, finalizar, máquina de estados)
+# - vista-pacientes/ (listado/búsqueda para el médico)
+# - ordenes-analisis/ (asociadas a consulta)
+# - chat-ia/ (adaptador OpenAI + puerto IProveedorChatIA)

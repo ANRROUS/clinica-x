@@ -1,0 +1,24 @@
+// =============================================================================
+// file-service — Prisma schema
+// =============================================================================
+// Schema Postgres: file_service
+// Tablas a definir: archivos (id, propietario_servicio, propietario_recurso_id,
+// bucket, key_s3, nombre_original, mime_type, tamano_bytes, subido_en).
+// =============================================================================
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+// ─── PLACEHOLDER (Fase 0) — eliminar en Fase 4 ──────────────────────────────
+model Placeholder {
+  id String @id @default(uuid())
+
+  @@map("_placeholder_fase0")
+}

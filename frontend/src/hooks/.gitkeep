@@ -1,0 +1,5 @@
+# Hooks. Subcarpetas previstas:
+# - useAuth, useDoctorAuth, useAdminAuth
+# - useBooking, useAvailability, useAppointments
+# - useDoctorCalendar, useDoctorPatients, useConsultation
+# - useDoctors (admin)

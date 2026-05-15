@@ -1,0 +1,4 @@
+# Carpeta de módulos. En Fase 4 se agrega `archivos/` con:
+# - domain/ (entidad Archivo, VOs: TipoArchivo, TamanoMaximo, ClaveS3)
+# - application/features/ (subir-archivo, obtener-signed-url, eliminar-archivo)
+# - infrastructure/adapters/out/s3/ (S3StorageAdapter)
