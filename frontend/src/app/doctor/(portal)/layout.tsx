@@ -1,26 +1,31 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useDoctorAuthStore } from '@/store/useDoctorAuthStore';
-import DoctorSidebar from '@/components/doctor/DoctorSidebar';
+import DoctorHeader from '@/components/doctor/DoctorHeader';
 
 export default function DoctorPortalLayout({ children }: { children: React.ReactNode }) {
   const { isAuthenticated } = useDoctorAuthStore();
   const router = useRouter();
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    if (!isAuthenticated) {
+    setMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (mounted && !isAuthenticated) {
       router.push('/doctor/login');
     }
-  }, [isAuthenticated, router]);
+  }, [isAuthenticated, router, mounted]);
 
-  if (!isAuthenticated) return null;
+  if (!mounted || !isAuthenticated) return null;
 
   return (
-    <div className="flex h-screen overflow-hidden bg-gray-50">
-      <DoctorSidebar />
-      <main className="flex-1 overflow-y-auto">
+    <div className="flex h-screen flex-col overflow-hidden bg-gray-50">
+      <DoctorHeader />
+      <main className="flex-1 overflow-hidden">
         {children}
       </main>
     </div>

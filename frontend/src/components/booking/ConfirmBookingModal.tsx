@@ -1,6 +1,6 @@
 'use client';
 
-import { X } from 'lucide-react';
+import { X, AlertTriangle } from 'lucide-react';
 import type { DisponibilidadDoctorDTO, SlotDTO } from '@/lib/api/types';
 
 interface Props {
@@ -24,6 +24,12 @@ function formatDateDisplay(dateStr: string): string {
   return `${d.getDate()} de ${months[d.getMonth()]}`;
 }
 
+function getInitials(name: string): string {
+  const parts = name.split(' ');
+  if (parts.length >= 2) return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+  return (name[0] || '').toUpperCase();
+}
+
 export default function ConfirmBookingModal({
   isOpen,
   onClose,
@@ -40,11 +46,18 @@ export default function ConfirmBookingModal({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 px-4">
       <div className="w-full max-w-md rounded-xl bg-white p-6 shadow-xl">
-        <div className="mb-4 flex items-center justify-between">
+        <div className="mb-4 flex items-start justify-between">
           <h2 className="text-xl font-bold text-gray-900">Confirmar Reserva</h2>
-          <button onClick={onClose} className="text-gray-400 hover:text-gray-600">
-            <X className="h-5 w-5" />
-          </button>
+          <div className="flex items-center gap-3">
+            {doctor && (
+              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-brand-100 text-sm font-bold text-brand-700">
+                {getInitials(doctor.doctorName)}
+              </div>
+            )}
+            <button onClick={onClose} className="text-gray-400 hover:text-gray-600">
+              <X className="h-5 w-5" />
+            </button>
+          </div>
         </div>
 
         <div className="mb-4 rounded-lg bg-brand-50 p-4">
@@ -65,10 +78,20 @@ export default function ConfirmBookingModal({
           </div>
         </div>
 
-        <div className="mb-4 rounded-lg border border-yellow-200 bg-yellow-50 p-3">
+        <p className="mb-3 text-sm text-gray-600">
+          Al confirmar tu reserva, ten en cuenta que solo podrás reprogramar o cancelar
+          hasta un máximo de una hora antes de la cita.
+        </p>
+
+        <div className="mb-4 flex items-start gap-2 rounded-lg border border-yellow-200 bg-yellow-50 p-3">
+          <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-yellow-600" />
           <p className="text-xs text-yellow-800">
-            Al confirmar tu reserva, ten en cuenta que solo podrás reprogramar o cancelar
-            hasta un máximo de una hora antes de la cita.
+            Si reservas una cita que falta menos de una hora para realizarse, no podrás
+            reprogramarla ni cancelarla, de acuerdo a los{' '}
+            <a href="/terminos" className="underline hover:text-yellow-900">
+              términos y condiciones
+            </a>
+            .
           </p>
         </div>
 

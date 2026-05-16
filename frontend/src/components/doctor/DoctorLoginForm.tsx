@@ -1,7 +1,6 @@
 'use client';
 
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -11,15 +10,13 @@ import { login } from '@/lib/api/auth.api';
 import { useDoctorAuthStore } from '@/store/useDoctorAuthStore';
 
 const doctorLoginSchema = z.object({
-  dni: z.string().length(8, 'El DNI debe tener 8 dígitos').regex(/^\d+$/, 'Solo números'),
-  email: z.string().email('Correo inválido'),
+  email: z.string().email('Usuario inválido'),
   password: z.string().min(1, 'La contraseña es requerida'),
 });
 
 type DoctorLoginForm = z.infer<typeof doctorLoginSchema>;
 
 export default function DoctorLoginForm() {
-  const router = useRouter();
   const { setAuth } = useDoctorAuthStore();
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -38,14 +35,14 @@ export default function DoctorLoginForm() {
       const res = await login(data);
       if (res.success && res.data) {
         if (res.data.usuario.rol !== 'MEDICO') {
-          toast.error('Este portal es exclusivo para médicos.');
+          toast.error('Credenciales inválidas');
           return;
         }
         setAuth(res.data.usuario, res.data.token);
-        toast.success('Bienvenido, Dr/a.');
-        router.push('/doctor/calendario');
+        toast.success('Bienvenido al Portal Médico');
+        window.location.href = '/doctor/calendario';
       } else {
-        toast.error(res.error?.mensaje || 'Credenciales inválidas');
+        toast.error('Usuario o contraseña incorrectos');
       }
     } catch {
       toast.error('Error de conexión. Intenta de nuevo.');
@@ -56,32 +53,15 @@ export default function DoctorLoginForm() {
 
   return (
     <main className="flex min-h-screen items-center justify-center bg-gradient-to-b from-indigo-50 to-white px-4">
-      <div className="w-full max-w-md rounded-xl border border-gray-200 bg-white p-8 shadow-lg">
+      <div className="w-full max-w-sm rounded-xl border border-gray-200 bg-white p-8 shadow-lg">
         <div className="mb-6 flex items-center justify-center gap-2 text-2xl font-bold text-indigo-700">
           <Stethoscope className="h-7 w-7" />
-          Clínica X
+          Portal Médico
         </div>
-        <h1 className="mb-2 text-2xl font-bold text-gray-900">Portal Médico</h1>
-        <p className="mb-6 text-sm text-gray-600">
-          Ingresa tus credenciales para acceder al portal médico.
-        </p>
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <div>
-            <label className="mb-1 block text-sm font-medium text-gray-700">DNI</label>
-            <input
-              type="text"
-              inputMode="numeric"
-              maxLength={8}
-              placeholder="Ej. 12345678"
-              className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
-              {...register('dni')}
-            />
-            {errors.dni && <p className="mt-1 text-xs text-red-500">{errors.dni.message}</p>}
-          </div>
-
-          <div>
-            <label className="mb-1 block text-sm font-medium text-gray-700">Correo electrónico</label>
+            <label className="mb-1 block text-sm font-medium text-gray-700">Usuario</label>
             <input
               type="email"
               placeholder="tucorreo@ejemplo.com"

@@ -20,11 +20,11 @@ const statusLabels: Record<string, string> = {
 };
 
 function groupByPatient(consultas: ConsultaMedicoDTO[]) {
-  const map = new Map<string, { nombre: string; consultas: ConsultaMedicoDTO[] }>();
+  const map = new Map<string, { pacienteId: string; nombre: string; consultas: ConsultaMedicoDTO[] }>();
   consultas.forEach((c) => {
     const key = c.pacienteId;
     if (!map.has(key)) {
-      map.set(key, { nombre: c.pacienteNombre || c.pacienteId, consultas: [] });
+      map.set(key, { pacienteId: c.pacienteId, nombre: c.pacienteNombre || c.pacienteId, consultas: [] });
     }
     map.get(key)!.consultas.push(c);
   });
@@ -47,10 +47,10 @@ export default function PatientHistory({ patients, onViewConsultation }: Patient
 
   return (
     <div className="space-y-3">
-      {grouped.map(({ nombre, consultas }) => {
+      {grouped.map(({ pacienteId, nombre, consultas }) => {
         const isExpanded = expandedPatient === nombre;
         return (
-          <div key={nombre} className="overflow-hidden rounded-lg border border-gray-200 bg-white">
+          <div key={pacienteId} className="overflow-hidden rounded-lg border border-gray-200 bg-white">
             <button
               onClick={() => setExpandedPatient(isExpanded ? null : nombre)}
               className="flex w-full items-center justify-between px-4 py-3 hover:bg-gray-50"
@@ -97,7 +97,7 @@ export default function PatientHistory({ patients, onViewConsultation }: Patient
                           {statusLabels[c.estado] || c.estado}
                         </span>
                         <button
-                          onClick={() => onViewConsultation(c.id)}
+                          onClick={() => onViewConsultation(pacienteId)}
                           className="rounded-md border border-gray-200 px-2 py-1 text-xs font-medium text-gray-600 hover:bg-gray-100"
                         >
                           Ver

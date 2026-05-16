@@ -1,0 +1,76 @@
+'use client';
+
+import { Clock, FileText } from 'lucide-react';
+import type { ConsultaMedicoDTO } from '@/lib/api/types';
+
+interface ConsultationListProps {
+  consultations: ConsultaMedicoDTO[];
+  selectedId: string | null;
+  onSelect: (id: string) => void;
+  isLoading?: boolean;
+}
+
+export default function ConsultationList({
+  consultations,
+  selectedId,
+  onSelect,
+  isLoading,
+}: ConsultationListProps) {
+  if (isLoading) {
+    return (
+      <div className="space-y-3">
+        {Array.from({ length: 4 }).map((_, i) => (
+          <div key={i} className="h-16 animate-pulse rounded-lg bg-gray-200" />
+        ))}
+      </div>
+    );
+  }
+
+  if (consultations.length === 0) {
+    return (
+      <div className="flex flex-col items-center justify-center py-12 text-gray-400">
+        <FileText className="mb-3 h-10 w-10" />
+        <p className="text-sm font-medium">Sin consultas registradas</p>
+        <p className="text-xs">Este paciente aún no tiene consultas registradas</p>
+      </div>
+    );
+  }
+
+  return (
+    <div>
+      <h4 className="mb-3 text-sm font-semibold text-gray-700">
+        Historial de consultas del paciente:
+      </h4>
+      <div className="space-y-2">
+        {consultations
+          .filter((c) => c.estado === 'FINALIZADA')
+          .map((c, index) => {
+            const fecha = new Date(c.fechaInicio + 'Z');
+            const dateStr = fecha.toLocaleDateString('es-ES', {
+              day: '2-digit',
+              month: '2-digit',
+              year: '2-digit',
+            });
+            return (
+              <button
+                key={c.id}
+                onClick={() => onSelect(c.id)}
+                className={`w-full rounded-lg border-2 px-4 py-3 text-left transition-colors ${
+                  selectedId === c.id
+                    ? 'border-indigo-400 bg-indigo-50'
+                    : 'border-gray-200 bg-white hover:border-indigo-200'
+                }`}
+              >
+                <div className="flex items-center gap-2">
+                  <Clock className="h-4 w-4 text-indigo-500" />
+                  <span className="text-sm font-medium text-indigo-700">
+                    Consulta {consultations.length - index} - {dateStr}
+                  </span>
+                </div>
+              </button>
+            );
+          })}
+      </div>
+    </div>
+  );
+}

@@ -58,7 +58,7 @@ export default function ConsultationPanel({
   });
 
   const finalizeMutation = useMutation({
-    mutationFn: ({ id, data }: { id: string; data: { diagnostico?: string; notas?: string } }) =>
+    mutationFn: ({ id, data }: { id: string; data: { diagnostico: string; notas?: string } }) =>
       finalizeConsultation(id, data),
     onSuccess: (res) => {
       if (res.success) {

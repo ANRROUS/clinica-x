@@ -30,8 +30,10 @@ const statusLabel: Record<string, string> = {
 export default function CalendarWeek({ currentDate, citas, onStatusChange, onStartConsultation }: CalendarWeekProps) {
   const weekDays = useMemo(() => {
     const startOfWeek = new Date(currentDate);
-    startOfWeek.setDate(startOfWeek.getDate() - startOfWeek.getDay());
-    return Array.from({ length: 7 }).map((_, i) => {
+    const day = startOfWeek.getDay();
+    const diff = day === 0 ? -6 : 1 - day;
+    startOfWeek.setDate(startOfWeek.getDate() + diff);
+    return Array.from({ length: 5 }).map((_, i) => {
       const d = new Date(startOfWeek);
       d.setDate(d.getDate() + i);
       return d;
@@ -68,7 +70,7 @@ export default function CalendarWeek({ currentDate, citas, onStatusChange, onSta
   return (
     <div className="overflow-x-auto">
       <div className="min-w-[900px]">
-        <div className="grid grid-cols-[60px_repeat(7,1fr)] border-b border-gray-200 bg-white">
+        <div className="grid grid-cols-[60px_repeat(5,1fr)] border-b border-gray-200 bg-white">
           <div className="border-r border-gray-100 p-2" />
           {weekDays.map((day) => {
             const key = day.toISOString().slice(0, 10);
@@ -94,7 +96,7 @@ export default function CalendarWeek({ currentDate, citas, onStatusChange, onSta
           {timeSlots.map((time) => {
             const hour = parseInt(time.split(':')[0], 10);
             return (
-              <div key={time} className="grid grid-cols-[60px_repeat(7,1fr)] border-b border-gray-100">
+              <div key={time} className="grid grid-cols-[60px_repeat(5,1fr)] border-b border-gray-100">
                 <div className="border-r border-gray-100 p-1 text-right text-xs text-gray-400">
                   {time}
                 </div>

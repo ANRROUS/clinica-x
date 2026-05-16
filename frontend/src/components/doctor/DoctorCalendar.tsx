@@ -99,11 +99,21 @@ export default function DoctorCalendar({ citas, onStatusChange, onStartConsultat
 
       <div className="flex-1 overflow-y-auto p-6">
         {loading ? (
-          <div className="flex h-64 items-center justify-center text-gray-400">
-            Cargando citas...
+          <div className="space-y-4 p-6">
+            {Array.from({ length: 5 }).map((_, i) => (
+              <div key={i} className="h-16 animate-pulse rounded-lg bg-gray-200" />
+            ))}
           </div>
         ) : viewMode === 'mensual' ? (
-          <CalendarMonth currentDate={currentDate} citas={citas} onStartConsultation={onStartConsultation} />
+          <CalendarMonth
+            currentDate={currentDate}
+            citas={citas}
+            onStartConsultation={onStartConsultation}
+            onDayClick={(date) => {
+              setCurrentDate(date);
+              setViewMode('diaria');
+            }}
+          />
         ) : viewMode === 'semanal' ? (
           <CalendarWeek currentDate={currentDate} citas={citas} onStatusChange={onStatusChange} onStartConsultation={onStartConsultation} />
         ) : (

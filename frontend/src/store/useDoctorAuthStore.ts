@@ -44,11 +44,14 @@ export const useDoctorAuthStore = create<DoctorAuthStore>((set) => {
     setAuth: (user, token) => {
       localStorage.setItem(TOKEN_KEY, token);
       localStorage.setItem(USER_KEY, JSON.stringify(user));
+      const safeToken = encodeURIComponent(token);
+      document.cookie = `${TOKEN_KEY}=${safeToken}; path=/; max-age=${60 * 60 * 24 * 7}; SameSite=Lax`;
       set({ user, token, isAuthenticated: true });
     },
     clearAuth: () => {
       localStorage.removeItem(TOKEN_KEY);
       localStorage.removeItem(USER_KEY);
+      document.cookie = `${TOKEN_KEY}=; path=/; max-age=0; SameSite=Lax`;
       set({ user: null, token: null, isAuthenticated: false });
     },
     updateUser: (user) => {

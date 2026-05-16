@@ -14,9 +14,9 @@ export async function register(data: {
 }
 
 export async function login(data: {
-  dni: string;
   email: string;
   password: string;
+  dni?: string;
 }): Promise<ApiResponse<{ token: string; usuario: UsuarioDTO }>> {
   const res = await api.post('/api/auth/login', data);
   return res.data;

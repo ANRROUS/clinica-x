@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useQuery } from '@tanstack/react-query';
 import { toast } from 'sonner';
-import { Sparkles, Loader2 } from 'lucide-react';
+import { Sparkles, Loader2, ChevronDown } from 'lucide-react';
 import Header from '@/components/shared/Header';
 import Footer from '@/components/shared/Footer';
 import SpecialtySidebar from '@/components/booking/SpecialtySidebar';
@@ -73,13 +73,23 @@ export default function ReservarCitaPage() {
 
   const specialties: EspecialidadDTO[] = specialtiesData?.data ?? [];
 
-  const { data: doctorsData, isLoading: loadingDoctors } = useQuery({
+  const {
+    data: doctorsData,
+    isLoading: loadingDoctors,
+    isError: doctorsError,
+  } = useQuery({
     queryKey: ['availability-specialty', selectedSpecialtyId],
     queryFn: () => getAvailabilityBySpecialty(selectedSpecialtyId!),
     enabled: !!selectedSpecialtyId,
   });
 
   const doctors: DisponibilidadDoctorDTO[] = doctorsData?.data ?? [];
+
+  useEffect(() => {
+    if (doctorsError) {
+      toast.error('Error al cargar médicos. Verifica tu conexión.');
+    }
+  }, [doctorsError]);
 
   const selectedDoctorDays = selectedDoctor?.dias ?? [];
 
@@ -124,7 +134,10 @@ export default function ReservarCitaPage() {
     if (!selectedDoctor || !selectedDate || !selectedSlot) return;
     setBookingLoading(true);
     try {
-      const fechaHora = `${selectedDate}T${selectedSlot.horaInicio}:00`;
+      const [hours, minutes] = selectedSlot.horaInicio.split(':').map(Number);
+      const d = new Date(selectedDate + 'T00:00:00');
+      d.setHours(hours, minutes, 0, 0);
+      const fechaHora = d.toISOString();
       const res = await bookManual({
         medicoId: selectedDoctor.doctorId,
         fechaHora,
@@ -169,17 +182,75 @@ export default function ReservarCitaPage() {
         </aside>
 
         <section className="flex-1">
-          {!selectedSpecialtyId ? (
+          {loadingSpecialties ? (
+            <div className="flex justify-center py-20">
+              <Loader2 className="h-8 w-8 animate-spin text-brand-500" />
+            </div>
+          ) : !selectedSpecialtyId && specialties.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-20 text-center">
-              <h2 className="text-2xl font-bold text-gray-900">Reserva tu cita</h2>
+              <h2 className="text-2xl font-bold text-gray-900">Sin especialidades</h2>
               <p className="mt-2 text-gray-600">
-                Selecciona una especialidad del panel izquierdo para ver los médicos disponibles.
+                No hay especialidades disponibles en este momento.
               </p>
             </div>
+          ) : !selectedSpecialtyId ? (
+            <>
+              <div className="mb-6 md:hidden">
+                <label className="mb-2 block text-sm font-semibold text-gray-700">
+                  Selecciona una especialidad
+                </label>
+                <div className="relative">
+                  <select
+                    className="w-full appearance-none rounded-lg border border-gray-300 bg-white px-4 py-3 pr-10 text-sm font-medium text-gray-900 focus:border-brand-500 focus:outline-none focus:ring-1 focus:ring-brand-500"
+                    value=""
+                    onChange={(e) => {
+                      const selected = specialties.find((s) => s.id === e.target.value);
+                      if (selected) handleSpecialtySelect(selected.id, selected.nombre);
+                    }}
+                  >
+                    <option value="" disabled>
+                      Elige una especialidad...
+                    </option>
+                    {specialties.map((s) => (
+                      <option key={s.id} value={s.id}>
+                        {s.nombre}
+                      </option>
+                    ))}
+                  </select>
+                  <ChevronDown className="pointer-events-none absolute right-3 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-400" />
+                </div>
+              </div>
+              <div className="hidden flex-col items-center justify-center py-20 text-center md:flex">
+                <h2 className="text-2xl font-bold text-gray-900">Reserva tu cita</h2>
+                <p className="mt-2 text-gray-600">
+                  Selecciona una especialidad del panel izquierdo para ver los médicos disponibles.
+                </p>
+              </div>
+            </>
           ) : (
-            <div className="space-y-8">
+            <>
+              <div className="mb-4 md:hidden">
+                <div className="relative">
+                  <select
+                    className="w-full appearance-none rounded-lg border border-gray-300 bg-white px-4 py-3 pr-10 text-sm font-medium text-gray-900 focus:border-brand-500 focus:outline-none focus:ring-1 focus:ring-brand-500"
+                    value={selectedSpecialtyId || ''}
+                    onChange={(e) => {
+                      const selected = specialties.find((s) => s.id === e.target.value);
+                      if (selected) handleSpecialtySelect(selected.id, selected.nombre);
+                    }}
+                  >
+                    {specialties.map((s) => (
+                      <option key={s.id} value={s.id}>
+                        {s.nombre}
+                      </option>
+                    ))}
+                  </select>
+                  <ChevronDown className="pointer-events-none absolute right-3 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-400" />
+                </div>
+              </div>
+              <div className="space-y-8">
               <div className="flex items-center justify-between">
-                <h2 className="text-2xl font-bold text-gray-900">{selectedSpecialtyName}</h2>
+                <h2 className="text-2xl font-bold uppercase text-gray-900">{selectedSpecialtyName}</h2>
                 <button
                   onClick={handleAutoBook}
                   disabled={bookingLoading}
@@ -192,17 +263,12 @@ export default function ReservarCitaPage() {
 
               <div>
                 <h3 className="mb-3 text-lg font-semibold text-gray-800">Elige al especialista</h3>
-                {loadingDoctors ? (
-                  <div className="flex justify-center py-8">
-                    <Loader2 className="h-6 w-6 animate-spin text-brand-500" />
-                  </div>
-                ) : (
-                  <DoctorSelector
-                    doctors={doctors}
-                    selectedId={selectedDoctor?.doctorId ?? null}
-                    onSelect={handleDoctorSelect}
-                  />
-                )}
+                <DoctorSelector
+                  doctors={doctors}
+                  selectedId={selectedDoctor?.doctorId ?? null}
+                  onSelect={handleDoctorSelect}
+                  loading={loadingDoctors}
+                />
               </div>
 
               {selectedDoctor && (
@@ -219,17 +285,12 @@ export default function ReservarCitaPage() {
               {selectedDate && selectedDoctor && (
                 <div>
                   <h3 className="mb-3 text-lg font-semibold text-gray-800">Elige la hora</h3>
-                  {loadingSlots ? (
-                    <div className="flex justify-center py-8">
-                      <Loader2 className="h-6 w-6 animate-spin text-brand-500" />
-                    </div>
-                  ) : (
-                    <SlotSelector
-                      slots={daySlots}
-                      selectedSlot={selectedSlot}
-                      onSelect={setSlot}
-                    />
-                  )}
+                  <SlotSelector
+                    slots={daySlots}
+                    selectedSlot={selectedSlot}
+                    onSelect={setSlot}
+                    loading={loadingSlots}
+                  />
                 </div>
               )}
 
@@ -244,6 +305,7 @@ export default function ReservarCitaPage() {
                 </div>
               )}
             </div>
+            </>
           )}
         </section>
       </main>

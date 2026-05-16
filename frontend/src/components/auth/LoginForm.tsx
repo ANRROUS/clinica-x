@@ -119,7 +119,16 @@ export default function LoginForm() {
           </button>
         </form>
 
-        <p className="mt-6 text-center text-sm text-gray-600">
+        <p className="mt-4 text-center">
+          <a
+            href="/forgot-password"
+            className="text-sm text-brand-600 hover:text-brand-700"
+          >
+            ¿Olvidaste tu contraseña?
+          </a>
+        </p>
+
+        <p className="mt-2 text-center text-sm text-gray-600">
           ¿No tienes cuenta?{' '}
           <Link href="/register" className="font-medium text-brand-600 hover:text-brand-700">
             Regístrate

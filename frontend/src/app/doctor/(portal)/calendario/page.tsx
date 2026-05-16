@@ -6,7 +6,7 @@ import { toast } from 'sonner';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import DoctorCalendar from '@/components/doctor/DoctorCalendar';
 import { useDoctorAuthStore } from '@/store/useDoctorAuthStore';
-import { getDoctorCalendar, changeAppointmentStatus } from '@/lib/api/doctor.api';
+import { getDoctorCalendar, changeAppointmentStatus, startConsultation } from '@/lib/api/doctor.api';
 import type { CitaCalendarioDTO } from '@/lib/api/types';
 
 export default function DoctorCalendarioPage() {
@@ -44,17 +44,28 @@ export default function DoctorCalendarioPage() {
     },
   });
 
+  const startMutation = useMutation({
+    mutationFn: startConsultation,
+    onSuccess: (res) => {
+      if (res.success && res.data) {
+        queryClient.invalidateQueries({ queryKey: ['doctor-active-patient'] });
+        router.push(`/doctor/pacientes/${res.data.pacienteId}`);
+      } else {
+        toast.error(res.error?.mensaje || 'No se pudo iniciar la consulta');
+      }
+    },
+    onError: () => toast.error('Error al iniciar consulta'),
+  });
+
   const handleStatusChange = (id: string, estado: 'CONFIRMADA' | 'EN_ATENCION' | 'COMPLETADA' | 'CANCELADA') => {
     statusMutation.mutate({ id, estado });
   };
 
   const handleStartConsultation = (cita: CitaCalendarioDTO) => {
-    const params = new URLSearchParams({
+    startMutation.mutate({
       pacienteId: cita.pacienteId,
       citaId: cita.id,
-      pacienteNombre: `${cita.pacienteNombre || ''} ${cita.pacienteApellido || ''}`.trim(),
     });
-    router.push(`/doctor/consulta?${params.toString()}`);
   };
 
   useEffect(() => {

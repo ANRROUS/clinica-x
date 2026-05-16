@@ -50,28 +50,30 @@ export default function ProfileHeader() {
   };
 
   return (
-    <div className="flex flex-col items-start gap-4 rounded-xl border border-gray-200 bg-white p-6 sm:flex-row sm:items-center">
+    <div className="flex flex-col gap-4 rounded-xl border border-gray-200 bg-white p-6 sm:flex-row sm:items-center">
       <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-full bg-brand-500 text-2xl font-bold text-white">
         {initials}
       </div>
-      <div className="flex-1">
+      <div>
         <h2 className="text-xl font-bold text-gray-900">{fullName}</h2>
-        <div className="mt-1 flex items-center gap-2">
+        <div className="mt-1">
           <span className="inline-block rounded-full bg-accent-500 px-3 py-0.5 text-xs font-semibold text-white">
             DNI: {user.dni}
           </span>
         </div>
+      </div>
 
-        <div className="mt-3 space-y-2">
-          <div className="flex items-center gap-2 text-sm text-gray-600">
-            <span className="font-medium">Correo:</span>
+      <div className="flex-1 sm:ml-auto sm:text-right">
+        <div className="space-y-2">
+          <div className="flex items-center justify-start gap-2 text-sm text-gray-600 sm:justify-end">
+            <span className="font-medium">Correo electrónico:</span>
             {editing === 'email' ? (
-              <div className="flex items-center gap-2">
+              <span className="flex items-center gap-2">
                 <input
                   type="email"
                   value={editValue}
                   onChange={(e) => setEditValue(e.target.value)}
-                  className="rounded border border-gray-300 px-2 py-1 text-sm"
+                  className="w-44 rounded border border-gray-300 px-2 py-1 text-sm"
                 />
                 <button onClick={saveEdit} disabled={saving} className="text-brand-600 hover:text-brand-700">
                   <Save className="h-4 w-4" />
@@ -79,26 +81,26 @@ export default function ProfileHeader() {
                 <button onClick={cancelEdit} className="text-gray-400 hover:text-gray-600">
                   <X className="h-4 w-4" />
                 </button>
-              </div>
+              </span>
             ) : (
-              <span>{user.email}</span>
-            )}
-            {editing !== 'email' && (
-              <button onClick={() => startEdit('email')} className="text-gray-400 hover:text-brand-600">
-                <Pencil className="h-3.5 w-3.5" />
-              </button>
+              <>
+                <span>{user.email}</span>
+                <button onClick={() => startEdit('email')} className="text-gray-400 hover:text-brand-600">
+                  <Pencil className="h-3.5 w-3.5" />
+                </button>
+              </>
             )}
           </div>
 
-          <div className="flex items-center gap-2 text-sm text-gray-600">
+          <div className="flex items-center justify-start gap-2 text-sm text-gray-600 sm:justify-end">
             <span className="font-medium">Teléfono:</span>
             {editing === 'telefono' ? (
-              <div className="flex items-center gap-2">
+              <span className="flex items-center gap-2">
                 <input
                   type="tel"
                   value={editValue}
                   onChange={(e) => setEditValue(e.target.value)}
-                  className="rounded border border-gray-300 px-2 py-1 text-sm"
+                  className="w-40 rounded border border-gray-300 px-2 py-1 text-sm"
                 />
                 <button onClick={saveEdit} disabled={saving} className="text-brand-600 hover:text-brand-700">
                   <Save className="h-4 w-4" />
@@ -106,14 +108,14 @@ export default function ProfileHeader() {
                 <button onClick={cancelEdit} className="text-gray-400 hover:text-gray-600">
                   <X className="h-4 w-4" />
                 </button>
-              </div>
+              </span>
             ) : (
-              <span>{user.telefono || 'No especificado'}</span>
-            )}
-            {editing !== 'telefono' && (
-              <button onClick={() => startEdit('telefono')} className="text-gray-400 hover:text-brand-600">
-                <Pencil className="h-3.5 w-3.5" />
-              </button>
+              <>
+                <span>{user.telefono || 'No especificado'}</span>
+                <button onClick={() => startEdit('telefono')} className="text-gray-400 hover:text-brand-600">
+                  <Pencil className="h-3.5 w-3.5" />
+                </button>
+              </>
             )}
           </div>
         </div>

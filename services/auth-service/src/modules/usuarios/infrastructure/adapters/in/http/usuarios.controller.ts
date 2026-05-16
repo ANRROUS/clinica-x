@@ -31,9 +31,9 @@ const registrarSchema = z.object({
 });
 
 const loginSchema = z.object({
-  dni: z.string().length(8).regex(/^\d+$/),
   email: z.string().email(),
   password: z.string().min(1, 'La contraseña es requerida'),
+  dni: z.string().optional(),
 });
 
 const actualizarPerfilSchema = z.object({

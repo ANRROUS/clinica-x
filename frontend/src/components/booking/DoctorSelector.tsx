@@ -2,14 +2,26 @@
 
 import type { DisponibilidadDoctorDTO } from '@/lib/api/types';
 import { Stethoscope } from 'lucide-react';
+import { DoctorCardSkeleton } from '@/components/shared/Skeleton';
 
 interface Props {
   doctors: DisponibilidadDoctorDTO[];
   selectedId: string | null;
   onSelect: (doctor: DisponibilidadDoctorDTO) => void;
+  loading?: boolean;
 }
 
-export default function DoctorSelector({ doctors, selectedId, onSelect }: Props) {
+export default function DoctorSelector({ doctors, selectedId, onSelect, loading }: Props) {
+  if (loading) {
+    return (
+      <div className="grid gap-3 sm:grid-cols-2">
+        {Array.from({ length: 4 }).map((_, i) => (
+          <DoctorCardSkeleton key={i} />
+        ))}
+      </div>
+    );
+  }
+
   if (doctors.length === 0) {
     return (
       <div className="py-8 text-center text-sm text-gray-500">

@@ -7,6 +7,7 @@ interface CalendarMonthProps {
   currentDate: Date;
   citas: CitaCalendarioDTO[];
   onStartConsultation: (cita: CitaCalendarioDTO) => void;
+  onDayClick?: (date: Date) => void;
 }
 
 const dayLabels = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'];
@@ -18,7 +19,7 @@ const statusColors: Record<string, string> = {
   CANCELADA: 'bg-red-100 text-red-800',
 };
 
-export default function CalendarMonth({ currentDate, citas, onStartConsultation }: CalendarMonthProps) {
+export default function CalendarMonth({ currentDate, citas, onStartConsultation, onDayClick }: CalendarMonthProps) {
   const { daysInMonth, firstDayOffset } = useMemo(() => {
     const year = currentDate.getFullYear();
     const month = currentDate.getMonth();
@@ -66,7 +67,14 @@ export default function CalendarMonth({ currentDate, citas, onStartConsultation 
           return (
             <div
               key={day}
-              className={`min-h-[100px] bg-white p-2 ${isToday ? 'ring-2 ring-inset ring-indigo-500' : ''}`}
+              onClick={() => {
+                if (dayCitas.length === 0 && onDayClick) {
+                  const clickedDate = new Date(currentDate);
+                  clickedDate.setDate(day);
+                  onDayClick(clickedDate);
+                }
+              }}
+              className={`min-h-[100px] bg-white p-2 ${isToday ? 'ring-2 ring-inset ring-indigo-500' : ''} ${dayCitas.length === 0 && onDayClick ? 'cursor-pointer hover:bg-gray-50' : ''}`}
             >
               <span className={`inline-flex h-6 w-6 items-center justify-center rounded-full text-xs font-medium ${isToday ? 'bg-indigo-600 text-white' : 'text-gray-700'}`}>
                 {day}

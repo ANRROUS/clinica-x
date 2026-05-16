@@ -77,6 +77,18 @@ export interface CitaCalendarioDTO extends CitaDTO {
 export interface ConsultaMedicoDTO extends ConsultaDTO {
   pacienteNombre?: string;
   pacienteApellido?: string;
+  pacienteDni?: string;
+  pacienteEmail?: string;
+  pacienteTelefono?: string;
+}
+
+export interface PatientSummaryDTO {
+  id: string;
+  nombre: string;
+  apellido: string;
+  dni: string;
+  email: string;
+  telefono?: string;
 }
 
 export interface PacienteHistorialDTO {

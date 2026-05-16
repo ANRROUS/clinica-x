@@ -23,9 +23,9 @@ export interface CrearUsuarioDto {
 }
 
 export interface IniciarSesionDto {
-  dni: string;
   email: string;
   password: string;
+  dni?: string;
 }
 
 export interface ActualizarPerfilDto {

@@ -67,6 +67,7 @@ export class MedicosController {
   crear = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
       const dto = crearMedicoSchema.parse(req.body);
+      console.log('[CrearMedico] DTO parsed:', JSON.stringify(dto));
       const resultado = await this.crearMedico.execute(dto);
 
       if (resultado.isErr) {
