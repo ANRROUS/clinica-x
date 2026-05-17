@@ -3,6 +3,7 @@
 import { useMemo } from 'react';
 import { Clock, User, Stethoscope, XCircle, CheckCircle } from 'lucide-react';
 import type { CitaCalendarioDTO } from '@/lib/api/types';
+import { parseApiDate } from '@/lib/date-utils';
 
 interface CalendarDayProps {
   currentDate: Date;
@@ -33,10 +34,10 @@ export default function CalendarDay({ currentDate, citas, onStatusChange, onStar
     const dateStr = currentDate.toISOString().slice(0, 10);
     return citas
       .filter((c) => {
-        const d = new Date(c.fechaHora + 'Z');
-        return d.toISOString().slice(0, 10) === dateStr;
+        const d = parseApiDate(c.fechaHora);
+        return !isNaN(d.getTime()) && d.toISOString().slice(0, 10) === dateStr;
       })
-      .sort((a, b) => new Date(a.fechaHora).getTime() - new Date(b.fechaHora).getTime());
+      .sort((a, b) => parseApiDate(a.fechaHora).getTime() - parseApiDate(b.fechaHora).getTime());
   }, [citas, currentDate]);
 
   const dateLabel = `${dayNames[currentDate.getDay()]} ${currentDate.getDate()} de ${monthNames[currentDate.getMonth()]}`;
@@ -75,7 +76,8 @@ export default function CalendarDay({ currentDate, citas, onStatusChange, onStar
       ) : (
         <div className="space-y-3">
           {dayCitas.map((cita) => {
-            const start = new Date(cita.fechaHora + 'Z');
+            const start = parseApiDate(cita.fechaHora);
+            if (isNaN(start.getTime())) return null;
             const hStart = start.getHours().toString().padStart(2, '0');
             const mStart = start.getMinutes().toString().padStart(2, '0');
             const end = new Date(start.getTime() + 30 * 60000);

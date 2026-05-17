@@ -3,6 +3,7 @@
 import { useMemo } from 'react';
 import { Clock, User } from 'lucide-react';
 import type { CitaCalendarioDTO } from '@/lib/api/types';
+import { parseApiDate } from '@/lib/date-utils';
 
 interface CalendarWeekProps {
   currentDate: Date;
@@ -47,8 +48,9 @@ export default function CalendarWeek({ currentDate, citas, onStatusChange, onSta
       map.set(key, []);
     });
     citas.forEach((cita) => {
-      const d = new Date(cita.fechaHora + 'Z');
-      const key = d.toISOString().slice(0, 10);
+      const d = parseApiDate(cita.fechaHora);
+      const key = isNaN(d.getTime()) ? '' : d.toISOString().slice(0, 10);
+      if (!key) return;
       if (map.has(key)) {
         map.get(key)!.push(cita);
       }
@@ -104,13 +106,13 @@ export default function CalendarWeek({ currentDate, citas, onStatusChange, onSta
                   const key = day.toISOString().slice(0, 10);
                   const dayCitas = citasByDay.get(key) || [];
                   const slotCitas = dayCitas.filter((c) => {
-                    const ch = new Date(c.fechaHora + 'Z').getHours();
+                    const ch = parseApiDate(c.fechaHora).getHours();
                     return ch === hour;
                   });
                   return (
                     <div key={`${key}-${time}`} className="min-h-[50px] border-r border-gray-50 p-0.5">
                       {slotCitas.map((cita) => {
-                        const start = new Date(cita.fechaHora + 'Z');
+                        const start = parseApiDate(cita.fechaHora);
                         const h = start.getHours().toString().padStart(2, '0');
                         const m = start.getMinutes().toString().padStart(2, '0');
                         return (

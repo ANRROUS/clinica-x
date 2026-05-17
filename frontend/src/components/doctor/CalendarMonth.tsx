@@ -2,6 +2,7 @@
 
 import { useMemo } from 'react';
 import type { CitaCalendarioDTO } from '@/lib/api/types';
+import { parseApiDate } from '@/lib/date-utils';
 
 interface CalendarMonthProps {
   currentDate: Date;
@@ -34,7 +35,7 @@ export default function CalendarMonth({ currentDate, citas, onStartConsultation,
     const year = currentDate.getFullYear();
     const month = currentDate.getMonth();
     citas.forEach((cita) => {
-      const d = new Date(cita.fechaHora + 'Z');
+      const d = parseApiDate(cita.fechaHora);
       if (d.getFullYear() === year && d.getMonth() === month) {
         const day = d.getDate();
         if (!map.has(day)) map.set(day, []);
@@ -81,7 +82,7 @@ export default function CalendarMonth({ currentDate, citas, onStartConsultation,
               </span>
               <div className="mt-1 space-y-1">
                 {dayCitas.slice(0, 3).map((cita) => {
-                  const time = new Date(cita.fechaHora + 'Z');
+                  const time = parseApiDate(cita.fechaHora);
                   const h = time.getHours().toString().padStart(2, '0');
                   const m = time.getMinutes().toString().padStart(2, '0');
                   return (

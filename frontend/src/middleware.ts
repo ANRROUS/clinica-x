@@ -3,7 +3,7 @@ import type { NextRequest } from 'next/server';
 
 const DOCTOR_TOKEN_KEY = 'clinica_x_doctor_token';
 
-function decodeJwtPayload(token: string): { role?: string } | null {
+function decodeJwtPayload(token: string): { rol?: string } | null {
   try {
     const payload = token.split('.')[1];
     const decoded = Buffer.from(payload, 'base64').toString('utf-8');
@@ -22,7 +22,7 @@ export function middleware(request: NextRequest) {
       if (rawToken) {
         const safeToken = decodeURIComponent(rawToken);
         const payload = decodeJwtPayload(safeToken);
-        if (payload?.role === 'MEDICO') {
+        if (payload?.rol === 'MEDICO') {
           return NextResponse.redirect(new URL('/doctor/calendario', request.url));
         }
       }
@@ -35,7 +35,7 @@ export function middleware(request: NextRequest) {
 
     const safeToken = decodeURIComponent(rawToken);
     const payload = decodeJwtPayload(safeToken);
-    if (payload?.role !== 'MEDICO') {
+    if (payload?.rol !== 'MEDICO') {
       const response = NextResponse.redirect(new URL('/doctor/login', request.url));
       response.cookies.delete(DOCTOR_TOKEN_KEY);
       return response;

@@ -1,26 +1,25 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useDoctorAuthStore } from '@/store/useDoctorAuthStore';
 import DoctorHeader from '@/components/doctor/DoctorHeader';
 
 export default function DoctorPortalLayout({ children }: { children: React.ReactNode }) {
-  const { isAuthenticated } = useDoctorAuthStore();
+  const { isAuthenticated, _hasHydrated, hydrate } = useDoctorAuthStore();
   const router = useRouter();
-  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    setMounted(true);
-  }, []);
+    hydrate();
+  }, [hydrate]);
 
   useEffect(() => {
-    if (mounted && !isAuthenticated) {
+    if (_hasHydrated && !isAuthenticated) {
       router.push('/doctor/login');
     }
-  }, [isAuthenticated, router, mounted]);
+  }, [isAuthenticated, router, _hasHydrated]);
 
-  if (!mounted || !isAuthenticated) return null;
+  if (!_hasHydrated || !isAuthenticated) return null;
 
   return (
     <div className="flex h-screen flex-col overflow-hidden bg-gray-50">
