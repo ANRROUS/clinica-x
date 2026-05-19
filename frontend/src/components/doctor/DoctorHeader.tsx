@@ -27,7 +27,7 @@ export default function DoctorHeader() {
   return (
     <header className="flex items-center justify-between border-b border-gray-200 bg-white px-6 py-3 shadow-sm">
       <div className="flex items-center gap-2">
-        <Stethoscope className="h-6 w-6 text-indigo-600" />
+        <Stethoscope className="h-6 w-6 text-brand-500" />
         <span className="text-lg font-bold text-gray-900">Portal Médico</span>
       </div>
 
@@ -40,7 +40,7 @@ export default function DoctorHeader() {
               href={href}
               className={`rounded-lg px-4 py-2 text-sm font-medium transition-colors ${
                 active
-                  ? 'bg-indigo-50 text-indigo-700 underline decoration-2 underline-offset-4'
+                  ? 'bg-brand-50 text-brand-700 underline decoration-2 underline-offset-4'
                   : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900'
               }`}
             >
@@ -62,7 +62,7 @@ export default function DoctorHeader() {
             Cerrar sesión
           </button>
         </div>
-        <div className="flex h-10 w-10 items-center justify-center rounded-full bg-indigo-100 text-sm font-bold text-indigo-700">
+        <div className="flex h-10 w-10 items-center justify-center rounded-full bg-accent-500 text-sm font-bold text-white">
           {initials || '?'}
         </div>
       </div>

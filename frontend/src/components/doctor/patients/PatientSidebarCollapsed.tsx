@@ -26,12 +26,12 @@ export default function PatientSidebarCollapsed({
   });
 
   return (
-    <aside className="flex h-full w-14 flex-col items-center border-r border-gray-200 bg-white py-4">
+    <aside className="flex h-full w-14 flex-col items-center bg-brand-500 py-4">
       <button
         onClick={() => {
           router.push('/doctor/pacientes');
         }}
-        className="mb-4 rounded-lg p-2 text-gray-400 hover:bg-gray-100 hover:text-gray-600"
+        className="mb-4 rounded-lg p-2 text-white hover:bg-brand-600"
         title="Buscar pacientes"
       >
         <Search className="h-5 w-5" />
@@ -46,7 +46,7 @@ export default function PatientSidebarCollapsed({
               <button
                 key={p.pacienteId}
                 onClick={() => router.push(`/doctor/pacientes/${p.pacienteId}`)}
-                className="flex h-10 w-10 items-center justify-center rounded-full bg-indigo-100 text-sm font-bold text-indigo-700 hover:bg-indigo-200"
+                className="flex h-10 w-10 items-center justify-center rounded-full bg-white text-sm font-bold text-brand-500 hover:bg-gray-100"
                 title={`${p.pacienteNombre || ''} ${p.pacienteApellido || ''}`}
               >
                 {initial}

@@ -8,18 +8,14 @@ interface Props {
   onSelect: (date: string) => void;
 }
 
-const DAY_NAMES = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
+const DAY_NAMES = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'];
+const DAY_NAMES_FULL = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
 
-function formatDateLabel(dateStr: string): string {
+function formatDateLabel(dateStr: string): { dayName: string; dayNum: string } {
   const d = new Date(dateStr + 'T00:00:00');
-  const dayName = DAY_NAMES[d.getDay()];
-  const day = d.getDate();
-  const monthNames = [
-    'Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun',
-    'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic',
-  ];
-  const month = monthNames[d.getMonth()];
-  return `${dayName} ${day} ${month}`;
+  const dayName = DAY_NAMES_FULL[d.getDay()];
+  const dayNum = String(d.getDate());
+  return { dayName, dayNum };
 }
 
 function hasAvailableSlots(day: DiaDisponibilidadDTO): boolean {
@@ -36,23 +32,29 @@ export default function DaySelector({ days, selectedDate, onSelect }: Props) {
   }
 
   return (
-    <div className="flex flex-wrap gap-2">
+    <div className="flex flex-wrap gap-3">
       {days.map((day) => {
         const available = hasAvailableSlots(day);
+        const isSelected = selectedDate === day.fecha;
+        const { dayName, dayNum } = formatDateLabel(day.fecha);
         return (
           <button
             key={day.fecha}
             disabled={!available}
             onClick={() => available && onSelect(day.fecha)}
-            className={`rounded-full px-4 py-2 text-sm font-medium transition ${
-              selectedDate === day.fecha
-                ? 'bg-brand-500 text-white'
+            className={`relative flex flex-col items-center rounded-xl px-5 py-3 text-sm font-medium transition min-w-[80px] ${
+              isSelected
+                ? 'bg-[#008585] text-white'
                 : available
-                  ? 'border border-gray-300 text-gray-700 hover:border-brand-300 hover:bg-brand-50'
+                  ? 'border border-gray-300 bg-white text-gray-700 hover:border-[#008585]'
                   : 'cursor-not-allowed border border-gray-200 bg-gray-100 text-gray-400'
             }`}
           >
-            {formatDateLabel(day.fecha)}
+            {isSelected && (
+              <span className="absolute -top-1.5 h-3 w-3 rounded-full bg-[#008585]" />
+            )}
+            <span className="text-xs">{dayName}</span>
+            <span className="text-lg font-bold">{dayNum}</span>
           </button>
         );
       })}

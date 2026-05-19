@@ -80,6 +80,8 @@ export interface ConsultaMedicoDTO extends ConsultaDTO {
   pacienteDni?: string;
   pacienteEmail?: string;
   pacienteTelefono?: string;
+  analysisOrders?: { examName: string; specialty?: string }[];
+  medications?: { name: string; days: number; frequency: string }[];
 }
 
 export interface PatientSummaryDTO {

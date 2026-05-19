@@ -1,12 +1,9 @@
 'use client';
 
 import { useState } from 'react';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
-import { toast } from 'sonner';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { Stethoscope, FileText } from 'lucide-react';
+import { toast } from 'sonner';
+import { Stethoscope } from 'lucide-react';
 import { startConsultation, finalizeConsultation } from '@/lib/api/doctor.api';
 import DiagnosisForm from './DiagnosisForm';
 import AnalysisOrderManager from './AnalysisOrderManager';
@@ -66,8 +63,8 @@ export default function ActiveConsultation({
     return (
       <div className="rounded-xl border border-gray-200 bg-white p-8">
         <div className="flex flex-col items-center text-center">
-          <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-indigo-100">
-            <Stethoscope className="h-8 w-8 text-indigo-600" />
+          <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-brand-50">
+            <Stethoscope className="h-8 w-8 text-brand-500" />
           </div>
           <h3 className="text-lg font-semibold text-gray-900">Iniciar Consulta</h3>
           <p className="mt-1 text-sm text-gray-500">
@@ -79,7 +76,7 @@ export default function ActiveConsultation({
               startMutation.mutate({ pacienteId: patientId });
             }}
             disabled={startMutation.isPending}
-            className="mt-6 rounded-lg bg-indigo-600 px-6 py-2.5 text-sm font-semibold text-white hover:bg-indigo-700 disabled:opacity-50"
+            className="mt-6 rounded-lg bg-brand-500 px-6 py-2.5 text-sm font-semibold text-white hover:bg-brand-600 disabled:opacity-50"
           >
             {startMutation.isPending ? 'Iniciando...' : 'Iniciar Consulta'}
           </button>
@@ -111,7 +108,7 @@ export default function ActiveConsultation({
       <div className="flex justify-end">
         <button
           onClick={() => setShowFinalizeModal(true)}
-          className="rounded-lg bg-green-600 px-6 py-2.5 text-sm font-semibold text-white hover:bg-green-700"
+          className="rounded-full bg-brand-500 px-6 py-2.5 text-sm font-semibold text-white hover:bg-brand-600"
         >
           Finalizar Consulta →
         </button>

@@ -56,7 +56,7 @@ export default function PatientHistory({ patients, onViewConsultation }: Patient
               className="flex w-full items-center justify-between px-4 py-3 hover:bg-gray-50"
             >
               <div className="flex items-center gap-3">
-                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-indigo-100 text-sm font-bold text-indigo-700">
+                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-brand-100 text-sm font-bold text-brand-700">
                   {nombre.split(' ').map((n) => n[0]).join('').slice(0, 2)}
                 </div>
                 <div className="text-left">

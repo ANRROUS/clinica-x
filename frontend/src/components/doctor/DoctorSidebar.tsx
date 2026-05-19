@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { Stethoscope, Calendar, Users, LogOut, Activity } from 'lucide-react';
+import { Stethoscope, Calendar, Users, LogOut } from 'lucide-react';
 import { useDoctorAuthStore } from '@/store/useDoctorAuthStore';
 
 const navItems = [
@@ -23,13 +23,13 @@ export default function DoctorSidebar() {
   return (
     <aside className="flex h-screen w-64 flex-col border-r border-gray-200 bg-white">
       <div className="flex items-center gap-2 border-b border-gray-200 px-6 py-4">
-        <Stethoscope className="h-6 w-6 text-indigo-600" />
+        <Stethoscope className="h-6 w-6 text-brand-500" />
         <span className="text-lg font-bold text-gray-900">Clínica X</span>
       </div>
 
       <div className="border-b border-gray-200 px-6 py-4">
         <div className="flex items-center gap-3">
-          <div className="flex h-10 w-10 items-center justify-center rounded-full bg-indigo-100 text-sm font-bold text-indigo-700">
+          <div className="flex h-10 w-10 items-center justify-center rounded-full bg-brand-100 text-sm font-bold text-brand-700">
             {user?.nombre?.[0]}{user?.apellido?.[0]}
           </div>
           <div>
@@ -50,7 +50,7 @@ export default function DoctorSidebar() {
               href={href}
               className={`flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors ${
                 active
-                  ? 'bg-indigo-50 text-indigo-700'
+                  ? 'bg-brand-50 text-brand-700'
                   : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900'
               }`}
             >

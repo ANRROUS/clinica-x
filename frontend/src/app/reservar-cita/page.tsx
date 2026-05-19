@@ -30,7 +30,7 @@ import type {
 
 export default function ReservarCitaPage() {
   const router = useRouter();
-  const { isAuthenticated, user } = useAuthStore();
+  const { isAuthenticated } = useAuthStore();
   const {
     selectedSpecialtyId,
     selectedSpecialtyName,
@@ -161,30 +161,22 @@ export default function ReservarCitaPage() {
   if (!isAuthenticated) return null;
 
   return (
-    <div className="flex min-h-screen flex-col bg-gray-50">
+    <div className="flex min-h-screen flex-col bg-white">
       <Header />
-      <main className="mx-auto flex w-full max-w-7xl flex-1 gap-6 px-4 py-6">
-        <aside className="hidden w-72 shrink-0 md:block">
-          <div className="sticky top-6 rounded-xl border border-gray-200 bg-white p-4">
-            <h2 className="mb-3 text-lg font-bold text-gray-900">Especialidades</h2>
-            {loadingSpecialties ? (
-              <div className="flex justify-center py-8">
-                <Loader2 className="h-6 w-6 animate-spin text-brand-500" />
-              </div>
-            ) : (
-              <SpecialtySidebar
-                specialties={specialties}
-                selectedId={selectedSpecialtyId}
-                onSelect={handleSpecialtySelect}
-              />
-            )}
-          </div>
-        </aside>
+      <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-8">
+        {/* Título */}
+        <div className="mb-8 text-center">
+          <h1 className="text-3xl font-bold text-[#003F86]">Agenda tu Cita Médica</h1>
+          <p className="mt-2 text-sm text-gray-500">
+            Gestiona tu atención en medicina general de forma rápida y sencilla.
+          </p>
+        </div>
 
-        <section className="flex-1">
+        {/* Card principal */}
+        <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
           {loadingSpecialties ? (
             <div className="flex justify-center py-20">
-              <Loader2 className="h-8 w-8 animate-spin text-brand-500" />
+              <Loader2 className="h-8 w-8 animate-spin text-[#008585]" />
             </div>
           ) : !selectedSpecialtyId && specialties.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-20 text-center">
@@ -193,121 +185,104 @@ export default function ReservarCitaPage() {
                 No hay especialidades disponibles en este momento.
               </p>
             </div>
-          ) : !selectedSpecialtyId ? (
-            <>
-              <div className="mb-6 md:hidden">
-                <label className="mb-2 block text-sm font-semibold text-gray-700">
-                  Selecciona una especialidad
-                </label>
-                <div className="relative">
-                  <select
-                    className="w-full appearance-none rounded-lg border border-gray-300 bg-white px-4 py-3 pr-10 text-sm font-medium text-gray-900 focus:border-brand-500 focus:outline-none focus:ring-1 focus:ring-brand-500"
-                    value=""
-                    onChange={(e) => {
-                      const selected = specialties.find((s) => s.id === e.target.value);
-                      if (selected) handleSpecialtySelect(selected.id, selected.nombre);
-                    }}
-                  >
-                    <option value="" disabled>
-                      Elige una especialidad...
-                    </option>
-                    {specialties.map((s) => (
-                      <option key={s.id} value={s.id}>
-                        {s.nombre}
-                      </option>
-                    ))}
-                  </select>
-                  <ChevronDown className="pointer-events-none absolute right-3 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-400" />
-                </div>
-              </div>
-              <div className="hidden flex-col items-center justify-center py-20 text-center md:flex">
-                <h2 className="text-2xl font-bold text-gray-900">Reserva tu cita</h2>
-                <p className="mt-2 text-gray-600">
-                  Selecciona una especialidad del panel izquierdo para ver los médicos disponibles.
-                </p>
-              </div>
-            </>
           ) : (
-            <>
-              <div className="mb-4 md:hidden">
-                <div className="relative">
-                  <select
-                    className="w-full appearance-none rounded-lg border border-gray-300 bg-white px-4 py-3 pr-10 text-sm font-medium text-gray-900 focus:border-brand-500 focus:outline-none focus:ring-1 focus:ring-brand-500"
-                    value={selectedSpecialtyId || ''}
-                    onChange={(e) => {
-                      const selected = specialties.find((s) => s.id === e.target.value);
-                      if (selected) handleSpecialtySelect(selected.id, selected.nombre);
-                    }}
-                  >
-                    {specialties.map((s) => (
-                      <option key={s.id} value={s.id}>
-                        {s.nombre}
-                      </option>
-                    ))}
-                  </select>
-                  <ChevronDown className="pointer-events-none absolute right-3 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-400" />
-                </div>
-              </div>
-              <div className="space-y-8">
-              <div className="flex items-center justify-between">
-                <h2 className="text-2xl font-bold uppercase text-gray-900">{selectedSpecialtyName}</h2>
-                <button
-                  onClick={handleAutoBook}
-                  disabled={bookingLoading}
-                  className="flex items-center gap-2 rounded-lg border border-brand-500 px-4 py-2 text-sm font-medium text-brand-600 hover:bg-brand-50 disabled:opacity-50"
-                >
-                  <Sparkles className="h-4 w-4" />
-                  Automático
-                </button>
-              </div>
-
-              <div>
-                <h3 className="mb-3 text-lg font-semibold text-gray-800">Elige al especialista</h3>
-                <DoctorSelector
-                  doctors={doctors}
-                  selectedId={selectedDoctor?.doctorId ?? null}
-                  onSelect={handleDoctorSelect}
-                  loading={loadingDoctors}
-                />
-              </div>
-
-              {selectedDoctor && (
-                <div>
-                  <h3 className="mb-3 text-lg font-semibold text-gray-800">Elige el día</h3>
-                  <DaySelector
-                    days={selectedDoctorDays}
-                    selectedDate={selectedDate}
-                    onSelect={setDate}
+            <div className="flex flex-col gap-8 md:flex-row">
+              {/* Sidebar izquierdo */}
+              <aside className="w-full shrink-0 border-b border-gray-200 pb-6 md:w-64 md:border-b-0 md:border-r md:pb-0 md:pr-6">
+                {loadingSpecialties ? (
+                  <div className="flex justify-center py-8">
+                    <Loader2 className="h-6 w-6 animate-spin text-[#008585]" />
+                  </div>
+                ) : (
+                  <SpecialtySidebar
+                    specialties={specialties}
+                    selectedId={selectedSpecialtyId}
+                    onSelect={handleSpecialtySelect}
                   />
-                </div>
-              )}
+                )}
+              </aside>
 
-              {selectedDate && selectedDoctor && (
-                <div>
-                  <h3 className="mb-3 text-lg font-semibold text-gray-800">Elige la hora</h3>
-                  <SlotSelector
-                    slots={daySlots}
-                    selectedSlot={selectedSlot}
-                    onSelect={setSlot}
-                    loading={loadingSlots}
-                  />
-                </div>
-              )}
+              {/* Contenido derecho */}
+              <section className="flex-1">
+                {!selectedSpecialtyId ? (
+                  <div className="flex flex-col items-center justify-center py-20 text-center">
+                    <h2 className="text-xl font-bold text-gray-900">Selecciona una especialidad</h2>
+                    <p className="mt-2 text-sm text-gray-500">
+                      Elige una especialidad del panel izquierdo para ver los médicos disponibles.
+                    </p>
+                  </div>
+                ) : (
+                  <div className="space-y-8">
+                    {/* Header de especialidad */}
+                    <div className="flex items-center justify-between">
+                      <h2 className="text-lg font-bold uppercase text-gray-900">
+                        {selectedSpecialtyName}
+                      </h2>
+                      <button
+                        onClick={handleAutoBook}
+                        disabled={bookingLoading}
+                        className="flex items-center gap-2 rounded-lg bg-[#003F86] px-4 py-2 text-sm font-medium text-white hover:bg-[#00306b] disabled:opacity-50 transition"
+                      >
+                        Automático
+                        <Sparkles className="h-4 w-4" />
+                      </button>
+                    </div>
 
-              {canConfirmManual && (
-                <div className="flex justify-end">
-                  <button
-                    onClick={() => setModalOpen(true)}
-                    className="rounded-lg bg-brand-500 px-8 py-3 font-semibold text-white hover:bg-brand-600"
-                  >
-                    Confirmar Reserva
-                  </button>
-                </div>
-              )}
+                    {/* Selector de doctor */}
+                    <div>
+                      <h3 className="mb-3 text-sm font-semibold text-gray-800">Elige al especialista:</h3>
+                      <DoctorSelector
+                        doctors={doctors}
+                        selectedId={selectedDoctor?.doctorId ?? null}
+                        onSelect={handleDoctorSelect}
+                        loading={loadingDoctors}
+                      />
+                    </div>
+
+                    {selectedDoctor && (
+                      <div className="space-y-6">
+                        {/* Selector de día */}
+                        <div>
+                          <h3 className="mb-3 text-sm font-semibold text-gray-800">Elige el Día:</h3>
+                          <DaySelector
+                            days={selectedDoctorDays}
+                            selectedDate={selectedDate}
+                            onSelect={setDate}
+                          />
+                        </div>
+
+                        {/* Selector de hora */}
+                        {selectedDate && (
+                          <div>
+                            <h3 className="mb-3 text-sm font-semibold text-gray-800">Elige la Hora:</h3>
+                            <SlotSelector
+                              slots={daySlots}
+                              selectedSlot={selectedSlot}
+                              onSelect={setSlot}
+                              loading={loadingSlots}
+                            />
+                          </div>
+                        )}
+
+                        {/* Botón confirmar */}
+                        {canConfirmManual && (
+                          <div className="flex justify-end pt-2">
+                            <button
+                              onClick={() => setModalOpen(true)}
+                              className="rounded-lg bg-[#003F86] px-8 py-3 text-sm font-semibold text-white hover:bg-[#00306b] transition"
+                            >
+                              Confirmar Reserva
+                            </button>
+                          </div>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                )}
+              </section>
             </div>
-            </>
           )}
-        </section>
+        </div>
       </main>
 
       <ConfirmBookingModal
