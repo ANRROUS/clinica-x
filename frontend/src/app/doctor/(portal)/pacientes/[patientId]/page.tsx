@@ -6,7 +6,6 @@ import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useDoctorAuthStore } from '@/store/useDoctorAuthStore';
 import { getActivePatient, getDoctorPatients } from '@/lib/api/doctor.api';
 import PatientSidebar from '@/components/doctor/patients/PatientSidebar';
-import PatientSidebarCollapsed from '@/components/doctor/patients/PatientSidebarCollapsed';
 import PatientHeader from '@/components/doctor/patients/PatientHeader';
 import PatientTabs from '@/components/doctor/patients/PatientTabs';
 import ActiveConsultation from '@/components/doctor/patients/consultation/ActiveConsultation';
@@ -22,6 +21,7 @@ export default function DoctorPatientDetailPage() {
 
   const [activeTab, setActiveTab] = useState<'historial' | 'consulta'>('historial');
   const [activeConsultation, setActiveConsultation] = useState<ConsultaMedicoDTO | null>(null);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
 
   const { data: activeData } = useQuery({
     queryKey: ['doctor-active-patient'],
@@ -71,6 +71,8 @@ export default function DoctorPatientDetailPage() {
     activeConsultation,
     patients,
     onSelectPatient: (id: string) => router.push(`/doctor/pacientes/${id}`),
+    collapsed: sidebarCollapsed,
+    onToggleCollapse: () => setSidebarCollapsed((prev) => !prev),
   };
 
   const content = (
@@ -107,15 +109,7 @@ export default function DoctorPatientDetailPage() {
 
   return (
     <div className="flex h-full">
-      <div className="hidden lg:block">
-        <PatientSidebar {...sidebarProps} />
-      </div>
-      <div className="hidden md:block lg:hidden">
-        <PatientSidebarCollapsed
-          patients={patients}
-          activeConsultation={activeConsultation}
-        />
-      </div>
+      <PatientSidebar {...sidebarProps} />
       {content}
     </div>
   );

@@ -27,12 +27,12 @@ export default function AnalysisOrderManager({ orders, onAdd, onRemove }: Analys
     <div className="rounded-xl border border-gray-200 bg-white p-6">
       <div className="mb-3 flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <FlaskConical className="h-5 w-5 text-indigo-600" />
+          <FlaskConical className="h-5 w-5 text-brand-500" />
           <h3 className="text-lg font-bold text-gray-900">Análisis Clínico</h3>
         </div>
         <button
           onClick={() => setShowForm(!showForm)}
-          className="inline-flex items-center gap-1 rounded-lg border border-indigo-300 px-3 py-1.5 text-sm font-medium text-indigo-700 hover:bg-indigo-50"
+          className="inline-flex items-center gap-1 rounded-lg bg-brand-500 px-3 py-1.5 text-sm font-medium text-white hover:bg-brand-600"
         >
           <Plus className="h-4 w-4" />
           Agregar
@@ -43,7 +43,7 @@ export default function AnalysisOrderManager({ orders, onAdd, onRemove }: Analys
       </p>
 
       {showForm && (
-        <div className="mb-4 rounded-lg border border-indigo-200 bg-indigo-50 p-4">
+        <div className="mb-4 rounded-lg border border-brand-200 bg-brand-50 p-4">
           <div className="flex items-end gap-3">
             <div className="flex-1">
               <label className="mb-1 block text-xs font-medium text-gray-700">Nombre del análisis</label>
@@ -52,7 +52,7 @@ export default function AnalysisOrderManager({ orders, onAdd, onRemove }: Analys
                 value={examName}
                 onChange={(e) => setExamName(e.target.value)}
                 placeholder="Ej. Hemograma completo"
-                className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-brand-500 focus:outline-none focus:ring-1 focus:ring-brand-500"
               />
             </div>
             <div className="flex-1">
@@ -62,13 +62,13 @@ export default function AnalysisOrderManager({ orders, onAdd, onRemove }: Analys
                 value={specialty}
                 onChange={(e) => setSpecialty(e.target.value)}
                 placeholder="Ej. Cardiología"
-                className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-brand-500 focus:outline-none focus:ring-1 focus:ring-brand-500"
               />
             </div>
             <button
               onClick={handleAdd}
               disabled={!examName.trim()}
-              className="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700 disabled:opacity-50"
+              className="rounded-lg bg-brand-500 px-4 py-2 text-sm font-medium text-white hover:bg-brand-600 disabled:opacity-50"
             >
               Agregar
             </button>
@@ -81,7 +81,7 @@ export default function AnalysisOrderManager({ orders, onAdd, onRemove }: Analys
           {orders.map((order, index) => (
             <span
               key={index}
-              className="inline-flex items-center gap-1.5 rounded-full border border-indigo-300 bg-white px-3 py-1.5 text-sm font-medium text-indigo-700"
+              className="inline-flex items-center gap-1.5 rounded-full border border-brand-300 bg-white px-3 py-1.5 text-sm font-medium text-brand-700"
             >
               {order.examName}
               <button

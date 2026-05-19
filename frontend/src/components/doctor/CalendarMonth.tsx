@@ -14,10 +14,10 @@ interface CalendarMonthProps {
 const dayLabels = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'];
 
 const statusColors: Record<string, string> = {
-  CONFIRMADA: 'bg-blue-100 text-blue-800',
-  EN_ATENCION: 'bg-amber-100 text-amber-800',
-  COMPLETADA: 'bg-green-100 text-green-800',
-  CANCELADA: 'bg-red-100 text-red-800',
+  CONFIRMADA: 'bg-blue-light text-blue-dark',
+  EN_ATENCION: 'bg-amber-50 text-amber-800',
+  COMPLETADA: 'bg-green-50 text-green-800',
+  CANCELADA: 'bg-red-50 text-red-800',
 };
 
 export default function CalendarMonth({ currentDate, citas, onStartConsultation, onDayClick }: CalendarMonthProps) {
@@ -52,7 +52,7 @@ export default function CalendarMonth({ currentDate, citas, onStartConsultation,
     <div className="select-none">
       <div className="grid grid-cols-7 gap-px rounded-t-lg border border-gray-200 bg-gray-100">
         {dayLabels.map((d) => (
-          <div key={d} className="bg-gray-50 px-2 py-3 text-center text-xs font-semibold text-gray-600">
+          <div key={d} className="bg-brand-500 px-2 py-3 text-center text-xs font-semibold text-white">
             {d}
           </div>
         ))}
@@ -75,9 +75,9 @@ export default function CalendarMonth({ currentDate, citas, onStartConsultation,
                   onDayClick(clickedDate);
                 }
               }}
-              className={`min-h-[100px] bg-white p-2 ${isToday ? 'ring-2 ring-inset ring-indigo-500' : ''} ${dayCitas.length === 0 && onDayClick ? 'cursor-pointer hover:bg-gray-50' : ''}`}
+              className={`min-h-[100px] bg-white p-2 ${isToday ? 'ring-2 ring-inset ring-brand-500' : ''} ${dayCitas.length === 0 && onDayClick ? 'cursor-pointer hover:bg-gray-50' : ''}`}
             >
-              <span className={`inline-flex h-6 w-6 items-center justify-center rounded-full text-xs font-medium ${isToday ? 'bg-indigo-600 text-white' : 'text-gray-700'}`}>
+              <span className={`inline-flex h-6 w-6 items-center justify-center rounded-full text-xs font-medium ${isToday ? 'bg-brand-500 text-white' : 'text-gray-700'}`}>
                 {day}
               </span>
               <div className="mt-1 space-y-1">

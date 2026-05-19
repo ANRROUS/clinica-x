@@ -29,6 +29,7 @@ export default function ConsultationHistory({ patientId }: ConsultationHistoryPr
 
   const patients = patientsData?.data || [];
   const patientConsultations = patients.filter((c) => c.pacienteId === patientId);
+  const selectedConsultation = patientConsultations.find((c) => c.id === selectedConsultationId) || null;
 
   return (
     <div className="flex h-full gap-6">
@@ -42,9 +43,9 @@ export default function ConsultationHistory({ patientId }: ConsultationHistoryPr
       </div>
 
       <div className="flex-1">
-        {selectedConsultationId ? (
+        {selectedConsultation ? (
           <ConsultationDetail
-            consultationId={selectedConsultationId}
+            consultation={selectedConsultation}
             onBack={() => setSelectedConsultationId(null)}
           />
         ) : (

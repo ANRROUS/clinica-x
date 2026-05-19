@@ -33,12 +33,12 @@ export default function MedicationTable({ medications, onAdd, onRemove }: Medica
     <div className="rounded-xl border border-gray-200 bg-white p-6">
       <div className="mb-3 flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <Pill className="h-5 w-5 text-indigo-600" />
+          <Pill className="h-5 w-5 text-brand-500" />
           <h3 className="text-lg font-bold text-gray-900">Medicamentos</h3>
         </div>
         <button
           onClick={() => setShowForm(!showForm)}
-          className="inline-flex items-center gap-1 rounded-lg border border-indigo-300 px-3 py-1.5 text-sm font-medium text-indigo-700 hover:bg-indigo-50"
+          className="inline-flex items-center gap-1 rounded-lg bg-brand-500 px-3 py-1.5 text-sm font-medium text-white hover:bg-brand-600"
         >
           <Plus className="h-4 w-4" />
           Agregar
@@ -49,7 +49,7 @@ export default function MedicationTable({ medications, onAdd, onRemove }: Medica
       </p>
 
       {showForm && (
-        <div className="mb-4 rounded-lg border border-indigo-200 bg-indigo-50 p-4">
+        <div className="mb-4 rounded-lg border border-brand-200 bg-brand-50 p-4">
           <div className="flex items-end gap-3">
             <div className="flex-1">
               <label className="mb-1 block text-xs font-medium text-gray-700">Nombre</label>
@@ -58,7 +58,7 @@ export default function MedicationTable({ medications, onAdd, onRemove }: Medica
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 placeholder="Ej. Paracetamol"
-                className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-brand-500 focus:outline-none focus:ring-1 focus:ring-brand-500"
               />
             </div>
             <div className="w-20">
@@ -68,7 +68,7 @@ export default function MedicationTable({ medications, onAdd, onRemove }: Medica
                 value={days}
                 onChange={(e) => setDays(e.target.value)}
                 placeholder="5"
-                className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-brand-500 focus:outline-none focus:ring-1 focus:ring-brand-500"
               />
             </div>
             <div className="w-28">
@@ -78,13 +78,13 @@ export default function MedicationTable({ medications, onAdd, onRemove }: Medica
                 value={frequency}
                 onChange={(e) => setFrequency(e.target.value)}
                 placeholder="8 hrs."
-                className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-brand-500 focus:outline-none focus:ring-brand-500"
               />
             </div>
             <button
               onClick={handleAdd}
               disabled={!name.trim() || !days || !frequency.trim()}
-              className="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700 disabled:opacity-50"
+              className="rounded-lg bg-brand-500 px-4 py-2 text-sm font-medium text-white hover:bg-brand-600 disabled:opacity-50"
             >
               Agregar
             </button>
@@ -96,7 +96,7 @@ export default function MedicationTable({ medications, onAdd, onRemove }: Medica
         <div className="overflow-hidden rounded-lg border border-gray-200">
           <table className="w-full">
             <thead>
-              <tr className="bg-indigo-600 text-white">
+              <tr className="bg-brand-500 text-white">
                 <th className="px-4 py-2.5 text-left text-sm font-semibold">Nombre</th>
                 <th className="px-4 py-2.5 text-left text-sm font-semibold">Días</th>
                 <th className="px-4 py-2.5 text-left text-sm font-semibold">Frecuencia</th>

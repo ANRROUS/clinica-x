@@ -1,7 +1,7 @@
 'use client';
 
 import { useQuery } from '@tanstack/react-query';
-import { Mail, Phone } from 'lucide-react';
+import { Mail, Phone, Pencil } from 'lucide-react';
 import { useDoctorAuthStore } from '@/store/useDoctorAuthStore';
 import { getDoctorPatientDetail } from '@/lib/api/doctor.api';
 
@@ -31,13 +31,13 @@ export default function PatientHeader({ patientId, patientName }: PatientHeaderP
   return (
     <div className="flex items-center justify-between border-b border-gray-200 bg-white px-6 py-4">
       <div className="flex items-center gap-3">
-        <div className="flex h-11 w-11 items-center justify-center rounded-full bg-purple-600 text-sm font-bold text-white">
+        <div className="flex h-11 w-11 items-center justify-center rounded-full bg-accent-500 text-sm font-bold text-white">
           {initials}
         </div>
         <div>
           <p className="text-lg font-bold text-gray-900">{patientName}</p>
           {patient?.dni && (
-            <span className="inline-flex items-center rounded-md bg-purple-900 px-2 py-0.5 text-xs font-medium text-white">
+            <span className="inline-flex items-center rounded-md bg-brand-700 px-2 py-0.5 text-xs font-medium text-white">
               DNI: {patient.dni}
             </span>
           )}
@@ -48,10 +48,12 @@ export default function PatientHeader({ patientId, patientName }: PatientHeaderP
         <div className="flex items-center gap-1.5">
           <Mail className="h-4 w-4 text-gray-400" />
           <span>{patient?.email || '—'}</span>
+          <Pencil className="h-3 w-3 text-gray-300" />
         </div>
         <div className="flex items-center gap-1.5">
           <Phone className="h-4 w-4 text-gray-400" />
           <span>{patient?.telefono || '—'}</span>
+          <Pencil className="h-3 w-3 text-gray-300" />
         </div>
       </div>
     </div>
