@@ -6,7 +6,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { toast } from 'sonner';
-import { ArrowLeft, Save, Loader2 } from 'lucide-react';
+import { Loader2 } from 'lucide-react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { getAdminSpecialties, createDoctor, updateDoctor, getAdminDoctor } from '@/lib/api/admin.api';
 import ScheduleGrid from './ScheduleGrid';
@@ -162,81 +162,78 @@ export default function DoctorForm({ editId }: DoctorFormProps) {
   const isPending = createMutation.isPending || updateMutation.isPending;
 
   return (
-    <div className="mx-auto max-w-5xl">
-      <div className="mb-6 flex items-center justify-between">
-        <div>
-          <h2 className="text-xl font-bold text-gray-900">
-            {isEditing ? 'Editar Médico' : 'Nuevo Médico'}
-          </h2>
-          <p className="text-sm text-gray-500">
-            {isEditing ? 'Modifica los datos del médico' : 'Aquí podrás registrar o actualizar los datos del médico indicado'}
-          </p>
-        </div>
-        <button
-          onClick={() => router.push('/admin/dashboard')}
-          className="inline-flex items-center gap-1 text-sm font-medium text-gray-500 hover:text-gray-700"
-        >
-          <ArrowLeft className="h-4 w-4" />
-          Regresar
-        </button>
-      </div>
-
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-          <DoctorFormLeft
-            register={register}
-            errors={errors}
-            isEditing={isEditing}
-            displayName={displayName}
-            displaySpecialty={displaySpecialty}
-            specialties={specialties}
-            showPassword={showPassword}
-            onTogglePassword={() => setShowPassword(!showPassword)}
-          />
-
-          <div className="space-y-6">
-            <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
-              <h3 className="mb-4 text-sm font-semibold text-gray-900">Horario de atención</h3>
-              <p className="mb-4 text-xs text-gray-500">
-                Elige el horario del médico marcando las celdas correspondientes
-              </p>
-              <ScheduleGrid
-                schedules={schedules}
-                onChange={setSchedules}
-                shift={watchShift || 'MANANA'}
-                error={scheduleError}
-              />
-            </div>
-
-            {isEditing && doctor && (
-              <DangerZone
-                doctorId={doctor.id}
-                doctorName={`${doctor.nombre} ${doctor.apellido}`}
-                isActive={doctor.activo}
-              />
-            )}
+    <div className="mx-auto max-w-6xl">
+      <div className="rounded-2xl border border-gray-200 bg-white p-8 shadow-sm">
+        <div className="mb-8 flex items-start justify-between">
+          <div>
+            <h2 className="text-xl font-bold text-gray-900">
+              {isEditing ? 'Nuevo Médico / Actualizar Médico' : 'Nuevo Médico / Actualizar Médico'}
+            </h2>
+            <p className="mt-1 text-sm text-gray-500">
+              {isEditing ? 'Aquí podrás registrar o actualizar los datos del médico indicado' : 'Aquí podrás registrar o actualizar los datos del médico indicado'}
+            </p>
           </div>
+          <button
+            onClick={() => router.push('/admin/dashboard')}
+            className="text-sm font-semibold"
+            style={{ color: '#008585' }}
+          >
+            {'<<'} Regresar
+          </button>
         </div>
 
-        <div className="mt-6 flex justify-end gap-3">
-          <button
-            type="button"
-            onClick={() => router.push('/admin/dashboard')}
-            className="rounded-lg border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
-          >
-            Cancelar
-          </button>
-          <button
-            type="submit"
-            disabled={isPending}
-            className="inline-flex items-center gap-2 rounded-lg bg-teal-600 px-4 py-2 text-sm font-semibold text-white hover:bg-teal-700 disabled:opacity-50"
-          >
-            {isPending && <Loader2 className="h-4 w-4 animate-spin" />}
-            <Save className="h-4 w-4" />
-            Guardar cambios
-          </button>
-        </div>
-      </form>
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
+            <DoctorFormLeft
+              register={register}
+              errors={errors}
+              isEditing={isEditing}
+              displayName={displayName}
+              displaySpecialty={displaySpecialty}
+              specialties={specialties}
+              showPassword={showPassword}
+              onTogglePassword={() => setShowPassword(!showPassword)}
+            />
+
+            <div className="space-y-6">
+              <div>
+                <h3 className="text-lg font-bold text-gray-900">Horario de atención</h3>
+                <p className="mt-1 text-sm text-gray-500">Elige el horario</p>
+                <div className="mt-4">
+                  <ScheduleGrid
+                    schedules={schedules}
+                    onChange={setSchedules}
+                    shift={watchShift || 'MANANA'}
+                    error={scheduleError}
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="mt-8 flex justify-end">
+            <button
+              type="submit"
+              disabled={isPending}
+              className="inline-flex items-center gap-2 rounded-lg px-6 py-2.5 text-sm font-semibold text-white disabled:opacity-50"
+              style={{ backgroundColor: '#008585' }}
+            >
+              {isPending && <Loader2 className="h-4 w-4 animate-spin" />}
+              Guardar cambios
+            </button>
+          </div>
+        </form>
+
+        {isEditing && doctor && (
+          <div className="mt-8">
+            <DangerZone
+              doctorId={doctor.id}
+              doctorName={`${doctor.nombre} ${doctor.apellido}`}
+              isActive={doctor.activo}
+            />
+          </div>
+        )}
+      </div>
     </div>
   );
 }

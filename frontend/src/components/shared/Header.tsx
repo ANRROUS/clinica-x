@@ -56,12 +56,17 @@ export default function Header() {
   const isDoctorArea = pathname.startsWith('/doctor');
   const isAdminArea = pathname.startsWith('/admin');
 
+  const patientLinks = [
+    { href: '/', label: 'Inicio' },
+    { href: '/reservar-cita', label: 'Reservar cita' },
+    { href: '/perfil', label: 'Mi Perfil' },
+  ];
+
   return (
-    <header className="border-b border-gray-100 bg-white">
+    <header className="border-b border-gray-200 bg-white">
       <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
-        <Link href="/" className="flex items-center gap-2 text-xl font-bold text-brand-500">
-          <Stethoscope className="h-6 w-6" />
-          <span className="text-[#003F86]">Clínica X</span>
+        <Link href="/" className="text-2xl font-bold text-[#003F86]">
+          Clínica X
         </Link>
 
         <button
@@ -75,47 +80,42 @@ export default function Header() {
         <nav
           className={`${
             mobileOpen ? 'flex' : 'hidden'
-          } md:flex absolute left-0 right-0 top-[65px] flex-col gap-2 border-b border-gray-100 bg-white p-4 md:static md:flex-row md:items-center md:gap-6 md:border-0 md:p-0`}
+          } md:flex absolute left-0 right-0 top-[65px] z-50 flex-col gap-2 border-b border-gray-100 bg-white p-4 md:static md:flex-row md:items-center md:gap-8 md:border-0 md:p-0 md:shadow-none shadow-lg`}
         >
           {mounted && (
             <>
               {role === 'PACIENTE' && !isDoctorArea && !isAdminArea && (
                 <>
-                  <Link
-                    href="/"
-                    className="rounded-md px-3 py-2 text-sm font-medium text-gray-700 hover:text-brand-500"
-                    onClick={() => setMobileOpen(false)}
-                  >
-                    Inicio
-                  </Link>
-                  <Link
-                    href="/reservar-cita"
-                    className="rounded-md px-3 py-2 text-sm font-medium text-gray-700 hover:text-brand-500"
-                    onClick={() => setMobileOpen(false)}
-                  >
-                    Reservar cita
-                  </Link>
-                  <Link
-                    href="/perfil"
-                    className="rounded-md px-3 py-2 text-sm font-medium text-gray-700 hover:text-brand-500"
-                    onClick={() => setMobileOpen(false)}
-                  >
-                    Mi Perfil
-                  </Link>
-                  <div className="flex items-center gap-3 md:ml-4">
+                  <div className="flex flex-col gap-2 md:flex-row md:items-center md:gap-8">
+                    {patientLinks.map((link) => {
+                      const isActive = pathname === link.href;
+                      return (
+                        <Link
+                          key={link.href}
+                          href={link.href}
+                          className={`text-sm font-medium transition ${
+                            isActive ? 'text-[#003F86]' : 'text-gray-600 hover:text-[#003F86]'
+                          }`}
+                          onClick={() => setMobileOpen(false)}
+                        >
+                          {link.label}
+                        </Link>
+                      );
+                    })}
+                  </div>
+                  <div className="flex items-center gap-3 md:ml-8">
                     <div className="flex flex-col items-end">
                       <span className="text-sm font-semibold text-gray-900">{user?.nombre}</span>
-                      <span className="text-xs text-gray-500">Cerrar sesión</span>
+                      <button
+                        onClick={handleLogout}
+                        className="text-xs text-gray-500 hover:text-[#003F86] transition"
+                      >
+                        Cerrar sesión
+                      </button>
                     </div>
-                    <div className="flex h-9 w-9 items-center justify-center rounded-full bg-[#008585] text-sm font-semibold text-white">
-                      {user?.nombre?.[0]}{user?.apellido?.[0]}
+                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#008585] text-sm font-bold text-white">
+                      {user?.nombre?.[0]}
                     </div>
-                    <button
-                      onClick={handleLogout}
-                      className="ml-1 flex items-center gap-1 rounded-md px-2 py-1 text-sm text-gray-500 hover:bg-red-50 hover:text-red-600"
-                    >
-                      <LogOut className="h-4 w-4" />
-                    </button>
                   </div>
                 </>
               )}
@@ -195,20 +195,22 @@ export default function Header() {
               )}
               {!role && (
                 <>
-                  <Link
-                    href="/"
-                    className="rounded-md px-3 py-2 text-sm font-medium text-gray-700 hover:text-brand-500"
-                    onClick={() => setMobileOpen(false)}
-                  >
-                    Inicio
-                  </Link>
-                  <Link
-                    href="/reservar-cita"
-                    className="rounded-md px-3 py-2 text-sm font-medium text-gray-700 hover:text-brand-500"
-                    onClick={() => setMobileOpen(false)}
-                  >
-                    Reservar cita
-                  </Link>
+                  <div className="flex flex-col gap-2 md:flex-row md:items-center md:gap-8">
+                    <Link
+                      href="/"
+                      className={`text-sm font-medium transition ${pathname === '/' ? 'text-[#003F86]' : 'text-gray-600 hover:text-[#003F86]'}`}
+                      onClick={() => setMobileOpen(false)}
+                    >
+                      Inicio
+                    </Link>
+                    <Link
+                      href="/reservar-cita"
+                      className={`text-sm font-medium transition ${pathname === '/reservar-cita' ? 'text-[#003F86]' : 'text-gray-600 hover:text-[#003F86]'}`}
+                      onClick={() => setMobileOpen(false)}
+                    >
+                      Reservar cita
+                    </Link>
+                  </div>
                   <div className="flex items-center gap-3 md:ml-2">
                     <Link
                       href="/login"

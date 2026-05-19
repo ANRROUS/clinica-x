@@ -1,20 +1,20 @@
 'use client';
 
 import Link from 'next/link';
-import { Pencil, ToggleLeft, ToggleRight, Loader2 } from 'lucide-react';
+import { Pencil } from 'lucide-react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import { toggleDoctorStatus } from '@/lib/api/admin.api';
 import type { MedicoDTO } from '@/lib/api/types';
 
 const diaSemanaLabels: Record<number, string> = {
-  1: 'Lun',
-  2: 'Mar',
-  3: 'Mié',
-  4: 'Jue',
-  5: 'Vie',
-  6: 'Sáb',
-  7: 'Dom',
+  1: 'Lunes',
+  2: 'Martes',
+  3: 'Miercoles',
+  4: 'Jueves',
+  5: 'Viernes',
+  6: 'Sábado',
+  7: 'Domingo',
 };
 
 interface DoctorTableRowProps {
@@ -57,73 +57,49 @@ export default function DoctorTableRow({ doctor }: DoctorTableRowProps) {
     },
   });
 
+  const uniqueDays = doctor.schedules
+    ? [...new Set(doctor.schedules.map((s) => s.diaSemana))].sort().map((d) => diaSemanaLabels[d]).join(', ')
+    : '';
+
   return (
     <tr className="hover:bg-gray-50">
-      <td className="whitespace-nowrap px-4 py-3">
-        <p className="max-w-[180px] truncate font-medium text-gray-900">
-          {doctor.nombre} {doctor.apellido}
-        </p>
+      <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-900">
+        {doctor.nombre} {doctor.apellido}
       </td>
-      <td className="whitespace-nowrap px-4 py-3 text-sm text-gray-700">
+      <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-700">
         {doctor.specialty}
       </td>
-      <td className="whitespace-nowrap px-4 py-3">
-        <div className="flex flex-wrap gap-1">
-          {doctor.schedules && doctor.schedules.length > 0 ? (
-            doctor.schedules.map((s) => (
-              <span
-                key={s.id}
-                className="inline-flex rounded bg-gray-100 px-1.5 py-0.5 text-xs text-gray-600"
-              >
-                {diaSemanaLabels[s.diaSemana]} {s.horaInicio}-{s.horaFin}
-              </span>
-            ))
-          ) : (
-            <span className="text-xs text-gray-400">Sin horarios</span>
-          )}
+      <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-700">
+        {uniqueDays || 'Sin horarios'}
+      </td>
+      <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-700">
+        {doctor.shift === 'MANANA' ? 'Mañana' : 'Tarde'}
+      </td>
+      <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-700">
+        {doctor.activo ? 'Activo' : 'Inactivo'}
+      </td>
+      <td className="whitespace-nowrap px-6 py-4">
+        <div className="flex items-center gap-3">
+          <Link
+            href={`/admin/doctors/${doctor.id}/edit`}
+            className="text-gray-800"
+            title="Editar"
+          >
+            <Pencil className="h-4 w-4" />
+          </Link>
+          <button
+            onClick={() => statusMutation.mutate(!doctor.activo)}
+            disabled={statusMutation.isPending}
+            className="relative inline-flex h-5 w-9 items-center rounded-full transition-colors focus:outline-none"
+            style={{ backgroundColor: doctor.activo ? '#008585' : '#D1D5DB' }}
+            title={doctor.activo ? 'Desactivar' : 'Activar'}
+          >
+            <span
+              className="inline-block h-3.5 w-3.5 transform rounded-full bg-white transition-transform"
+              style={{ transform: doctor.activo ? 'translateX(18px)' : 'translateX(2px)' }}
+            />
+          </button>
         </div>
-      </td>
-      <td className="whitespace-nowrap px-4 py-3">
-        <span
-          className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${
-            doctor.shift === 'MANANA'
-              ? 'bg-amber-100 text-amber-700'
-              : 'bg-blue-100 text-blue-700'
-          }`}
-        >
-          {doctor.shift === 'MANANA' ? 'Mañana' : 'Tarde'}
-        </span>
-      </td>
-      <td className="whitespace-nowrap px-4 py-3">
-        <button
-          onClick={() => statusMutation.mutate(!doctor.activo)}
-          disabled={statusMutation.isPending}
-          className="flex items-center gap-1.5"
-          title={doctor.activo ? 'Desactivar' : 'Activar'}
-        >
-          {statusMutation.isPending ? (
-            <Loader2 className="h-4 w-4 animate-spin text-gray-400" />
-          ) : doctor.activo ? (
-            <>
-              <ToggleRight className="h-5 w-5 text-emerald-500" />
-              <span className="text-xs font-medium text-emerald-600">Activo</span>
-            </>
-          ) : (
-            <>
-              <ToggleLeft className="h-5 w-5 text-gray-400" />
-              <span className="text-xs font-medium text-gray-500">Inactivo</span>
-            </>
-          )}
-        </button>
-      </td>
-      <td className="whitespace-nowrap px-4 py-3">
-        <Link
-          href={`/admin/doctors/${doctor.id}/edit`}
-          className="rounded p-1.5 text-gray-500 hover:bg-gray-100 hover:text-teal-600"
-          title="Editar"
-        >
-          <Pencil className="h-4 w-4" />
-        </Link>
       </td>
     </tr>
   );

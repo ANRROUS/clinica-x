@@ -16,7 +16,7 @@ type TabKey = 'consultas' | 'tratamiento' | 'reservas';
 export default function PerfilPage() {
   const router = useRouter();
   const { isAuthenticated } = useAuthStore();
-  const [activeTab, setActiveTab] = useState<TabKey>('reservas');
+  const [activeTab, setActiveTab] = useState<TabKey>('consultas');
 
   useEffect(() => {
     if (!isAuthenticated) {
@@ -27,17 +27,15 @@ export default function PerfilPage() {
   if (!isAuthenticated) return null;
 
   return (
-    <div className="flex min-h-screen flex-col bg-gray-50">
+    <div className="flex min-h-screen flex-col bg-white">
       <Header />
       <main className="mx-auto w-full max-w-5xl flex-1 px-4 py-8">
         <ProfileHeader />
-        <div className="mt-6 rounded-xl border border-gray-200 bg-white">
-          <ProfileTabs activeTab={activeTab} onChange={setActiveTab} />
-          <div className="p-6">
-            {activeTab === 'consultas' && <ConsultationsTab />}
-            {activeTab === 'tratamiento' && <TreatmentTab />}
-            {activeTab === 'reservas' && <AppointmentsTab />}
-          </div>
+        <ProfileTabs activeTab={activeTab} onChange={setActiveTab} />
+        <div className="mt-2">
+          {activeTab === 'consultas' && <ConsultationsTab />}
+          {activeTab === 'tratamiento' && <TreatmentTab />}
+          {activeTab === 'reservas' && <AppointmentsTab />}
         </div>
       </main>
       <Footer />

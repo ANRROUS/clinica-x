@@ -70,33 +70,24 @@ export default function ScheduleGrid({ schedules, onChange, shift, error }: Sche
   const slots = useMemo(() => generateSlots(shift), [shift]);
 
   return (
-    <div className="space-y-3">
-      <div className="flex items-center justify-between">
-        <label className="block text-sm font-medium text-gray-700">
-          Horario de atención <span className="text-red-500">*</span>
-        </label>
-        <span className="text-xs text-gray-500">
-          Haz clic en las celdas para marcar disponibilidad
-        </span>
-      </div>
-
-      {schedules.length === 0 && (
-        <p className="text-sm text-gray-400">
-          Selecciona al menos un bloque de horario.
-        </p>
-      )}
+    <div className="space-y-4">
+      <h4 className="text-center text-lg font-bold text-gray-900">Abril 2026</h4>
 
       <div className="overflow-x-auto">
         <table className="w-full border-collapse text-sm">
           <thead>
             <tr>
-              <th className="w-20 border border-gray-200 bg-teal-50 px-2 py-1.5 text-xs font-semibold text-teal-700">
+              <th
+                className="w-24 border border-gray-200 px-2 py-2 text-xs font-semibold text-white"
+                style={{ backgroundColor: '#008585' }}
+              >
                 Hora
               </th>
               {DAYS.map((d) => (
                 <th
                   key={d.value}
-                  className="w-20 border border-gray-200 bg-teal-50 px-2 py-1.5 text-xs font-semibold text-teal-700"
+                  className="w-20 border border-gray-200 px-2 py-2 text-xs font-semibold text-white"
+                  style={{ backgroundColor: '#008585' }}
                 >
                   {d.label}
                 </th>
@@ -106,7 +97,10 @@ export default function ScheduleGrid({ schedules, onChange, shift, error }: Sche
           <tbody>
             {slots.map(({ startTime, endTime }) => (
               <tr key={startTime}>
-                <td className="border border-gray-200 bg-teal-50 px-2 py-1 text-center text-xs font-medium text-teal-700 whitespace-nowrap">
+                <td
+                  className="border border-gray-200 px-2 py-2 text-center text-xs font-semibold text-white whitespace-nowrap"
+                  style={{ backgroundColor: '#008585' }}
+                >
                   {startTime} - {endTime}
                 </td>
                 {DAYS.map((d) => {
@@ -116,11 +110,12 @@ export default function ScheduleGrid({ schedules, onChange, shift, error }: Sche
                       <button
                         type="button"
                         onClick={() => onChange(toggleCell(schedules, d.value, startTime, endTime))}
-                        className={`h-full w-full px-2 py-2 text-xs transition-colors ${
+                        className="h-full w-full px-2 py-2 text-xs transition-colors"
+                        style={
                           selected
-                            ? 'bg-teal-500 text-white font-medium'
-                            : 'bg-white text-gray-300 hover:bg-teal-100'
-                        }`}
+                            ? { backgroundColor: '#008585', color: '#fff', fontWeight: 600 }
+                            : { backgroundColor: '#fff', color: '#D1D5DB' }
+                        }
                       >
                         {selected ? '✓' : ''}
                       </button>
