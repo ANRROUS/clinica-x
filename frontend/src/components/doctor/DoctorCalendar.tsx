@@ -79,16 +79,18 @@ export default function DoctorCalendar({ citas, onStatusChange, onStartConsultat
           <button onClick={navigateNext} className="rounded-lg border border-gray-200 p-1.5 hover:bg-gray-50">
             <ChevronRight className="h-4 w-4" />
           </button>
-          <h2 className="ml-2 text-lg font-semibold text-gray-900">{formatDate()}</h2>
+          <h2 className="ml-2 text-lg font-semibold text-brand-500">{formatDate()}</h2>
         </div>
 
-        <div className="flex rounded-lg border border-gray-200 bg-gray-50 p-0.5">
+        <div className="flex items-center gap-1">
           {viewOptions.map(({ key, label }) => (
             <button
               key={key}
               onClick={() => setViewMode(key)}
-              className={`rounded-md px-3 py-1.5 text-sm font-medium transition-colors ${
-                viewMode === key ? 'bg-white text-indigo-700 shadow-sm' : 'text-gray-600 hover:text-gray-900'
+              className={`rounded-full px-4 py-1.5 text-sm font-medium transition-colors ${
+                viewMode === key
+                  ? 'bg-brand-500 text-white shadow-sm'
+                  : 'border border-gray-300 text-gray-600 hover:border-brand-500 hover:text-brand-500'
               }`}
             >
               {label}

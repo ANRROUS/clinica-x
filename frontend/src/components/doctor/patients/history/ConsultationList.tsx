@@ -57,13 +57,13 @@ export default function ConsultationList({
                 onClick={() => onSelect(c.id)}
                 className={`w-full rounded-lg border-2 px-4 py-3 text-left transition-colors ${
                   selectedId === c.id
-                    ? 'border-indigo-400 bg-indigo-50'
-                    : 'border-gray-200 bg-white hover:border-indigo-200'
+                    ? 'border-brand-500 bg-brand-500 text-white'
+                    : 'border-brand-500 bg-white text-brand-500 hover:bg-brand-50'
                 }`}
               >
                 <div className="flex items-center gap-2">
-                  <Clock className="h-4 w-4 text-indigo-500" />
-                  <span className="text-sm font-medium text-indigo-700">
+                  <Clock className={`h-4 w-4 ${selectedId === c.id ? 'text-white' : 'text-brand-500'}`} />
+                  <span className="text-sm font-medium">
                     Consulta {consultations.length - index} - {dateStr}
                   </span>
                 </div>

@@ -8,13 +8,13 @@ interface PatientTabsProps {
 
 export default function PatientTabs({ activeTab, onTabChange, isActivePatient }: PatientTabsProps) {
   return (
-    <div className="flex border-b border-gray-200 bg-white px-6">
+    <div className="flex bg-white px-6 py-3 gap-2">
       <button
         onClick={() => onTabChange('historial')}
-        className={`px-5 py-3 text-sm font-medium transition-colors ${
+        className={`rounded-full px-5 py-2 text-sm font-medium transition-colors ${
           activeTab === 'historial'
-            ? 'border-b-2 border-indigo-600 text-indigo-700'
-            : 'text-gray-500 hover:text-gray-700'
+            ? 'bg-brand-500 text-white'
+            : 'border border-gray-300 text-gray-600 hover:border-brand-500 hover:text-brand-500'
         }`}
       >
         Historial
@@ -23,12 +23,12 @@ export default function PatientTabs({ activeTab, onTabChange, isActivePatient }:
       <button
         onClick={() => isActivePatient && onTabChange('consulta')}
         disabled={!isActivePatient}
-        className={`px-5 py-3 text-sm font-medium transition-colors ${
+        className={`rounded-full px-5 py-2 text-sm font-medium transition-colors ${
           !isActivePatient
-            ? 'cursor-not-allowed text-gray-300'
+            ? 'cursor-not-allowed border border-gray-200 text-gray-300'
             : activeTab === 'consulta'
-              ? 'border-b-2 border-indigo-600 text-indigo-700'
-              : 'text-gray-500 hover:text-gray-700'
+              ? 'bg-brand-500 text-white'
+              : 'border border-gray-300 text-gray-600 hover:border-brand-500 hover:text-brand-500'
         }`}
       >
         Consulta Actual

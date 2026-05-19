@@ -6,7 +6,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { toast } from 'sonner';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { Stethoscope, FileText, MessageSquare, CheckCircle } from 'lucide-react';
+import { Stethoscope, FileText, MessageSquare } from 'lucide-react';
 import { startConsultation, finalizeConsultation } from '@/lib/api/doctor.api';
 import type { ConsultaMedicoDTO } from '@/lib/api/types';
 
@@ -95,8 +95,8 @@ export default function ConsultationPanel({
     return (
       <div className="rounded-xl border border-gray-200 bg-white p-6">
         <div className="flex items-center gap-3 mb-4">
-          <div className="flex h-10 w-10 items-center justify-center rounded-full bg-indigo-100">
-            <Stethoscope className="h-5 w-5 text-indigo-600" />
+          <div className="flex h-10 w-10 items-center justify-center rounded-full bg-brand-50">
+            <Stethoscope className="h-5 w-5 text-brand-500" />
           </div>
           <div>
             <h3 className="font-semibold text-gray-900">Iniciar Consulta</h3>
@@ -110,7 +110,7 @@ export default function ConsultationPanel({
             value={motivo}
             onChange={(e) => setMotivo(e.target.value)}
             placeholder="Describa el motivo de la consulta..."
-            className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+            className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-brand-500 focus:outline-none focus:ring-1 focus:ring-brand-500"
             rows={3}
           />
         </div>
@@ -118,7 +118,7 @@ export default function ConsultationPanel({
         <button
           onClick={handleStart}
           disabled={startMutation.isPending}
-          className="w-full rounded-lg bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white hover:bg-indigo-700 disabled:opacity-50"
+          className="w-full rounded-lg bg-brand-500 px-4 py-2.5 text-sm font-semibold text-white hover:bg-brand-600 disabled:opacity-50"
         >
           {startMutation.isPending ? 'Iniciando...' : 'Iniciar Consulta'}
         </button>
@@ -154,7 +154,7 @@ export default function ConsultationPanel({
             Diagnóstico
           </label>
           <textarea
-            className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+            className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-brand-500 focus:outline-none focus:ring-1 focus:ring-brand-500"
             placeholder="Ingrese el diagnóstico..."
             rows={4}
             {...register('diagnostico')}
@@ -168,7 +168,7 @@ export default function ConsultationPanel({
             Notas adicionales
           </label>
           <textarea
-            className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+            className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-brand-500 focus:outline-none focus:ring-1 focus:ring-brand-500"
             placeholder="Notas adicionales sobre la consulta..."
             rows={3}
             {...register('notas')}
@@ -178,7 +178,7 @@ export default function ConsultationPanel({
         <button
           type="submit"
           disabled={finalizeMutation.isPending}
-          className="w-full rounded-lg bg-green-600 px-4 py-2.5 text-sm font-semibold text-white hover:bg-green-700 disabled:opacity-50"
+          className="w-full rounded-lg bg-brand-500 px-4 py-2.5 text-sm font-semibold text-white hover:bg-brand-600 disabled:opacity-50"
         >
           {finalizeMutation.isPending ? 'Finalizando...' : 'Finalizar Consulta'}
         </button>

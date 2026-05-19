@@ -15,10 +15,10 @@ interface CalendarWeekProps {
 const dayNames = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
 
 const statusBadge: Record<string, string> = {
-  CONFIRMADA: 'bg-blue-100 text-blue-800 border-blue-200',
-  EN_ATENCION: 'bg-amber-100 text-amber-800 border-amber-200',
-  COMPLETADA: 'bg-green-100 text-green-700 border-green-200',
-  CANCELADA: 'bg-red-100 text-red-700 border-red-200',
+  CONFIRMADA: 'bg-blue-light text-blue-dark border-blue-200',
+  EN_ATENCION: 'bg-amber-50 text-amber-800 border-amber-200',
+  COMPLETADA: 'bg-green-50 text-green-700 border-green-200',
+  CANCELADA: 'bg-red-50 text-red-700 border-red-200',
 };
 
 const statusLabel: Record<string, string> = {
@@ -72,20 +72,22 @@ export default function CalendarWeek({ currentDate, citas, onStatusChange, onSta
   return (
     <div className="overflow-x-auto">
       <div className="min-w-[900px]">
-        <div className="grid grid-cols-[60px_repeat(5,1fr)] border-b border-gray-200 bg-white">
-          <div className="border-r border-gray-100 p-2" />
+        <div className="grid grid-cols-[60px_repeat(5,1fr)]">
+          <div className="bg-brand-500 p-2 text-center text-xs font-semibold text-white">
+            Hora
+          </div>
           {weekDays.map((day) => {
             const key = day.toISOString().slice(0, 10);
             const isToday = key === todayKey;
             const dayCitas = citasByDay.get(key) || [];
             return (
-              <div key={key} className={`border-r border-gray-100 p-2 text-center ${isToday ? 'bg-indigo-50' : ''}`}>
-                <p className="text-xs font-medium text-gray-500">{dayNames[day.getDay()]}</p>
-                <p className={`mt-0.5 text-lg font-bold ${isToday ? 'text-indigo-600' : 'text-gray-900'}`}>
+              <div key={key} className={`bg-brand-500 p-2 text-center ${isToday ? 'bg-brand-600' : ''}`}>
+                <p className="text-xs font-medium text-white">{dayNames[day.getDay()]}</p>
+                <p className={`mt-0.5 text-lg font-bold text-white`}>
                   {day.getDate()}
                 </p>
                 {dayCitas.length > 0 && (
-                  <span className="mt-1 inline-block rounded-full bg-indigo-600 px-2 py-0.5 text-xs text-white">
+                  <span className="mt-1 inline-block rounded-full bg-white px-2 py-0.5 text-xs text-brand-500">
                     {dayCitas.length}
                   </span>
                 )}
@@ -99,7 +101,7 @@ export default function CalendarWeek({ currentDate, citas, onStatusChange, onSta
             const hour = parseInt(time.split(':')[0], 10);
             return (
               <div key={time} className="grid grid-cols-[60px_repeat(5,1fr)] border-b border-gray-100">
-                <div className="border-r border-gray-100 p-1 text-right text-xs text-gray-400">
+                <div className="bg-brand-500 p-1 text-right text-xs font-medium text-white">
                   {time}
                 </div>
                 {weekDays.map((day) => {
@@ -110,7 +112,7 @@ export default function CalendarWeek({ currentDate, citas, onStatusChange, onSta
                     return ch === hour;
                   });
                   return (
-                    <div key={`${key}-${time}`} className="min-h-[50px] border-r border-gray-50 p-0.5">
+                    <div key={`${key}-${time}`} className="min-h-[50px] border-r border-gray-100 p-0.5">
                       {slotCitas.map((cita) => {
                         const start = parseApiDate(cita.fechaHora);
                         const h = start.getHours().toString().padStart(2, '0');

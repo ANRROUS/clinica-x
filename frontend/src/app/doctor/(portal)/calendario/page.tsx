@@ -82,7 +82,7 @@ export default function DoctorCalendarioPage() {
         <h1 className="text-xl font-bold text-gray-900">Mi Calendario</h1>
         <p className="text-sm text-gray-500">Gestiona tus citas y consultas</p>
       </div>
-      <div className="flex-1 bg-gray-50">
+      <div className="flex flex-col flex-1 overflow-hidden bg-gray-50">
         <DoctorCalendar
           citas={citas}
           onStatusChange={handleStatusChange}

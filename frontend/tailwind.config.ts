@@ -22,6 +22,7 @@ const config: Config = {
         },
         blue: {
           dark: '#003F86',
+          light: '#e6f2ff',
         },
         accent: {
           500: '#5b21b6',
