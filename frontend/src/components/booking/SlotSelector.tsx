@@ -10,12 +10,10 @@ interface Props {
   loading?: boolean;
 }
 
-const MAX_VISIBLE_COLUMNS = 4;
-
 export default function SlotSelector({ slots, selectedSlot, onSelect, loading }: Props) {
   if (loading) {
     return (
-      <div className="flex flex-wrap gap-2">
+      <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
         {Array.from({ length: 8 }).map((_, i) => (
           <SlotSkeleton key={i} />
         ))}
@@ -23,9 +21,7 @@ export default function SlotSelector({ slots, selectedSlot, onSelect, loading }:
     );
   }
 
-  const availableSlots = slots.filter((s) => s.disponible);
-
-  if (availableSlots.length === 0) {
+  if (slots.length === 0) {
     return (
       <p className="py-4 text-center text-sm text-gray-500">
         No hay horarios disponibles para este día.
@@ -33,27 +29,23 @@ export default function SlotSelector({ slots, selectedSlot, onSelect, loading }:
     );
   }
 
-  const totalSlots = availableSlots.length;
-  const needsScroll = totalSlots > MAX_VISIBLE_COLUMNS * 2;
-
   return (
-    <div
-      className={`flex flex-wrap gap-2 ${
-        needsScroll ? 'max-h-[4.5rem] overflow-y-auto' : ''
-      }`}
-    >
-      {availableSlots.map((slot) => {
+    <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+      {slots.map((slot) => {
         const isSelected =
           selectedSlot?.horaInicio === slot.horaInicio &&
           selectedSlot?.horaFin === slot.horaFin;
         return (
           <button
             key={`${slot.horaInicio}-${slot.horaFin}`}
-            onClick={() => onSelect(slot)}
-            className={`rounded-lg border px-4 py-2 text-sm font-medium transition ${
+            onClick={() => slot.disponible && onSelect(slot)}
+            disabled={!slot.disponible}
+            className={`rounded-lg px-3 py-2.5 text-center text-xs font-medium transition ${
               isSelected
-                ? 'border-brand-500 bg-brand-500 text-white'
-                : 'border-gray-300 text-gray-700 hover:border-brand-300 hover:bg-brand-50'
+                ? 'bg-[#008585] text-white'
+                : slot.disponible
+                  ? 'border border-gray-300 bg-white text-gray-700 hover:border-[#008585] hover:bg-[#008585]/5'
+                  : 'cursor-not-allowed bg-gray-300 text-gray-500'
             }`}
           >
             {slot.horaInicio} - {slot.horaFin}

@@ -136,7 +136,7 @@ function RescheduleModal({
           </button>
         </div>
 
-        <div className="mb-4 rounded-lg bg-brand-50 p-3 text-sm text-gray-700">
+        <div className="mb-4 rounded-lg bg-[#008585]/10 p-3 text-sm text-gray-700">
           <p><span className="font-semibold">Especialidad:</span> {appointment.specialty || '—'}</p>
           <p><span className="font-semibold">Médico:</span> {appointment.doctorName || '—'}</p>
           <p><span className="font-semibold">Fecha actual:</span> {formatDateExtended(appointment.fechaHora)}</p>
@@ -152,7 +152,7 @@ function RescheduleModal({
               setSelectedDate(e.target.value);
               setSelectedSlot(null);
             }}
-            className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-brand-500 focus:outline-none focus:ring-1 focus:ring-brand-500"
+            className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-[#008585] focus:outline-none focus:ring-1 focus:ring-[#008585]"
           />
         </div>
 
@@ -161,7 +161,7 @@ function RescheduleModal({
             <label className="mb-1 block text-sm font-medium text-gray-700">Nuevo horario</label>
             {loadingSlots ? (
               <div className="flex justify-center py-4">
-                <Loader2 className="h-5 w-5 animate-spin text-brand-500" />
+                <Loader2 className="h-5 w-5 animate-spin text-[#008585]" />
               </div>
             ) : slots.length === 0 ? (
               <p className="py-2 text-sm text-gray-500">No hay horarios disponibles para esta fecha.</p>
@@ -177,8 +177,8 @@ function RescheduleModal({
                       onClick={() => setSelectedSlot(slot)}
                       className={`rounded-lg border px-3 py-1.5 text-xs font-medium transition ${
                         isSelected
-                          ? 'border-brand-500 bg-brand-500 text-white'
-                          : 'border-gray-300 text-gray-700 hover:border-brand-300 hover:bg-brand-50'
+                          ? 'border-[#008585] bg-[#008585] text-white'
+                          : 'border-gray-300 text-gray-700 hover:border-[#008585] hover:bg-[#008585]/5'
                       }`}
                     >
                       {slot.horaInicio} - {slot.horaFin}
@@ -194,7 +194,7 @@ function RescheduleModal({
           <button
             onClick={handleConfirm}
             disabled={!selectedSlot || rescheduleMutation.isPending}
-            className="flex-1 rounded-lg bg-brand-500 px-4 py-2 text-sm font-semibold text-white hover:bg-brand-600 disabled:opacity-50"
+            className="flex-1 rounded-lg bg-[#008585] px-4 py-2 text-sm font-semibold text-white hover:bg-[#007070] disabled:opacity-50"
           >
             {rescheduleMutation.isPending ? 'Reprogramando...' : 'Confirmar'}
           </button>
@@ -259,37 +259,34 @@ export default function AppointmentsTab() {
   }
 
   return (
-    <>
-      <h3 className="mb-4 text-lg font-semibold text-gray-800">Reservas Confirmadas</h3>
-      <p className="mb-6 text-sm text-gray-500">
-        Aquí podrás ver todas tus reservas que se encuentran activas.
+    <div className="px-2">
+      <h3 className="mb-1 text-xl font-bold text-gray-900">Reservas Confirmadas</h3>
+      <p className="mb-8 text-sm text-gray-600">
+        Aquí podrás ver todas tus reservas que se encuentran activas
       </p>
 
-      <div className="grid gap-4 sm:grid-cols-2">
+      <div className="grid gap-6 sm:grid-cols-2">
         {activeAppointments.map((appt) => {
           const canModify = canModifyAppointment(appt.fechaHora);
           return (
             <div
               key={appt.id}
-              className="rounded-lg border border-gray-200 bg-white p-5"
+              className="rounded-xl border-2 border-[#008585] bg-white p-6"
             >
-              <p className="font-bold text-gray-900">{appt.specialty || 'Especialidad'}</p>
-              <p className="text-sm text-gray-600">{appt.doctorName || 'Médico'}</p>
-              <p className="mt-2 text-sm text-gray-500">
+              <p className="text-lg font-bold text-gray-900">{appt.specialty || 'Especialidad'}</p>
+              <p className="mt-1 text-sm text-gray-700">{appt.doctorName || 'Médico'}</p>
+              <p className="mt-3 text-sm text-gray-600">
                 Fecha: {formatDateExtended(appt.fechaHora)}
               </p>
-              <span className="mt-1 inline-block rounded-full bg-brand-100 px-2 py-0.5 text-xs font-medium text-brand-700">
-                {appt.estado === 'CONFIRMADA' ? 'Confirmada' : 'En atención'}
-              </span>
 
-              <div className="mt-4 flex gap-2">
+              <div className="mt-6 flex items-center justify-center gap-3">
                 <button
                   onClick={() => setRescheduleTarget(appt)}
                   disabled={!canModify}
-                  className={`rounded-lg px-3 py-1.5 text-xs font-medium transition ${
+                  className={`rounded-lg px-5 py-2 text-sm font-medium transition ${
                     canModify
-                      ? 'border border-brand-300 text-brand-600 hover:bg-brand-50'
-                      : 'cursor-not-allowed border border-gray-200 text-gray-400'
+                      ? 'bg-[#008585] text-white hover:bg-[#007070]'
+                      : 'cursor-not-allowed bg-gray-300 text-white'
                   }`}
                 >
                   Reprogramar
@@ -297,17 +294,17 @@ export default function AppointmentsTab() {
                 <button
                   onClick={() => setCancelTarget(appt)}
                   disabled={!canModify}
-                  className={`rounded-lg px-3 py-1.5 text-xs font-medium ${
+                  className={`rounded-lg px-5 py-2 text-sm font-medium transition ${
                     canModify
-                      ? 'border border-red-300 text-red-600 hover:bg-red-50'
-                      : 'cursor-not-allowed border border-gray-200 text-gray-400'
+                      ? 'bg-[#888888] text-white hover:bg-[#777777]'
+                      : 'cursor-not-allowed bg-gray-300 text-white'
                   }`}
                 >
                   Cancelar
                 </button>
               </div>
               {!canModify && (
-                <p className="mt-2 text-xs text-yellow-600">
+                <p className="mt-3 text-center text-xs text-yellow-600">
                   No se puede modificar (menos de 1 hora antes)
                 </p>
               )}
@@ -331,6 +328,6 @@ export default function AppointmentsTab() {
         }}
         appointment={rescheduleTarget}
       />
-    </>
+    </div>
   );
 }

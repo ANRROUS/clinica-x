@@ -1,6 +1,6 @@
 'use client';
 
-import { AlertTriangle } from 'lucide-react';
+import { Trash2 } from 'lucide-react';
 import { useState } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
@@ -34,24 +34,24 @@ export default function DangerZone({ doctorId, doctorName, isActive }: DangerZon
 
   return (
     <>
-      <div className="rounded-xl border border-red-200 bg-red-50 p-6">
-        <div className="flex items-center gap-2">
-          <AlertTriangle className="h-5 w-5 text-red-600" />
-          <h3 className="text-sm font-semibold text-red-800">Zona de peligro</h3>
-        </div>
-        <p className="mt-2 text-sm text-red-700">
-          Esta acción no se puede deshacer fácilmente. Al desactivar al médico, sus citas futuras
-          permanecerán en el sistema pero no aparecerá disponible para nuevas reservas.
-        </p>
-        <p className="mt-1 text-sm text-red-700">
-          Puedes revertir esta acción activando el toggle en el Dashboard.
+      <div
+        className="rounded-xl p-6"
+        style={{ backgroundColor: '#FFF5F5', border: '1px solid #FECACA' }}
+      >
+        <h3 className="text-sm font-bold uppercase" style={{ color: '#EF4444' }}>
+          ZONA DE PELIGRO
+        </h3>
+        <p className="mt-2 text-xs text-gray-500 leading-relaxed">
+          Esta acción hará que el doctor pase a estado de inactivo y los pacientes no podrán reservar citas con él, como también el doctor pierde acceso a su portal.
         </p>
         <button
           type="button"
           onClick={() => setShowModal(true)}
-          className="mt-4 inline-flex items-center gap-2 rounded-lg border border-red-300 bg-white px-4 py-2 text-sm font-medium text-red-600 hover:bg-red-50"
+          className="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-lg px-4 py-2.5 text-sm font-semibold text-white"
+          style={{ backgroundColor: '#EF4444' }}
         >
-          🗑 Desactivar Médico
+          <Trash2 className="h-4 w-4" />
+          Desactivar Médico
         </button>
       </div>
 
@@ -76,7 +76,8 @@ export default function DangerZone({ doctorId, doctorName, isActive }: DangerZon
               <button
                 onClick={() => deactivateMutation.mutate()}
                 disabled={deactivateMutation.isPending}
-                className="rounded-lg bg-red-600 px-4 py-2 text-sm font-semibold text-white hover:bg-red-700 disabled:opacity-50"
+                className="rounded-lg px-4 py-2 text-sm font-semibold text-white disabled:opacity-50"
+                style={{ backgroundColor: '#EF4444' }}
               >
                 {deactivateMutation.isPending ? 'Desactivando...' : 'Sí, desactivar'}
               </button>

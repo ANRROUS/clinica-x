@@ -13,7 +13,8 @@ export default function DoctorFilterDropdown({ value, onChange, specialties }: D
     <select
       value={value}
       onChange={(e) => onChange(e.target.value)}
-      className="rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-teal-500 focus:outline-none focus:ring-1 focus:ring-teal-500"
+      className="min-w-[180px] rounded-lg border px-4 py-2.5 text-sm focus:outline-none"
+      style={{ borderColor: '#008585', color: '#374151' }}
     >
       <option value="">Filtrar por...</option>
       <option value="all">Todos</option>

@@ -1,7 +1,5 @@
 'use client';
 
-import { useState } from 'react';
-
 type TabKey = 'consultas' | 'tratamiento' | 'reservas';
 
 interface Props {
@@ -17,20 +15,23 @@ const tabs: { key: TabKey; label: string }[] = [
 
 export default function ProfileTabs({ activeTab, onChange }: Props) {
   return (
-    <div className="flex border-b border-gray-200">
-      {tabs.map((tab) => (
-        <button
-          key={tab.key}
-          onClick={() => onChange(tab.key)}
-          className={`px-6 py-3 text-sm font-medium transition ${
-            activeTab === tab.key
-              ? 'border-b-2 border-brand-500 text-brand-700'
-              : 'text-gray-500 hover:text-gray-700'
-          }`}
-        >
-          {tab.label}
-        </button>
-      ))}
+    <div className="flex items-center justify-center gap-4 py-6">
+      {tabs.map((tab) => {
+        const isActive = activeTab === tab.key;
+        return (
+          <button
+            key={tab.key}
+            onClick={() => onChange(tab.key)}
+            className={`min-w-[160px] rounded-lg border-2 px-8 py-2.5 text-sm font-semibold transition ${
+              isActive
+                ? 'border-[#008585] bg-[#008585] text-white'
+                : 'border-[#008585] bg-white text-[#008585] hover:bg-[#008585]/5'
+            }`}
+          >
+            {tab.label}
+          </button>
+        );
+      })}
     </div>
   );
 }
