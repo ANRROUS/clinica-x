@@ -14,52 +14,69 @@ export default function ContactForm() {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
-      <div className="grid gap-4 sm:grid-cols-2">
+    <form onSubmit={handleSubmit} className="space-y-5">
+      <h3 className="text-center text-lg font-bold uppercase tracking-wide text-gray-900">
+        Contáctanos
+      </h3>
+
+      <div className="grid gap-5 sm:grid-cols-2">
         <div>
-          <label className="mb-1 block text-sm font-medium text-gray-700">Nombre</label>
+          <label className="mb-1 block text-xs font-medium text-gray-700">Nombre *</label>
           <input
             type="text"
             required
-            className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-brand-500 focus:outline-none focus:ring-1 focus:ring-brand-500"
-            placeholder="Tu nombre"
+            className="w-full border-0 border-b border-gray-300 bg-transparent px-1 py-2 text-sm text-gray-900 placeholder-gray-400 outline-none focus:border-[#008585] focus:ring-0"
+            placeholder="Escribe tu nombre"
           />
         </div>
         <div>
-          <label className="mb-1 block text-sm font-medium text-gray-700">Apellido</label>
+          <label className="mb-1 block text-xs font-medium text-gray-700">Apellido *</label>
           <input
             type="text"
             required
-            className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-brand-500 focus:outline-none focus:ring-1 focus:ring-brand-500"
-            placeholder="Tu apellido"
+            className="w-full border-0 border-b border-gray-300 bg-transparent px-1 py-2 text-sm text-gray-900 placeholder-gray-400 outline-none focus:border-[#008585] focus:ring-0"
+            placeholder="Escribe tu apellido"
           />
         </div>
       </div>
+
+      <div className="grid gap-5 sm:grid-cols-2">
+        <div>
+          <label className="mb-1 block text-xs font-medium text-gray-700">Email *</label>
+          <input
+            type="email"
+            required
+            className="w-full border-0 border-b border-gray-300 bg-transparent px-1 py-2 text-sm text-gray-900 placeholder-gray-400 outline-none focus:border-[#008585] focus:ring-0"
+            placeholder="Ej. email@gmail.com"
+          />
+        </div>
+        <div>
+          <label className="mb-1 block text-xs font-medium text-gray-700">Número de celular</label>
+          <input
+            type="tel"
+            className="w-full border-0 border-b border-gray-300 bg-transparent px-1 py-2 text-sm text-gray-900 placeholder-gray-400 outline-none focus:border-[#008585] focus:ring-0"
+            placeholder="Ej. XXX-XXXX-XXXX"
+          />
+        </div>
+      </div>
+
       <div>
-        <label className="mb-1 block text-sm font-medium text-gray-700">Correo electrónico</label>
-        <input
-          type="email"
-          required
-          className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-brand-500 focus:outline-none focus:ring-1 focus:ring-brand-500"
-          placeholder="tucorreo@ejemplo.com"
+        <label className="mb-1 block text-xs font-medium text-gray-700">Comentario</label>
+        <textarea
+          rows={4}
+          className="w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 placeholder-gray-400 outline-none focus:border-[#008585] focus:ring-1 focus:ring-[#008585]"
         />
       </div>
-      <div>
-        <label className="mb-1 block text-sm font-medium text-gray-700">Número de celular</label>
-        <input
-          type="tel"
-          required
-          className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-brand-500 focus:outline-none focus:ring-1 focus:ring-brand-500"
-          placeholder="999888777"
-        />
+
+      <div className="flex justify-center pt-2">
+        <button
+          type="submit"
+          disabled={loading}
+          className="rounded-md bg-[#008585] px-10 py-2.5 text-sm font-semibold uppercase tracking-wide text-white hover:bg-[#007070] disabled:opacity-50"
+        >
+          Enviar
+        </button>
       </div>
-      <button
-        type="submit"
-        disabled={loading}
-        className="w-full rounded-lg bg-brand-500 px-4 py-2.5 font-semibold text-white hover:bg-brand-600 disabled:opacity-50"
-      >
-        Enviar mensaje
-      </button>
     </form>
   );
 }

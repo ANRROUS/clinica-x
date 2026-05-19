@@ -7,7 +7,7 @@ dist/
 build/
 .next/
 .turbo/
-
+diseño-frontend
 # Variables de entorno (NUNCA comitear secretos)
 .env
 .env.local

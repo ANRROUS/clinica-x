@@ -8,21 +8,22 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        // Paleta basada en los wireframes (teal/indigo). Ajustar al diseño final.
         brand: {
           50: '#e6f7f1',
           100: '#c2ebdb',
           200: '#9bdfc4',
           300: '#73d3ad',
           400: '#4ec898',
-          500: '#1d9e75', // primary
-          600: '#168363',
-          700: '#0f6e56', // primary dark
-          800: '#0a5544',
-          900: '#054032',
+          500: '#008585', // turquesa principal
+          600: '#007070',
+          700: '#006666',
+          800: '#005a5a',
+          900: '#004d4d',
+        },
+        blue: {
+          dark: '#003F86',
         },
         accent: {
-          // Para badge DNI / acentos morado-índigo
           500: '#5b21b6',
           600: '#4c1d95',
           700: '#3b0f73',
