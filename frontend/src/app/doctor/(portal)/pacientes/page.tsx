@@ -20,6 +20,11 @@ export default function DoctorPacientesPage() {
       hasta: hasta.toISOString().slice(0, 10),
     };
   });
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const { data: patientsData, isLoading } = useQuery({
     queryKey: ['doctor-patients', dateRange],
@@ -42,7 +47,9 @@ export default function DoctorPacientesPage() {
     }
   }, [isAuthenticated, router]);
 
-  if (!isAuthenticated) return null;
+  if (!mounted || !isAuthenticated) {
+    return <div className="flex h-full" />;
+  }
 
   return (
     <div className="flex h-full">

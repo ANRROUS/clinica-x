@@ -23,6 +23,11 @@ export default function DoctorCalendarioPage() {
       hasta: hasta.toISOString().slice(0, 10),
     };
   });
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const { data: citasData, isLoading } = useQuery({
     queryKey: ['doctor-calendar', dateRange],
@@ -74,7 +79,9 @@ export default function DoctorCalendarioPage() {
     }
   }, [isAuthenticated, router]);
 
-  if (!isAuthenticated) return null;
+  if (!mounted || !isAuthenticated) {
+    return <div className="flex h-full flex-col" />;
+  }
 
   return (
     <div className="flex h-full flex-col">

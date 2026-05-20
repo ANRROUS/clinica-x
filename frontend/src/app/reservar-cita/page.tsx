@@ -50,6 +50,11 @@ export default function ReservarCitaPage() {
 
   const [modalOpen, setModalOpen] = useState(false);
   const [bookingLoading, setBookingLoading] = useState(false);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   useEffect(() => {
     if (!isAuthenticated) {
@@ -158,7 +163,15 @@ export default function ReservarCitaPage() {
 
   const canConfirmManual = !!selectedDoctor && !!selectedDate && !!selectedSlot;
 
-  if (!isAuthenticated) return null;
+  if (!mounted || !isAuthenticated) {
+    return (
+      <div className="flex min-h-screen flex-col bg-white">
+        <Header />
+        <main className="flex-1" />
+        <Footer />
+      </div>
+    );
+  }
 
   return (
     <div className="flex min-h-screen flex-col bg-white">

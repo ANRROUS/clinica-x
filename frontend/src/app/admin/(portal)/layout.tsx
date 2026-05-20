@@ -1,26 +1,32 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAdminAuthStore } from '@/store/useAdminAuthStore';
 import AdminHeader from '@/components/admin/AdminHeader';
 
 export default function AdminPortalLayout({ children }: { children: React.ReactNode }) {
-  const { isAuthenticated } = useAdminAuthStore();
+  const { isAuthenticated, _hasHydrated, hydrate } = useAdminAuthStore();
   const router = useRouter();
-  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    setMounted(true);
-  }, []);
+    hydrate();
+  }, [hydrate]);
 
   useEffect(() => {
-    if (mounted && !isAuthenticated) {
+    if (_hasHydrated && !isAuthenticated) {
       router.push('/admin/login');
     }
-  }, [isAuthenticated, router, mounted]);
+  }, [isAuthenticated, router, _hasHydrated]);
 
-  if (!mounted || !isAuthenticated) return null;
+  if (!_hasHydrated || !isAuthenticated) {
+    return (
+      <div className="flex min-h-screen flex-col bg-white">
+        <AdminHeader />
+        <main className="mx-auto w-full max-w-7xl flex-1 px-8 py-8" />
+      </div>
+    );
+  }
 
   return (
     <div className="flex min-h-screen flex-col bg-white">
