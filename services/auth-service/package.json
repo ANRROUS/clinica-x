@@ -6,7 +6,7 @@
   "main": "dist/server.js",
   "scripts": {
     "build": "tsc -p tsconfig.json && tsc-alias -p tsconfig.json && pnpm postbuild:prisma",
-    "postbuild:prisma": "node -e \"const fs=require('fs'); const path=require('path'); const src='src/generated/prisma'; const dst='dist/generated/prisma'; if(fs.existsSync(src)){fs.cpSync(src,dst,{recursive:true,force:true});}\"",
+    "postbuild:prisma": "xcopy /E /I /Y /Q src\\generated\\prisma dist\\generated\\prisma",
     "dev": "tsx watch src/server.ts",
     "start": "node dist/server.js",
     "lint": "eslint src --ext .ts",
