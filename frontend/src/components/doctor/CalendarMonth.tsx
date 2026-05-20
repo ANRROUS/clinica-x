@@ -1,13 +1,24 @@
 'use client';
 
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import type { CitaCalendarioDTO } from '@/lib/api/types';
 import { parseApiDate } from '@/lib/date-utils';
+import {
+  nowLima,
+  getLimaYear,
+  getLimaMonth,
+  getLimaDay,
+  getLimaDayOfWeek,
+  getLimaHours,
+  getLimaMinutes,
+  buildLimaDate,
+} from '@clinica-x/date-utils';
+import CalendarDayModal from './CalendarDayModal';
 
 interface CalendarMonthProps {
   currentDate: Date;
   citas: CitaCalendarioDTO[];
-  onStartConsultation: (cita: CitaCalendarioDTO) => void;
+  onNavigateToPatient: (patientId: string) => void;
   onDayClick?: (date: Date) => void;
 }
 
@@ -20,10 +31,10 @@ const statusColors: Record<string, string> = {
   CANCELADA: 'bg-red-50 text-red-800',
 };
 
-export default function CalendarMonth({ currentDate, citas, onStartConsultation, onDayClick }: CalendarMonthProps) {
+export default function CalendarMonth({ currentDate, citas, onNavigateToPatient, onDayClick }: CalendarMonthProps) {
   const { daysInMonth, firstDayOffset } = useMemo(() => {
-    const year = currentDate.getFullYear();
-    const month = currentDate.getMonth();
+    const year = getLimaYear(currentDate);
+    const month = getLimaMonth(currentDate);
     return {
       daysInMonth: new Date(year, month + 1, 0).getDate(),
       firstDayOffset: new Date(year, month, 1).getDay(),
@@ -32,12 +43,12 @@ export default function CalendarMonth({ currentDate, citas, onStartConsultation,
 
   const citasByDay = useMemo(() => {
     const map = new Map<number, CitaCalendarioDTO[]>();
-    const year = currentDate.getFullYear();
-    const month = currentDate.getMonth();
+    const year = getLimaYear(currentDate);
+    const month = getLimaMonth(currentDate);
     citas.forEach((cita) => {
       const d = parseApiDate(cita.fechaHora);
-      if (d.getFullYear() === year && d.getMonth() === month) {
-        const day = d.getDate();
+      if (getLimaYear(d) === year && getLimaMonth(d) === month) {
+        const day = getLimaDay(d);
         if (!map.has(day)) map.set(day, []);
         map.get(day)!.push(cita);
       }
@@ -45,8 +56,10 @@ export default function CalendarMonth({ currentDate, citas, onStartConsultation,
     return map;
   }, [citas, currentDate]);
 
-  const today = new Date();
-  const isCurrentMonth = today.getFullYear() === currentDate.getFullYear() && today.getMonth() === currentDate.getMonth();
+  const [selectedDay, setSelectedDay] = useState<{ date: Date; citas: CitaCalendarioDTO[] } | null>(null);
+
+  const today = nowLima();
+  const isCurrentMonth = getLimaYear(today) === getLimaYear(currentDate) && getLimaMonth(today) === getLimaMonth(currentDate);
 
   return (
     <div className="select-none">
@@ -64,18 +77,17 @@ export default function CalendarMonth({ currentDate, citas, onStartConsultation,
         {Array.from({ length: daysInMonth }).map((_, i) => {
           const day = i + 1;
           const dayCitas = citasByDay.get(day) || [];
-          const isToday = isCurrentMonth && today.getDate() === day;
+          const isToday = isCurrentMonth && getLimaDay(today) === day;
           return (
             <div
               key={day}
               onClick={() => {
-                if (dayCitas.length === 0 && onDayClick) {
-                  const clickedDate = new Date(currentDate);
-                  clickedDate.setDate(day);
-                  onDayClick(clickedDate);
-                }
+                const clickedDate = buildLimaDate(
+                  `${getLimaYear(currentDate)}-${String(getLimaMonth(currentDate) + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`
+                );
+                setSelectedDay({ date: clickedDate, citas: dayCitas });
               }}
-              className={`min-h-[100px] bg-white p-2 ${isToday ? 'ring-2 ring-inset ring-brand-500' : ''} ${dayCitas.length === 0 && onDayClick ? 'cursor-pointer hover:bg-gray-50' : ''}`}
+              className={`min-h-[100px] bg-white p-2 cursor-pointer hover:bg-gray-50 ${isToday ? 'ring-2 ring-inset ring-brand-500' : ''}`}
             >
               <span className={`inline-flex h-6 w-6 items-center justify-center rounded-full text-xs font-medium ${isToday ? 'bg-brand-500 text-white' : 'text-gray-700'}`}>
                 {day}
@@ -83,16 +95,16 @@ export default function CalendarMonth({ currentDate, citas, onStartConsultation,
               <div className="mt-1 space-y-1">
                 {dayCitas.slice(0, 3).map((cita) => {
                   const time = parseApiDate(cita.fechaHora);
-                  const h = time.getHours().toString().padStart(2, '0');
-                  const m = time.getMinutes().toString().padStart(2, '0');
+                  const h = String(getLimaHours(time)).padStart(2, '0');
+                  const m = String(getLimaMinutes(time)).padStart(2, '0');
                   return (
                     <button
                       key={cita.id}
-                      onClick={() => cita.estado === 'CONFIRMADA' && onStartConsultation(cita)}
-                      className={`w-full truncate rounded px-1.5 py-0.5 text-left text-xs font-medium ${statusColors[cita.estado] || 'bg-gray-100 text-gray-800'} ${cita.estado === 'CONFIRMADA' ? 'cursor-pointer hover:opacity-80' : 'cursor-default'}`}
+                      onClick={() => onNavigateToPatient(cita.pacienteId)}
+                      className={`w-full truncate rounded px-1.5 py-0.5 text-left text-xs font-medium ${statusColors[cita.estado] || 'bg-gray-100 text-gray-800'} cursor-pointer hover:opacity-80`}
                       title={`${cita.pacienteNombre || ''} ${cita.pacienteApellido || ''} — ${cita.estado}`}
                     >
-                      {h}:{m} {cita.pacienteNombre?.split(' ')[0] || ''}
+                      {h}:{m} {cita.pacienteNombre ? `${cita.pacienteNombre.split(' ')[0]}` : 'Paciente'}
                     </button>
                   );
                 })}
@@ -104,6 +116,22 @@ export default function CalendarMonth({ currentDate, citas, onStartConsultation,
           );
         })}
       </div>
+
+      {selectedDay && (
+        <CalendarDayModal
+          date={selectedDay.date}
+          citas={selectedDay.citas}
+          onClose={() => setSelectedDay(null)}
+          onNavigateToPatient={(patientId) => {
+            setSelectedDay(null);
+            onNavigateToPatient(patientId);
+          }}
+          onGoToDay={(date) => {
+            setSelectedDay(null);
+            if (onDayClick) onDayClick(date);
+          }}
+        />
+      )}
     </div>
   );
 }

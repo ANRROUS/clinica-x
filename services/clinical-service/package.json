@@ -17,6 +17,7 @@
     "prisma:studio": "prisma studio"
   },
   "dependencies": {
+    "@clinica-x/date-utils": "workspace:*",
     "@clinica-x/shared-kernel": "workspace:*",
     "@clinica-x/shared-middleware": "workspace:*",
     "@clinica-x/shared-types": "workspace:*",

@@ -4,12 +4,20 @@ import { useMemo } from 'react';
 import { Clock, User } from 'lucide-react';
 import type { CitaCalendarioDTO } from '@/lib/api/types';
 import { parseApiDate } from '@/lib/date-utils';
+import {
+  nowLima,
+  addDaysLima,
+  getLimaDayOfWeek,
+  getLimaDay,
+  getLimaHours,
+  getLimaMinutes,
+  formatLima,
+} from '@clinica-x/date-utils';
 
 interface CalendarWeekProps {
   currentDate: Date;
   citas: CitaCalendarioDTO[];
-  onStatusChange: (id: string, estado: 'CONFIRMADA' | 'EN_ATENCION' | 'COMPLETADA' | 'CANCELADA') => void;
-  onStartConsultation: (cita: CitaCalendarioDTO) => void;
+  onNavigateToPatient: (patientId: string) => void;
 }
 
 const dayNames = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
@@ -28,28 +36,23 @@ const statusLabel: Record<string, string> = {
   CANCELADA: 'Cancelada',
 };
 
-export default function CalendarWeek({ currentDate, citas, onStatusChange, onStartConsultation }: CalendarWeekProps) {
+export default function CalendarWeek({ currentDate, citas, onNavigateToPatient }: CalendarWeekProps) {
   const weekDays = useMemo(() => {
-    const startOfWeek = new Date(currentDate);
-    const day = startOfWeek.getDay();
-    const diff = day === 0 ? -6 : 1 - day;
-    startOfWeek.setDate(startOfWeek.getDate() + diff);
-    return Array.from({ length: 5 }).map((_, i) => {
-      const d = new Date(startOfWeek);
-      d.setDate(d.getDate() + i);
-      return d;
-    });
+    const day = getLimaDayOfWeek(currentDate);
+    const diff = day === 7 ? -6 : 1 - day; // 7 = Domingo en nuestro sistema
+    const startOfWeek = addDaysLima(currentDate, diff);
+    return Array.from({ length: 7 }).map((_, i) => addDaysLima(startOfWeek, i));
   }, [currentDate]);
 
   const citasByDay = useMemo(() => {
     const map = new Map<string, CitaCalendarioDTO[]>();
     weekDays.forEach((day) => {
-      const key = day.toISOString().slice(0, 10);
+      const key = formatLima(day, 'yyyy-MM-dd');
       map.set(key, []);
     });
     citas.forEach((cita) => {
       const d = parseApiDate(cita.fechaHora);
-      const key = isNaN(d.getTime()) ? '' : d.toISOString().slice(0, 10);
+      const key = isNaN(d.getTime()) ? '' : formatLima(d, 'yyyy-MM-dd');
       if (!key) return;
       if (map.has(key)) {
         map.get(key)!.push(cita);
@@ -58,8 +61,8 @@ export default function CalendarWeek({ currentDate, citas, onStatusChange, onSta
     return map;
   }, [citas, weekDays]);
 
-  const today = new Date();
-  const todayKey = today.toISOString().slice(0, 10);
+  const today = nowLima();
+  const todayKey = formatLima(today, 'yyyy-MM-dd');
 
   const timeSlots = useMemo(() => {
     const slots: string[] = [];
@@ -71,20 +74,20 @@ export default function CalendarWeek({ currentDate, citas, onStatusChange, onSta
 
   return (
     <div className="overflow-x-auto">
-      <div className="min-w-[900px]">
-        <div className="grid grid-cols-[60px_repeat(5,1fr)]">
+      <div className="min-w-[1100px]">
+        <div className="grid grid-cols-[60px_repeat(7,1fr)]">
           <div className="bg-brand-500 p-2 text-center text-xs font-semibold text-white">
             Hora
           </div>
           {weekDays.map((day) => {
-            const key = day.toISOString().slice(0, 10);
+            const key = formatLima(day, 'yyyy-MM-dd');
             const isToday = key === todayKey;
             const dayCitas = citasByDay.get(key) || [];
             return (
               <div key={key} className={`bg-brand-500 p-2 text-center ${isToday ? 'bg-brand-600' : ''}`}>
-                <p className="text-xs font-medium text-white">{dayNames[day.getDay()]}</p>
+                <p className="text-xs font-medium text-white">{dayNames[getLimaDayOfWeek(day) % 7]}</p>
                 <p className={`mt-0.5 text-lg font-bold text-white`}>
-                  {day.getDate()}
+                  {getLimaDay(day)}
                 </p>
                 {dayCitas.length > 0 && (
                   <span className="mt-1 inline-block rounded-full bg-white px-2 py-0.5 text-xs text-brand-500">
@@ -100,27 +103,27 @@ export default function CalendarWeek({ currentDate, citas, onStatusChange, onSta
           {timeSlots.map((time) => {
             const hour = parseInt(time.split(':')[0], 10);
             return (
-              <div key={time} className="grid grid-cols-[60px_repeat(5,1fr)] border-b border-gray-100">
+              <div key={time} className="grid grid-cols-[60px_repeat(7,1fr)] border-b border-gray-100">
                 <div className="bg-brand-500 p-1 text-right text-xs font-medium text-white">
                   {time}
                 </div>
                 {weekDays.map((day) => {
-                  const key = day.toISOString().slice(0, 10);
+                  const key = formatLima(day, 'yyyy-MM-dd');
                   const dayCitas = citasByDay.get(key) || [];
                   const slotCitas = dayCitas.filter((c) => {
-                    const ch = parseApiDate(c.fechaHora).getHours();
+                    const ch = getLimaHours(parseApiDate(c.fechaHora));
                     return ch === hour;
                   });
                   return (
                     <div key={`${key}-${time}`} className="min-h-[50px] border-r border-gray-100 p-0.5">
                       {slotCitas.map((cita) => {
                         const start = parseApiDate(cita.fechaHora);
-                        const h = start.getHours().toString().padStart(2, '0');
-                        const m = start.getMinutes().toString().padStart(2, '0');
+                        const h = String(getLimaHours(start)).padStart(2, '0');
+                        const m = String(getLimaMinutes(start)).padStart(2, '0');
                         return (
                           <button
                             key={cita.id}
-                            onClick={() => onStartConsultation(cita)}
+                            onClick={() => onNavigateToPatient(cita.pacienteId)}
                             className={`mb-0.5 w-full rounded border p-1 text-left text-xs transition-shadow hover:shadow-md ${statusBadge[cita.estado] || 'bg-gray-100'}`}
                           >
                             <div className="flex items-center gap-1 font-medium">
@@ -129,7 +132,7 @@ export default function CalendarWeek({ currentDate, citas, onStatusChange, onSta
                             </div>
                             <div className="flex items-center gap-1 mt-0.5 truncate">
                               <User className="h-3 w-3 shrink-0" />
-                              <span className="truncate">{cita.pacienteNombre || cita.pacienteId?.slice(0, 8)}</span>
+                              <span className="truncate">{cita.pacienteNombre ? `${cita.pacienteNombre} ${cita.pacienteApellido || ''}`.trim() : 'Paciente'}</span>
                             </div>
                           </button>
                         );

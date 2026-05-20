@@ -18,9 +18,8 @@ export class CambiarEstadoMedicoUseCase implements ICambiarEstadoMedicoPort {
       return Err(new MedicoNoEncontradoError(medicoId));
     }
 
-    const medicoBase = medico as any;
-    medicoBase.cambiarEstado(dto.activo);
-    await this.repo.actualizar(medicoBase);
+    medico.medico.cambiarEstado(dto.activo);
+    await this.repo.actualizar(medico.medico);
 
     return Ok({ id: medicoId, activo: dto.activo });
   }

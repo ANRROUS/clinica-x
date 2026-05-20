@@ -27,6 +27,7 @@ import type {
 import type { ICitaRepository } from '@/modules/citas/domain/ports/out/cita.repository.port';
 import type { IMedicoConsultaPort } from '@/modules/citas/domain/ports/out/medico-consulta.port';
 import { toCitaResponseDto } from '@/modules/citas/application/mapper';
+import { nowLima } from '@clinica-x/date-utils';
 
 const CUATRO_HORAS_MS = 4 * 60 * 60 * 1000;
 
@@ -47,21 +48,13 @@ export class CrearCitaUseCase implements ICrearCitaPort {
     }
 
     // 2. Verificar que la fecha sea futura (> 4 horas)
-    const ahora = new Date();
+    const ahora = nowLima();
     const diffMs = dto.fechaHora.getTime() - ahora.getTime();
     if (diffMs < CUATRO_HORAS_MS) {
       return Err(new SlotNoDisponibleError('Debes reservar con al menos 4 horas de anticipación'));
     }
 
-    // 3. Verificar slot libre (no haya otra cita en ese rango de 30 min)
-    const inicioRango = new Date(dto.fechaHora.getTime() - 1);
-    const finRango = new Date(dto.fechaHora.getTime() + 30 * 60 * 1000);
-    const ocupadas = await this.repo.contarCitasEnRango(dto.medicoId, inicioRango, finRango);
-    if (ocupadas > 0) {
-      return Err(new SlotNoDisponibleError());
-    }
-
-    // 4. Crear entidad
+    // 3-5. Crear entidad y persistir atómicamente (verifica + guarda en transacción)
     const id = crypto.randomUUID();
     const citaResult = Cita.create(id, {
       pacienteId: dto.pacienteId,
@@ -72,8 +65,12 @@ export class CrearCitaUseCase implements ICrearCitaPort {
     });
     if (citaResult.isErr) return Err(citaResult.error);
 
-    // 5. Persistir
-    await this.repo.guardar(citaResult.value);
+    const inicioRango = new Date(dto.fechaHora.getTime() - 1);
+    const finRango = new Date(dto.fechaHora.getTime() + 30 * 60 * 1000);
+    const guardada = await this.repo.guardarSiLibre(citaResult.value, inicioRango, finRango);
+    if (!guardada) {
+      return Err(new SlotNoDisponibleError());
+    }
 
     // 6. Retornar DTO
     const voucherCode = `VCH-${id.slice(0, 8).toUpperCase()}`;

@@ -18,6 +18,7 @@ export function createConsultasRouter(controller: ConsultasController): Router {
   router.post('/doctor/consultation/:id/finalize', requireRole(['MEDICO']), controller.finalize);
   router.get('/doctor/active-patient', requireRole(['MEDICO']), controller.activePatient);
   router.get('/doctor/patients', requireRole(['MEDICO']), controller.doctorPatients);
+  router.get('/doctor/patients/:patientId', requireRole(['MEDICO']), controller.patientDetail);
 
   // ─── Paciente ─────────────────────────────────────────────────────────────
   router.get('/patient/history', requireRole(['PACIENTE']), controller.patientHistory);

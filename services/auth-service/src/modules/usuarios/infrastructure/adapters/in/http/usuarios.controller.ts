@@ -16,6 +16,7 @@ import type {
   IIniciarSesionPort,
   IObtenerPerfilPort,
   IActualizarPerfilPort,
+  IListarUsuariosPorIdsPort,
 } from '@/modules/usuarios/domain/ports/in/usuarios.port';
 
 // ─── Schemas de validación Zod para entrada HTTP ────────────────────────────
@@ -49,6 +50,7 @@ export class UsuariosController {
     private readonly iniciarSesion: IIniciarSesionPort,
     private readonly obtenerPerfil: IObtenerPerfilPort,
     private readonly actualizarPerfil: IActualizarPerfilPort,
+    private readonly listarUsuariosPorIds: IListarUsuariosPorIdsPort,
   ) {}
 
   // ─── POST /api/auth/register ──────────────────────────────────────────────
@@ -192,5 +194,39 @@ export class UsuariosController {
       }
       next(err);
     }
+  };
+
+  // ─── GET /api/auth/internal/users ─────────────────────────────────────────
+  listarPorIds = async (req: Request, res: Response): Promise<void> => {
+    const apiKey = req.headers['x-internal-api-key'];
+    if (apiKey !== env.INTERNAL_API_KEY) {
+      res.status(403).json({
+        success: false,
+        error: { codigo: 'FORBIDDEN', mensaje: 'No autorizado' },
+      });
+      return;
+    }
+
+    const idsParam = typeof req.query.ids === 'string' ? req.query.ids : '';
+    const ids = idsParam
+      .split(',')
+      .map((id) => id.trim())
+      .filter(Boolean);
+
+    if (ids.length === 0) {
+      res.status(200).json({ success: true, data: { usuarios: [] } });
+      return;
+    }
+
+    const resultado = await this.listarUsuariosPorIds.execute(ids);
+    if (resultado.isErr) {
+      res.status(500).json({
+        success: false,
+        error: { codigo: 'ERROR', mensaje: resultado.error.message },
+      });
+      return;
+    }
+
+    res.status(200).json({ success: true, data: { usuarios: resultado.value } });
   };
 }

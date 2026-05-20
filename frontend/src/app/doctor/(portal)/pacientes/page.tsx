@@ -7,17 +7,17 @@ import { useDoctorAuthStore } from '@/store/useDoctorAuthStore';
 import { getDoctorPatients, getActivePatient } from '@/lib/api/doctor.api';
 import PatientSidebar from '@/components/doctor/patients/PatientSidebar';
 import PatientHistory from '@/components/doctor/PatientHistory';
+import { nowLima, addMonthsLima, formatLima } from '@clinica-x/date-utils';
 
 export default function DoctorPacientesPage() {
   const { isAuthenticated } = useDoctorAuthStore();
   const router = useRouter();
   const [dateRange, setDateRange] = useState(() => {
-    const hasta = new Date();
-    const desde = new Date();
-    desde.setMonth(desde.getMonth() - 1);
+    const hasta = nowLima();
+    const desde = addMonthsLima(hasta, -1);
     return {
-      desde: desde.toISOString().slice(0, 10),
-      hasta: hasta.toISOString().slice(0, 10),
+      desde: formatLima(desde, 'yyyy-MM-dd'),
+      hasta: formatLima(hasta, 'yyyy-MM-dd'),
     };
   });
   const [mounted, setMounted] = useState(false);
@@ -119,12 +119,11 @@ export default function DoctorPacientesPage() {
             </div>
             <button
               onClick={() => {
-                const hasta = new Date();
-                const desde = new Date();
-                desde.setMonth(desde.getMonth() - 1);
+                const hasta = nowLima();
+                const desde = addMonthsLima(hasta, -1);
                 setDateRange({
-                  desde: desde.toISOString().slice(0, 10),
-                  hasta: hasta.toISOString().slice(0, 10),
+                  desde: formatLima(desde, 'yyyy-MM-dd'),
+                  hasta: formatLima(hasta, 'yyyy-MM-dd'),
                 });
               }}
               className="rounded-lg border border-gray-200 px-3 py-2 text-sm text-gray-600 hover:bg-gray-50"

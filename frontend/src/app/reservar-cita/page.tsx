@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import { Sparkles, Loader2, ChevronDown } from 'lucide-react';
 import Header from '@/components/shared/Header';
@@ -14,6 +14,7 @@ import SlotSelector from '@/components/booking/SlotSelector';
 import ConfirmBookingModal from '@/components/booking/ConfirmBookingModal';
 import { useAuthStore } from '@/store/useAuthStore';
 import { useBookingStore } from '@/store/useBookingStore';
+import { buildLimaDate, toISOLima } from '@clinica-x/date-utils';
 import {
   getSpecialties,
   getAvailabilityBySpecialty,
@@ -30,6 +31,7 @@ import type {
 
 export default function ReservarCitaPage() {
   const router = useRouter();
+  const queryClient = useQueryClient();
   const { isAuthenticated } = useAuthStore();
   const {
     selectedSpecialtyId,
@@ -123,6 +125,9 @@ export default function ReservarCitaPage() {
       const res = await bookAutomatic({ especialidadId: selectedSpecialtyId });
       if (res.success && res.data) {
         toast.success('¡Reserva confirmada automáticamente!');
+        queryClient.invalidateQueries({ queryKey: ['availability-specialty'] });
+        queryClient.invalidateQueries({ queryKey: ['availability-doctor'] });
+        queryClient.invalidateQueries({ queryKey: ['patient-appointments'] });
         reset();
         router.push('/perfil');
       } else {
@@ -140,15 +145,17 @@ export default function ReservarCitaPage() {
     setBookingLoading(true);
     try {
       const [hours, minutes] = selectedSlot.horaInicio.split(':').map(Number);
-      const d = new Date(selectedDate + 'T00:00:00');
-      d.setHours(hours, minutes, 0, 0);
-      const fechaHora = d.toISOString();
+      const d = buildLimaDate(selectedDate, `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:00`);
+      const fechaHora = toISOLima(d);
       const res = await bookManual({
         medicoId: selectedDoctor.doctorId,
         fechaHora,
       });
       if (res.success && res.data) {
         toast.success(`¡Cita confirmada! Código: ${res.data.voucherCode || res.data.id}`);
+        queryClient.invalidateQueries({ queryKey: ['availability-specialty'] });
+        queryClient.invalidateQueries({ queryKey: ['availability-doctor'] });
+        queryClient.invalidateQueries({ queryKey: ['patient-appointments'] });
         reset();
         router.push('/perfil');
       } else {

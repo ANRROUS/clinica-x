@@ -11,6 +11,7 @@ import type { Usuario } from '../../entities/usuario.entity';
 export interface IUsuarioRepository {
   guardar(usuario: Usuario): Promise<void>;
   buscarPorId(id: string): Promise<Usuario | null>;
+  buscarPorIds(ids: string[]): Promise<Usuario[]>;
   buscarPorDni(dni: string): Promise<Usuario | null>;
   buscarPorEmail(email: string): Promise<Usuario | null>;
   buscarPorDniYEmail(dni: string, email: string): Promise<Usuario | null>;

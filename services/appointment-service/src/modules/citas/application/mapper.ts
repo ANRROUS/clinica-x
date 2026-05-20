@@ -13,6 +13,8 @@ export function toCitaResponseDto(
     doctorName?: string;
     specialty?: string;
     voucherCode?: string;
+    pacienteNombre?: string;
+    pacienteApellido?: string;
   },
 ): CitaResponseDto {
   return {
@@ -26,5 +28,7 @@ export function toCitaResponseDto(
     tipoReserva: cita.tipoReserva,
     motivo: cita.motivo,
     voucherCode: extras?.voucherCode,
+    pacienteNombre: extras?.pacienteNombre,
+    pacienteApellido: extras?.pacienteApellido,
   };
 }

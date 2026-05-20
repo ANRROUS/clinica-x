@@ -1,12 +1,13 @@
 'use client';
 
-import { useState, useCallback, useEffect, useRef } from 'react';
+import { useState, useCallback, useEffect, useRef, useMemo } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import { useQuery } from '@tanstack/react-query';
 import { Search, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useDoctorAuthStore } from '@/store/useDoctorAuthStore';
 import { getActivePatient, getDoctorPatients } from '@/lib/api/doctor.api';
 import type { ConsultaMedicoDTO } from '@/lib/api/types';
+import { parseApiDate, nowLima, getLimaYear, getLimaMonth, getLimaDay } from '@clinica-x/date-utils';
 
 interface PatientSidebarProps {
   activeConsultation: ConsultaMedicoDTO | null;
@@ -26,6 +27,14 @@ export default function PatientSidebar({
   const { isAuthenticated } = useDoctorAuthStore();
   const router = useRouter();
   const pathname = usePathname();
+
+  const validActiveConsultation = useMemo(() => {
+    if (!activeConsultation) return null;
+    const inicio = parseApiDate(activeConsultation.fechaInicio);
+    const now = nowLima();
+    const fin = new Date(inicio.getTime() + 60 * 60000);
+    return now >= inicio && now <= fin ? activeConsultation : null;
+  }, [activeConsultation]);
 
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState<ConsultaMedicoDTO[]>([]);
@@ -65,12 +74,12 @@ export default function PatientSidebar({
   );
 
   const patientsToday = patients.filter((c) => {
-    const fecha = new Date(c.fechaInicio + 'Z');
-    const today = new Date();
+    const fecha = parseApiDate(c.fechaInicio);
+    const today = nowLima();
     return (
-      fecha.getDate() === today.getDate() &&
-      fecha.getMonth() === today.getMonth() &&
-      fecha.getFullYear() === today.getFullYear()
+      getLimaDay(fecha) === getLimaDay(today) &&
+      getLimaMonth(fecha) === getLimaMonth(today) &&
+      getLimaYear(fecha) === getLimaYear(today)
     );
   });
 
@@ -82,7 +91,7 @@ export default function PatientSidebar({
   });
 
   const todayList = Array.from(uniquePatientsToday.values()).filter(
-    (c) => c.pacienteId !== activeConsultation?.pacienteId
+    (c) => c.pacienteId !== validActiveConsultation?.pacienteId
   );
 
   const currentPatientId = pathname.split('/').pop();
@@ -105,13 +114,13 @@ export default function PatientSidebar({
           <Search className="h-5 w-5" />
         </button>
         <div className="flex-1 space-y-2 overflow-y-auto">
-          {activeConsultation && (
+          {validActiveConsultation && (
             <button
-              onClick={() => router.push(`/doctor/pacientes/${activeConsultation.pacienteId}`)}
+              onClick={() => router.push(`/doctor/pacientes/${validActiveConsultation.pacienteId}`)}
               className="flex h-10 w-10 items-center justify-center rounded-full bg-white text-sm font-bold text-brand-500 hover:bg-gray-100"
-              title={`${activeConsultation.pacienteNombre || ''} ${activeConsultation.pacienteApellido || ''}`}
+              title={`${validActiveConsultation.pacienteNombre || ''} ${validActiveConsultation.pacienteApellido || ''}`}
             >
-              {(activeConsultation.pacienteNombre?.[0] || '?').toUpperCase()}
+              {(validActiveConsultation.pacienteNombre?.[0] || '?').toUpperCase()}
             </button>
           )}
           {todayList.slice(0, 10).map((p) => {
@@ -148,17 +157,22 @@ export default function PatientSidebar({
       </div>
       <p className="px-4 text-xs text-white/70">Actual</p>
       <div className="px-4 py-2">
-        {activeConsultation ? (
+          {validActiveConsultation ? (
           <button
-            onClick={() => router.push(`/doctor/pacientes/${activeConsultation.pacienteId}`)}
-            className={`w-full rounded-lg border-l-4 bg-white px-3 py-2.5 text-left transition-colors ${
-              currentPatientId === activeConsultation.pacienteId
+            onClick={() => router.push(`/doctor/pacientes/${validActiveConsultation.pacienteId}`)}
+            className={`flex items-center gap-3 w-full rounded-lg border-l-4 bg-white px-3 py-2.5 text-left transition-colors ${
+              currentPatientId === validActiveConsultation.pacienteId
                 ? 'border-white'
                 : 'border-brand-300 hover:bg-gray-50'
             }`}
           >
-            <p className="text-sm font-medium text-gray-900">
-              {activeConsultation.pacienteNombre || `Paciente ${activeConsultation.pacienteId.slice(0, 8)}`}
+            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-accent-500 text-xs font-bold text-white">
+              {(validActiveConsultation.pacienteNombre?.[0] || '?').toUpperCase()}
+            </div>
+            <p className="text-sm font-medium text-gray-900 truncate">
+              {validActiveConsultation.pacienteNombre
+                ? `${validActiveConsultation.pacienteNombre} ${validActiveConsultation.pacienteApellido || ''}`.trim()
+                : 'Paciente'}
             </p>
           </button>
         ) : (
@@ -172,18 +186,24 @@ export default function PatientSidebar({
         <p className="text-xs font-semibold uppercase text-white/90">De Hoy</p>
         {todayList.length > 0 ? (
           <div className="mt-2 space-y-1">
-            {todayList.map((p) => (
+              {todayList.map((p) => (
               <button
                 key={p.pacienteId}
                 onClick={() => router.push(`/doctor/pacientes/${p.pacienteId}`)}
-                className={`w-full rounded-lg border-l-4 bg-white px-3 py-2 text-left text-sm font-medium transition-colors ${
+                className={`flex items-center gap-3 w-full rounded-lg border-l-4 bg-white px-3 py-2 text-left text-sm font-medium transition-colors ${
                   currentPatientId === p.pacienteId
                     ? 'border-white text-brand-500'
                     : 'border-brand-300 text-gray-700 hover:bg-gray-50'
                 }`}
               >
-                {p.pacienteNombre || p.pacienteId?.slice(0, 8)}
-                {p.pacienteApellido ? ` ${p.pacienteApellido}` : ''}
+                <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-accent-500 text-xs font-bold text-white">
+                  {(p.pacienteNombre?.[0] || '?').toUpperCase()}
+                </div>
+                <span className="truncate">
+                  {p.pacienteNombre
+                    ? `${p.pacienteNombre} ${p.pacienteApellido || ''}`.trim()
+                    : 'Paciente'}
+                </span>
               </button>
             ))}
           </div>
@@ -223,13 +243,20 @@ export default function PatientSidebar({
                     setSearchResults([]);
                     router.push(`/doctor/pacientes/${p.pacienteId}`);
                   }}
-                  className={`w-full rounded-lg border-l-4 bg-white px-3 py-2 text-left text-sm font-medium transition-colors ${
+                  className={`flex items-center gap-3 w-full rounded-lg border-l-4 bg-white px-3 py-2 text-left text-sm font-medium transition-colors ${
                     currentPatientId === p.pacienteId
                       ? 'border-white text-brand-500'
                       : 'border-brand-300 text-gray-700 hover:bg-gray-50'
                   }`}
                 >
-                  {p.pacienteNombre || ''} {p.pacienteApellido || ''}
+                  <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-accent-500 text-xs font-bold text-white">
+                    {(p.pacienteNombre?.[0] || '?').toUpperCase()}
+                  </div>
+                  <span className="truncate">
+                    {p.pacienteNombre
+                      ? `${p.pacienteNombre} ${p.pacienteApellido || ''}`.trim()
+                      : 'Paciente'}
+                  </span>
                 </button>
               ))
             ) : (

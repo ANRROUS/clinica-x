@@ -6,29 +6,56 @@
 
 import { Result, Ok } from '@clinica-x/shared-kernel';
 import type { IListarMedicosPort, MedicoResponseDto } from '@/modules/medicos/domain/ports/in/medicos.port';
-import type { IMedicoRepository } from '@/modules/medicos/domain/ports/out/medico.repository.port';
+import type { IAuthServiceClient, IMedicoRepository } from '@/modules/medicos/domain/ports/out/medico.repository.port';
 import { toMedicoResponseDto } from '@/modules/medicos/application/mapper';
 
 export class ListarMedicosUseCase implements IListarMedicosPort {
-  constructor(private readonly repo: IMedicoRepository) {}
+  constructor(
+    private readonly repo: IMedicoRepository,
+    private readonly authClient: IAuthServiceClient,
+  ) {}
 
   async execute(): Promise<Result<MedicoResponseDto[], Error>> {
     const medicos = await this.repo.listarTodos();
 
-    const dtos = medicos.map((m) => {
-      const { horarios, especialidadNombre, ...medicoBase } = m as any;
-      return toMedicoResponseDto(
-        medicoBase,
+    const usuarioIds = Array.from(
+      new Set(medicos.map(({ medico }) => medico.usuarioId).filter(Boolean)),
+    );
+    let usuariosPorId = new Map<string, {
+      id: string;
+      nombre: string;
+      apellido: string;
+      dni: string;
+      email: string;
+      telefono?: string;
+    }>();
+
+    if (usuarioIds.length > 0) {
+      try {
+        const usuarios = await this.authClient.obtenerUsuariosPorIds(usuarioIds);
+        usuariosPorId = new Map(usuarios.map((u) => [u.id, u]));
+      } catch {
+        usuariosPorId = new Map();
+      }
+    }
+
+    const dtos = medicos.map(({ medico, horarios, especialidadNombre }) =>
+      toMedicoResponseDto(
+        medico,
         horarios,
         especialidadNombre,
-        {
-          nombre: '—',
-          apellido: '—',
-          dni: '—',
-          email: '—',
-        },
-      );
-    });
+        (() => {
+          const datos = usuariosPorId.get(medico.usuarioId);
+          return {
+            nombre: datos?.nombre ?? '—',
+            apellido: datos?.apellido ?? '—',
+            dni: datos?.dni ?? '—',
+            email: datos?.email ?? '—',
+            telefono: datos?.telefono,
+          };
+        })(),
+      ),
+    );
 
     return Ok(dtos);
   }

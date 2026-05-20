@@ -20,6 +20,6 @@ export class ListarConsultasPacienteUseCase implements IListarConsultasPacienteP
       fechaDesde: dto.fechaDesde,
       fechaHasta: dto.fechaHasta,
     });
-    return Ok(consultas.map(toConsultaDto));
+    return Ok(consultas.map((c) => toConsultaDto(c)));
   }
 }

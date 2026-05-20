@@ -6,6 +6,7 @@
 
 import { EntidadBase, Result, Ok, Err } from '@clinica-x/shared-kernel';
 import type { EstadoConsulta } from '@clinica-x/shared-types';
+import { nowLima } from '@clinica-x/date-utils';
 
 export interface ConsultaProps {
   pacienteId: string;
@@ -39,7 +40,7 @@ export class Consulta extends EntidadBase<string> {
     this._motivoConsulta = props.motivoConsulta;
     this._diagnostico = props.diagnostico;
     this._notas = props.notas;
-    this._fechaInicio = props.fechaInicio ?? new Date();
+    this._fechaInicio = props.fechaInicio ?? nowLima();
     this._fechaFin = props.fechaFin;
   }
 
@@ -67,7 +68,7 @@ export class Consulta extends EntidadBase<string> {
   // ─── Métodos de negocio ───────────────────────────────────────────────────
   finalizar(diagnostico?: string, notas?: string): void {
     this._estado = 'FINALIZADA';
-    this._fechaFin = new Date();
+    this._fechaFin = nowLima();
     if (diagnostico) this._diagnostico = diagnostico;
     if (notas) this._notas = notas;
   }

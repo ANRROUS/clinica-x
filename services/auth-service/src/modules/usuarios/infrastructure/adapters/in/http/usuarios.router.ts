@@ -24,5 +24,8 @@ export function createUsuariosRouter(
   router.get('/me', jwtMiddleware({ secret: jwtSecret }), controller.me);
   router.put('/me', jwtMiddleware({ secret: jwtSecret }), controller.actualizarMe);
 
+  // Internas
+  router.get('/internal/users', controller.listarPorIds);
+
   return router;
 }

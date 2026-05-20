@@ -239,7 +239,7 @@ export default function Footer() {
         {/* Copyright */}
         <div className="border-t border-white/10">
           <div className="mx-auto max-w-7xl px-6 py-4 text-center text-xs text-white/60">
-            &copy; {new Date().getFullYear()} Clínica X — Todos los derechos
+            &copy; 2026 Clínica X — Todos los derechos
             reservados.
           </div>
         </div>

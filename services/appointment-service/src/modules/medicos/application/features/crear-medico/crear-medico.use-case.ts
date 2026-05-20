@@ -18,6 +18,7 @@ import { HorarioMedico } from '@/modules/medicos/domain/value-objects/horario-me
 import {
   MedicoDuplicadoError,
   ErrorAuthService,
+  DatosDuplicadosError,
 } from '@/modules/medicos/domain/exceptions/medico.errors';
 import type {
   ICrearMedicoPort,
@@ -52,7 +53,10 @@ export class CrearMedicoUseCase implements ICrearMedicoPort {
         telefono: dto.telefono,
       });
     } catch (err: any) {
-      return Err(new ErrorAuthService(err.message || 'No se pudo crear el usuario'));
+      if (err.status === 409 && err.code === 'USUARIO_DUPLICADO') {
+        return Err(new DatosDuplicadosError());
+      }
+      return Err(new ErrorAuthService('Ocurrió un error al procesar el registro. Intente nuevamente más tarde.'));
     }
 
     // 3. Crear entidad Medico

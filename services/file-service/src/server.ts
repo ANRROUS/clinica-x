@@ -22,6 +22,7 @@ import { requestIdMiddleware, errorHandler, jwtMiddleware } from '@clinica-x/sha
 import { env } from './env';
 import { logger } from './shared/logger';
 import { disconnectPrisma } from './shared/prisma-client';
+import { nowLima } from '@clinica-x/date-utils';
 
 const app = express();
 
@@ -39,7 +40,7 @@ app.get('/health', (_req, res) => {
       bucket: env.AWS_BUCKET,
       max_size_bytes: env.MAX_FILE_SIZE_BYTES,
       allowed_mime_types: env.ALLOWED_MIME_TYPES,
-      timestamp: new Date().toISOString(),
+      timestamp: nowLima().toISOString(),
     },
   });
 });

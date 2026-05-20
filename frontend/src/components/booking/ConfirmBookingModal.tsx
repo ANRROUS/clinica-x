@@ -2,6 +2,7 @@
 
 import { X, AlertTriangle } from 'lucide-react';
 import type { DisponibilidadDoctorDTO, SlotDTO } from '@/lib/api/types';
+import { parseLimaDate, getLimaDay, getLimaMonth } from '@clinica-x/date-utils';
 
 interface Props {
   isOpen: boolean;
@@ -15,13 +16,14 @@ interface Props {
   bookingMode: 'manual' | 'automatic';
 }
 
+const MONTHS = [
+  'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
+  'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre',
+];
+
 function formatDateDisplay(dateStr: string): string {
-  const d = new Date(dateStr + 'T00:00:00');
-  const months = [
-    'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
-    'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre',
-  ];
-  return `${d.getDate()} de ${months[d.getMonth()]}`;
+  const d = parseLimaDate(dateStr + 'T00:00:00');
+  return `${getLimaDay(d)} de ${MONTHS[getLimaMonth(d)]}`;
 }
 
 function getInitials(name: string): string {

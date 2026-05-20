@@ -9,12 +9,18 @@
 import type { Medico } from '../../entities/medico.entity';
 import type { HorarioMedico } from '../../value-objects/horario-medico.vo';
 
+export interface MedicoDetalle {
+  medico: Medico;
+  horarios: HorarioMedico[];
+  especialidadNombre: string;
+}
+
 export interface IMedicoRepository {
   /** Guarda un médico nuevo (sin horarios). */
   guardar(medico: Medico): Promise<void>;
 
   /** Busca por id incluyendo horarios y especialidad. */
-  buscarPorId(id: string): Promise<(Medico & { horarios: HorarioMedico[]; especialidadNombre: string }) | null>;
+  buscarPorId(id: string): Promise<MedicoDetalle | null>;
 
   /** Busca por nombre de usuario. */
   buscarPorNombreUsuario(nombreUsuario: string): Promise<Medico | null>;
@@ -23,7 +29,7 @@ export interface IMedicoRepository {
   buscarPorUsuarioId(usuarioId: string): Promise<Medico | null>;
 
   /** Lista todos los médicos con horarios y especialidad. */
-  listarTodos(): Promise<(Medico & { horarios: HorarioMedico[]; especialidadNombre: string })[]>;
+  listarTodos(): Promise<MedicoDetalle[]>;
 
   /** Actualiza datos del médico. */
   actualizar(medico: Medico): Promise<void>;
@@ -60,4 +66,14 @@ export interface IAuthServiceClient {
     telefono?: string;
     password?: string;
   }): Promise<void>;
+
+  /** Obtiene datos personales de usuarios por ids (uso interno). */
+  obtenerUsuariosPorIds(ids: string[]): Promise<Array<{
+    id: string;
+    nombre: string;
+    apellido: string;
+    dni: string;
+    email: string;
+    telefono?: string;
+  }>>;
 }

@@ -5,6 +5,7 @@ import { useQuery } from '@tanstack/react-query';
 import { Loader2, FileText, Search, Check } from 'lucide-react';
 import { getPatientHistory, getConsultationById } from '@/lib/api/medical.api';
 import type { ConsultaDTO } from '@/lib/api/types';
+import { parseLimaDate, getLimaDay, getLimaMonth, getLimaYear } from '@clinica-x/date-utils';
 
 const MONTH_NAMES = [
   'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
@@ -12,8 +13,8 @@ const MONTH_NAMES = [
 ];
 
 function formatDate(iso: string): string {
-  const d = new Date(iso);
-  return `${d.getDate()} de ${MONTH_NAMES[d.getMonth()]} de ${d.getFullYear()}`;
+  const d = parseLimaDate(iso);
+  return `${getLimaDay(d)} de ${MONTH_NAMES[getLimaMonth(d)]} de ${getLimaYear(d)}`;
 }
 
 // Mock data para visualización fiel al diseño

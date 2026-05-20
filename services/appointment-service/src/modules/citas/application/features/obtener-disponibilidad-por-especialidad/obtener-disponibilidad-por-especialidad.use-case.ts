@@ -15,6 +15,7 @@ import type {
 } from '@/modules/citas/domain/ports/in/citas.port';
 import type { ICitaRepository } from '@/modules/citas/domain/ports/out/cita.repository.port';
 import type { IMedicoConsultaPort } from '@/modules/citas/domain/ports/out/medico-consulta.port';
+import { nowLima, addDaysLima, getLimaDayOfWeek, startOfDayLima, endOfDayLima, buildLimaDate, formatLima } from '@clinica-x/date-utils';
 
 export class ObtenerDisponibilidadPorEspecialidadUseCase implements IObtenerDisponibilidadPorEspecialidadPort {
   constructor(
@@ -26,35 +27,32 @@ export class ObtenerDisponibilidadPorEspecialidadUseCase implements IObtenerDisp
     const medicos = await this.medicoReader.buscarPorEspecialidadActiva(dto.especialidadId);
     const resultado: DisponibilidadDoctorDto[] = [];
 
-    const fechaBase = dto.fechaDesde ?? new Date();
+    const fechaBase = dto.fechaDesde ?? nowLima();
     const diasAVerificar = 7; // Próximos 7 días
 
     for (const medico of medicos) {
       const dias: { fecha: string; slots: SlotDto[] }[] = [];
 
       for (let i = 0; i < diasAVerificar; i++) {
-        const fecha = new Date(fechaBase);
-        fecha.setDate(fecha.getDate() + i);
+        const fecha = addDaysLima(fechaBase, i);
 
-        const diaSemana = fecha.getDay() === 0 ? 7 : fecha.getDay();
+        const diaSemana = getLimaDayOfWeek(fecha);
         const horarios = await this.medicoReader.listarHorarios(medico.id, diaSemana);
 
         if (horarios.length === 0) continue;
 
-        const inicioDia = new Date(fecha);
-        inicioDia.setHours(0, 0, 0, 0);
-        const finDia = new Date(fecha);
-        finDia.setHours(23, 59, 59, 999);
+        const inicioDia = startOfDayLima(fecha);
+        const finDia = endOfDayLima(fecha);
         const citas = await this.repo.buscarPorMedicoYFecha(medico.id, inicioDia, finDia);
 
         const slots: SlotDto[] = [];
         for (const h of horarios) {
-          let slotStart = this.parseTime(h.horaInicio);
-          const slotEndMax = this.parseTime(h.horaFin);
+          let slotStart = this.parseTime(h.horaInicio, fecha);
+          const slotEndMax = this.parseTime(h.horaFin, fecha);
           while (slotStart < slotEndMax) {
             const slotEnd = new Date(slotStart.getTime() + h.duracionSlot * 60 * 1000);
             if (slotEnd > slotEndMax) break;
-            const disponible = !this.estaOcupado(slotStart, slotEnd, citas);
+            const disponible = !this.estaOcupado(slotStart, slotEnd, citas, h.duracionSlot);
             slots.push({
               horaInicio: this.formatTime(slotStart),
               horaFin: this.formatTime(slotEnd),
@@ -65,7 +63,7 @@ export class ObtenerDisponibilidadPorEspecialidadUseCase implements IObtenerDisp
         }
 
         if (slots.length > 0) {
-          dias.push({ fecha: fecha.toISOString().split('T')[0], slots });
+          dias.push({ fecha: formatLima(fecha, 'yyyy-MM-dd'), slots });
         }
       }
 
@@ -82,23 +80,19 @@ export class ObtenerDisponibilidadPorEspecialidadUseCase implements IObtenerDisp
     return Ok(resultado);
   }
 
-  private parseTime(timeStr: string): Date {
+  private parseTime(timeStr: string, baseDate: Date): Date {
     const [h, m] = timeStr.split(':').map(Number);
-    const d = new Date();
-    d.setHours(h, m, 0, 0);
-    return d;
+    return buildLimaDate(formatLima(baseDate, 'yyyy-MM-dd'), `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:00`);
   }
 
   private formatTime(date: Date): string {
-    const h = String(date.getHours()).padStart(2, '0');
-    const m = String(date.getMinutes()).padStart(2, '0');
-    return `${h}:${m}`;
+    return formatLima(date, 'HH:mm');
   }
 
-  private estaOcupado(inicio: Date, fin: Date, citas: { fechaHora: Date }[]): boolean {
+  private estaOcupado(inicio: Date, fin: Date, citas: { fechaHora: Date }[], duracionSlotMinutos: number): boolean {
     for (const c of citas) {
-      const citaInicio = new Date(c.fechaHora);
-      const citaFin = new Date(citaInicio.getTime() + 30 * 60 * 1000);
+      const citaInicio = c.fechaHora;
+      const citaFin = new Date(citaInicio.getTime() + duracionSlotMinutos * 60 * 1000);
       if (inicio < citaFin && fin > citaInicio) {
         return true;
       }

@@ -19,6 +19,7 @@
   "dependencies": {
     "@aws-sdk/client-s3": "^3.620.0",
     "@aws-sdk/s3-request-presigner": "^3.620.0",
+    "@clinica-x/date-utils": "workspace:*",
     "@clinica-x/shared-kernel": "workspace:*",
     "@clinica-x/shared-middleware": "workspace:*",
     "@clinica-x/shared-types": "workspace:*",

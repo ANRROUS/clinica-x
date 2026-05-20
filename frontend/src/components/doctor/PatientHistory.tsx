@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { Clock, FileText, ChevronDown, ChevronUp } from 'lucide-react';
 import type { ConsultaMedicoDTO } from '@/lib/api/types';
+import { parseApiDate, formatLima } from '@clinica-x/date-utils';
 
 interface PatientHistoryProps {
   patients: ConsultaMedicoDTO[];
@@ -24,7 +25,7 @@ function groupByPatient(consultas: ConsultaMedicoDTO[]) {
   consultas.forEach((c) => {
     const key = c.pacienteId;
     if (!map.has(key)) {
-      map.set(key, { pacienteId: c.pacienteId, nombre: c.pacienteNombre || c.pacienteId, consultas: [] });
+      map.set(key, { pacienteId: c.pacienteId, nombre: c.pacienteNombre ? `${c.pacienteNombre} ${c.pacienteApellido || ''}`.trim() : 'Paciente', consultas: [] });
     }
     map.get(key)!.consultas.push(c);
   });
@@ -56,7 +57,7 @@ export default function PatientHistory({ patients, onViewConsultation }: Patient
               className="flex w-full items-center justify-between px-4 py-3 hover:bg-gray-50"
             >
               <div className="flex items-center gap-3">
-                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-brand-100 text-sm font-bold text-brand-700">
+                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-accent-500 text-sm font-bold text-white">
                   {nombre.split(' ').map((n) => n[0]).join('').slice(0, 2)}
                 </div>
                 <div className="text-left">
@@ -72,9 +73,9 @@ export default function PatientHistory({ patients, onViewConsultation }: Patient
             {isExpanded && (
               <div className="border-t border-gray-100 px-4 pb-3">
                 {consultas.map((c) => {
-                  const fecha = new Date(c.fechaInicio + 'Z');
-                  const dateStr = fecha.toLocaleDateString('es-ES', { day: '2-digit', month: 'short', year: 'numeric' });
-                  const timeStr = fecha.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
+                  const fecha = parseApiDate(c.fechaInicio);
+                  const dateStr = formatLima(fecha, 'dd MMM yyyy');
+                  const timeStr = formatLima(fecha, 'HH:mm');
                   return (
                     <div
                       key={c.id}

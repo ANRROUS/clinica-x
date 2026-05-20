@@ -1,15 +1,23 @@
 'use client';
 
 import { useMemo } from 'react';
-import { Clock, User, Stethoscope, XCircle, CheckCircle } from 'lucide-react';
+import { Clock, User } from 'lucide-react';
 import type { CitaCalendarioDTO } from '@/lib/api/types';
 import { parseApiDate } from '@/lib/date-utils';
+import {
+  getLimaYear,
+  getLimaMonth,
+  getLimaDay,
+  getLimaDayOfWeek,
+  getLimaHours,
+  getLimaMinutes,
+  formatLima,
+} from '@clinica-x/date-utils';
 
 interface CalendarDayProps {
   currentDate: Date;
   citas: CitaCalendarioDTO[];
-  onStatusChange: (id: string, estado: 'CONFIRMADA' | 'EN_ATENCION' | 'COMPLETADA' | 'CANCELADA') => void;
-  onStartConsultation: (cita: CitaCalendarioDTO) => void;
+  onNavigateToPatient: (patientId: string) => void;
 }
 
 const statusBadge: Record<string, string> = {
@@ -29,18 +37,18 @@ const statusLabel: Record<string, string> = {
 const dayNames = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
 const monthNames = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
 
-export default function CalendarDay({ currentDate, citas, onStatusChange, onStartConsultation }: CalendarDayProps) {
+export default function CalendarDay({ currentDate, citas, onNavigateToPatient }: CalendarDayProps) {
   const dayCitas = useMemo(() => {
-    const dateStr = currentDate.toISOString().slice(0, 10);
+    const dateStr = formatLima(currentDate, 'yyyy-MM-dd');
     return citas
       .filter((c) => {
         const d = parseApiDate(c.fechaHora);
-        return !isNaN(d.getTime()) && d.toISOString().slice(0, 10) === dateStr;
+        return !isNaN(d.getTime()) && formatLima(d, 'yyyy-MM-dd') === dateStr;
       })
       .sort((a, b) => parseApiDate(a.fechaHora).getTime() - parseApiDate(b.fechaHora).getTime());
   }, [citas, currentDate]);
 
-  const dateLabel = `${dayNames[currentDate.getDay()]} ${currentDate.getDate()} de ${monthNames[currentDate.getMonth()]}`;
+  const dateLabel = `${dayNames[getLimaDayOfWeek(currentDate) % 7]} ${getLimaDay(currentDate)} de ${monthNames[getLimaMonth(currentDate)]}`;
 
   const totalByStatus = useMemo(() => {
     const counts: Record<string, number> = { CONFIRMADA: 0, EN_ATENCION: 0, COMPLETADA: 0, CANCELADA: 0 };
@@ -78,11 +86,11 @@ export default function CalendarDay({ currentDate, citas, onStatusChange, onStar
           {dayCitas.map((cita) => {
             const start = parseApiDate(cita.fechaHora);
             if (isNaN(start.getTime())) return null;
-            const hStart = start.getHours().toString().padStart(2, '0');
-            const mStart = start.getMinutes().toString().padStart(2, '0');
+            const hStart = String(getLimaHours(start)).padStart(2, '0');
+            const mStart = String(getLimaMinutes(start)).padStart(2, '0');
             const end = new Date(start.getTime() + 30 * 60000);
-            const hEnd = end.getHours().toString().padStart(2, '0');
-            const mEnd = end.getMinutes().toString().padStart(2, '0');
+            const hEnd = String(getLimaHours(end)).padStart(2, '0');
+            const mEnd = String(getLimaMinutes(end)).padStart(2, '0');
             return (
               <div
                 key={cita.id}
@@ -94,7 +102,7 @@ export default function CalendarDay({ currentDate, citas, onStatusChange, onStar
                       {hStart}:{mStart}
                     </div>
                     <div>
-                      <p className="font-semibold">{cita.pacienteNombre || 'Paciente'} {cita.pacienteApellido || ''}</p>
+                      <p className="font-semibold">{cita.pacienteNombre ? `${cita.pacienteNombre} ${cita.pacienteApellido || ''}`.trim() : 'Paciente'}</p>
                       <p className="text-sm opacity-75">{cita.specialty || cita.especialidad || '—'}</p>
                       <p className="text-xs opacity-60">{hStart}:{mStart} – {hEnd}:{mEnd}</p>
                     </div>
@@ -105,40 +113,13 @@ export default function CalendarDay({ currentDate, citas, onStatusChange, onStar
                 </div>
 
                 <div className="mt-3 flex flex-wrap gap-2">
-                  {cita.estado === 'CONFIRMADA' && (
-                    <>
-                      <button
-                        onClick={() => onStatusChange(cita.id, 'EN_ATENCION')}
-                        className="inline-flex items-center gap-1 rounded-md bg-brand-500 px-3 py-1.5 text-xs font-medium text-white hover:bg-brand-600 transition-colors"
-                      >
-                        <Stethoscope className="h-3 w-3" />
-                        Iniciar atención
-                      </button>
-                      <button
-                        onClick={() => onStartConsultation(cita)}
-                        className="inline-flex items-center gap-1 rounded-md bg-blue-dark px-3 py-1.5 text-xs font-medium text-white hover:bg-blue-800 transition-colors"
-                      >
-                        <Stethoscope className="h-3 w-3" />
-                        Iniciar consulta
-                      </button>
-                    </>
-                  )}
-                  {cita.estado === 'EN_ATENCION' && (
+                  {cita.estado !== 'COMPLETADA' && cita.estado !== 'CANCELADA' && (
                     <button
-                      onClick={() => onStatusChange(cita.id, 'COMPLETADA')}
-                      className="inline-flex items-center gap-1 rounded-md bg-green-600 px-3 py-1.5 text-xs font-medium text-white hover:bg-green-700 transition-colors"
+                      onClick={() => onNavigateToPatient(cita.pacienteId)}
+                      className="inline-flex items-center gap-1 rounded-md bg-brand-500 px-3 py-1.5 text-xs font-medium text-white hover:bg-brand-600 transition-colors"
                     >
-                      <CheckCircle className="h-3 w-3" />
-                      Completar
-                    </button>
-                  )}
-                  {(cita.estado === 'CONFIRMADA' || cita.estado === 'EN_ATENCION') && (
-                    <button
-                      onClick={() => onStatusChange(cita.id, 'CANCELADA')}
-                      className="inline-flex items-center gap-1 rounded-md bg-red-50 px-3 py-1.5 text-xs font-medium text-red-700 hover:bg-red-100 transition-colors"
-                    >
-                      <XCircle className="h-3 w-3" />
-                      Cancelar
+                      <User className="h-3 w-3" />
+                      Ver paciente
                     </button>
                   )}
                 </div>
