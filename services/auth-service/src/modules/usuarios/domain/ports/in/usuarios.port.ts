@@ -69,3 +69,7 @@ export interface IObtenerPerfilPort {
 export interface IActualizarPerfilPort {
   execute(usuarioId: string, dto: ActualizarPerfilDto): Promise<Result<UsuarioResponseDto, Error>>;
 }
+
+export interface IListarUsuariosPorIdsPort {
+  execute(ids: string[]): Promise<Result<UsuarioResponseDto[], Error>>;
+}

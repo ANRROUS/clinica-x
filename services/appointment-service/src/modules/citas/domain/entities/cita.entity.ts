@@ -8,6 +8,7 @@
 
 import { EntidadBase, Result, Ok, Err } from '@clinica-x/shared-kernel';
 import type { EstadoCita, TipoReserva } from '@clinica-x/shared-types';
+import { nowLima } from '@clinica-x/date-utils';
 
 export interface CitaProps {
   pacienteId: string;

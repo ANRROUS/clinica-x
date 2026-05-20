@@ -19,6 +19,7 @@ import type {
 import type { ICitaRepository } from '@/modules/citas/domain/ports/out/cita.repository.port';
 import type { IMedicoConsultaPort } from '@/modules/citas/domain/ports/out/medico-consulta.port';
 import { toCitaResponseDto } from '@/modules/citas/application/mapper';
+import { nowLima } from '@clinica-x/date-utils';
 
 const CUATRO_HORAS_MS = 4 * 60 * 60 * 1000;
 
@@ -42,26 +43,25 @@ export class ReprogramarCitaUseCase implements IReprogramarCitaPort {
       return Err(new NoSePuedeReprogramarError());
     }
 
-    if (!cita.puedeCancelarOReprogramar(new Date())) {
+    if (!cita.puedeCancelarOReprogramar(nowLima())) {
       return Err(new NoSePuedeReprogramarError());
     }
 
-    const ahora = new Date();
+    const ahora = nowLima();
     const diffMs = dto.nuevaFechaHora.getTime() - ahora.getTime();
     if (diffMs < CUATRO_HORAS_MS) {
       return Err(new SlotNoDisponibleError('Debes reprogramar con al menos 4 horas de anticipación'));
     }
 
-    // Verificar que el nuevo slot esté libre
+    // Verificar que el nuevo slot esté libre y actualizar atómicamente
     const inicioRango = new Date(dto.nuevaFechaHora.getTime() - 1);
     const finRango = new Date(dto.nuevaFechaHora.getTime() + 30 * 60 * 1000);
-    const ocupadas = await this.repo.contarCitasEnRango(cita.medicoId, inicioRango, finRango);
-    if (ocupadas > 0) {
-      return Err(new SlotNoDisponibleError('El nuevo horario ya no está disponible'));
-    }
 
     cita.reprogramar(dto.nuevaFechaHora);
-    await this.repo.actualizar(cita);
+    const actualizada = await this.repo.actualizarSiLibre(cita, inicioRango, finRango);
+    if (!actualizada) {
+      return Err(new SlotNoDisponibleError('El nuevo horario ya no está disponible'));
+    }
 
     const medico = await this.medicoReader.buscarPorId(cita.medicoId);
     return Ok(

@@ -12,22 +12,23 @@ import {
 } from '@/lib/api/appointments.api';
 import type { CitaDTO, SlotDTO } from '@/lib/api/types';
 import { AppointmentCardSkeleton } from '@/components/shared/Skeleton';
-
-const MONTH_NAMES = [
-  'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
-  'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre',
-];
-
-const DAY_NAMES = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
-
-function formatDateExtended(iso: string): string {
-  const d = new Date(iso);
-  return `${DAY_NAMES[d.getDay()]}, ${d.getDate()} de ${MONTH_NAMES[d.getMonth()]} de ${d.getFullYear()}`;
-}
+import {
+  parseLimaDate,
+  nowLima,
+  buildLimaDate,
+  toISOLima,
+  getLimaDayOfWeek,
+  getLimaDay,
+  getLimaMonth,
+  getLimaYear,
+  formatDateExtended,
+  todayLimaString,
+  diffInMsLima,
+} from '@clinica-x/date-utils';
 
 function canModifyAppointment(fechaHora: string): boolean {
-  const appointmentTime = new Date(fechaHora).getTime();
-  return appointmentTime - Date.now() > 60 * 60 * 1000;
+  const appointmentTime = parseLimaDate(fechaHora);
+  return diffInMsLima(appointmentTime, nowLima()) > 60 * 60 * 1000;
 }
 
 function CancelModal({
@@ -86,7 +87,7 @@ function RescheduleModal({
   const [selectedDate, setSelectedDate] = useState('');
   const [selectedSlot, setSelectedSlot] = useState<SlotDTO | null>(null);
 
-  const today = new Date().toISOString().split('T')[0];
+  const today = todayLimaString();
 
   const { data: slotsData, isLoading: loadingSlots } = useQuery({
     queryKey: ['reschedule-slots', appointment?.medicoId, selectedDate],
@@ -112,11 +113,10 @@ function RescheduleModal({
   const handleConfirm = () => {
     if (!selectedDate || !selectedSlot || !appointment) return;
     const [h, m] = selectedSlot.horaInicio.split(':').map(Number);
-    const d = new Date(selectedDate + 'T00:00:00');
-    d.setHours(h, m, 0, 0);
-    const fechaHora = d.toISOString();
+    const d = buildLimaDate(selectedDate, `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:00`);
+    const fechaHora = toISOLima(d);
 
-    if (new Date(fechaHora).getTime() - Date.now() <= 60 * 60 * 1000) {
+    if (diffInMsLima(parseLimaDate(fechaHora), nowLima()) <= 60 * 60 * 1000) {
       toast.error('Debes reprogramar con al menos 1 hora de anticipación.');
       return;
     }

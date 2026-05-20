@@ -6,41 +6,46 @@ import CalendarMonth from './CalendarMonth';
 import CalendarWeek from './CalendarWeek';
 import CalendarDay from './CalendarDay';
 import type { CitaCalendarioDTO } from '@/lib/api/types';
+import {
+  nowLima,
+  addDaysLima,
+  addMonthsLima,
+  getLimaYear,
+  getLimaMonth,
+  getLimaDay,
+  getLimaDayOfWeek,
+  formatLima,
+} from '@clinica-x/date-utils';
 
 type ViewMode = 'mensual' | 'semanal' | 'diaria';
 
 interface DoctorCalendarProps {
   citas: CitaCalendarioDTO[];
-  onStatusChange: (id: string, estado: 'CONFIRMADA' | 'EN_ATENCION' | 'COMPLETADA' | 'CANCELADA') => void;
-  onStartConsultation: (cita: CitaCalendarioDTO) => void;
+  onNavigateToPatient: (patientId: string) => void;
   loading?: boolean;
 }
 
-export default function DoctorCalendar({ citas, onStatusChange, onStartConsultation, loading }: DoctorCalendarProps) {
+export default function DoctorCalendar({ citas, onNavigateToPatient, loading }: DoctorCalendarProps) {
   const [viewMode, setViewMode] = useState<ViewMode>('semanal');
-  const [currentDate, setCurrentDate] = useState(new Date());
+  const [currentDate, setCurrentDate] = useState(nowLima());
 
   const navigatePrev = () => {
     setCurrentDate((prev) => {
-      const d = new Date(prev);
-      if (viewMode === 'mensual') d.setMonth(d.getMonth() - 1);
-      else if (viewMode === 'semanal') d.setDate(d.getDate() - 7);
-      else d.setDate(d.getDate() - 1);
-      return d;
+      if (viewMode === 'mensual') return addMonthsLima(prev, -1);
+      if (viewMode === 'semanal') return addDaysLima(prev, -7);
+      return addDaysLima(prev, -1);
     });
   };
 
   const navigateNext = () => {
     setCurrentDate((prev) => {
-      const d = new Date(prev);
-      if (viewMode === 'mensual') d.setMonth(d.getMonth() + 1);
-      else if (viewMode === 'semanal') d.setDate(d.getDate() + 7);
-      else d.setDate(d.getDate() + 1);
-      return d;
+      if (viewMode === 'mensual') return addMonthsLima(prev, 1);
+      if (viewMode === 'semanal') return addDaysLima(prev, 7);
+      return addDaysLima(prev, 1);
     });
   };
 
-  const goToToday = () => setCurrentDate(new Date());
+  const goToToday = () => setCurrentDate(nowLima());
 
   const formatDate = () => {
     const monthNames = [
@@ -48,16 +53,14 @@ export default function DoctorCalendar({ citas, onStatusChange, onStartConsultat
       'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre',
     ];
     if (viewMode === 'mensual') {
-      return `${monthNames[currentDate.getMonth()]} ${currentDate.getFullYear()}`;
+      return `${monthNames[getLimaMonth(currentDate)]} ${getLimaYear(currentDate)}`;
     }
     if (viewMode === 'semanal') {
-      const startOfWeek = new Date(currentDate);
-      startOfWeek.setDate(startOfWeek.getDate() - startOfWeek.getDay());
-      const endOfWeek = new Date(startOfWeek);
-      endOfWeek.setDate(endOfWeek.getDate() + 6);
-      return `${startOfWeek.getDate()} - ${endOfWeek.getDate()} ${monthNames[endOfWeek.getMonth()]} ${endOfWeek.getFullYear()}`;
+      const startOfWeek = addDaysLima(currentDate, -(getLimaDayOfWeek(currentDate) % 7));
+      const endOfWeek = addDaysLima(startOfWeek, 6);
+      return `${getLimaDay(startOfWeek)} - ${getLimaDay(endOfWeek)} ${monthNames[getLimaMonth(endOfWeek)]} ${getLimaYear(endOfWeek)}`;
     }
-    return `${currentDate.getDate()} de ${monthNames[currentDate.getMonth()]} ${currentDate.getFullYear()}`;
+    return `${getLimaDay(currentDate)} de ${monthNames[getLimaMonth(currentDate)]} ${getLimaYear(currentDate)}`;
   };
 
   const viewOptions: { key: ViewMode; label: string }[] = [
@@ -110,16 +113,16 @@ export default function DoctorCalendar({ citas, onStatusChange, onStartConsultat
           <CalendarMonth
             currentDate={currentDate}
             citas={citas}
-            onStartConsultation={onStartConsultation}
+            onNavigateToPatient={onNavigateToPatient}
             onDayClick={(date) => {
               setCurrentDate(date);
               setViewMode('diaria');
             }}
           />
         ) : viewMode === 'semanal' ? (
-          <CalendarWeek currentDate={currentDate} citas={citas} onStatusChange={onStatusChange} onStartConsultation={onStartConsultation} />
+          <CalendarWeek currentDate={currentDate} citas={citas} onNavigateToPatient={onNavigateToPatient} />
         ) : (
-          <CalendarDay currentDate={currentDate} citas={citas} onStatusChange={onStatusChange} onStartConsultation={onStartConsultation} />
+          <CalendarDay currentDate={currentDate} citas={citas} onNavigateToPatient={onNavigateToPatient} />
         )}
       </div>
     </div>

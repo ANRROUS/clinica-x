@@ -7,6 +7,7 @@
 import { prisma } from '@/shared/prisma-client';
 import { Archivo } from '@/modules/archivos/domain/entities/archivo.entity';
 import type { IArchivoRepository } from '@/modules/archivos/domain/ports/out/archivo.repository.port';
+import { nowLima } from '@clinica-x/date-utils';
 
 export class PrismaArchivoRepository implements IArchivoRepository {
   async guardar(archivo: Archivo): Promise<Archivo> {
@@ -19,7 +20,7 @@ export class PrismaArchivoRepository implements IArchivoRepository {
       nombreOriginal: archivo.nombreOriginal,
       mimeType: archivo.mimeType,
       tamanoBytes: archivo.tamanoBytes,
-      subidoEn: new Date(),
+      subidoEn: nowLima(),
     };
 
     const registro = await prisma.archivo.upsert({

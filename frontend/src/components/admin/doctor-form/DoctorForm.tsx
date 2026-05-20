@@ -112,6 +112,17 @@ export default function DoctorForm({ editId }: DoctorFormProps) {
     populateForm(doctor);
   }
 
+  const getErrorMessage = (err: any): string => {
+    const code = err?.response?.data?.error?.codigo;
+    if (code === 'DATOS_DUPLICADOS') {
+      return 'No se pudo guardar. Los datos ingresados podrían estar ya en uso. Por favor verifique el DNI, correo y nombre de usuario, e intente con otros valores.';
+    }
+    if (code === 'MEDICO_DUPLICADO') {
+      return 'El nombre de usuario ingresado ya está en uso. Por favor elija otro.';
+    }
+    return err?.response?.data?.error?.mensaje || 'No se pudo guardar. Revisa los datos e intenta nuevamente.';
+  };
+
   const createMutation = useMutation({
     mutationFn: createDoctor,
     onSuccess: () => {
@@ -120,7 +131,7 @@ export default function DoctorForm({ editId }: DoctorFormProps) {
       router.push('/admin/dashboard');
     },
     onError: (err: any) => {
-      toast.error(err?.response?.data?.error?.mensaje || 'No se pudo guardar. Revisa los datos e intenta nuevamente.');
+      toast.error(getErrorMessage(err));
     },
   });
 
@@ -132,7 +143,7 @@ export default function DoctorForm({ editId }: DoctorFormProps) {
       router.push('/admin/dashboard');
     },
     onError: (err: any) => {
-      toast.error(err?.response?.data?.error?.mensaje || 'No se pudo guardar. Revisa los datos e intenta nuevamente.');
+      toast.error(getErrorMessage(err));
     },
   });
 
