@@ -22,6 +22,11 @@ export default function DoctorPatientDetailPage() {
   const [activeTab, setActiveTab] = useState<'historial' | 'consulta'>('historial');
   const [activeConsultation, setActiveConsultation] = useState<ConsultaMedicoDTO | null>(null);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const { data: activeData } = useQuery({
     queryKey: ['doctor-active-patient'],
@@ -56,7 +61,9 @@ export default function DoctorPatientDetailPage() {
     }
   }, [isAuthenticated, router]);
 
-  if (!isAuthenticated) return null;
+  if (!mounted || !isAuthenticated) {
+    return <div className="flex h-full" />;
+  }
 
   const patients = patientsData?.data || [];
   const currentPatient = patients.find((c) => c.pacienteId === patientId);

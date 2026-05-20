@@ -19,7 +19,14 @@ export default function DoctorPortalLayout({ children }: { children: React.React
     }
   }, [isAuthenticated, router, _hasHydrated]);
 
-  if (!_hasHydrated || !isAuthenticated) return null;
+  if (!_hasHydrated || !isAuthenticated) {
+    return (
+      <div className="flex h-screen flex-col overflow-hidden bg-gray-50">
+        <DoctorHeader />
+        <main className="flex-1 overflow-hidden" />
+      </div>
+    );
+  }
 
   return (
     <div className="flex h-screen flex-col overflow-hidden bg-gray-50">
