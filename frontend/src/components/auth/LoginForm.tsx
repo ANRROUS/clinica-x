@@ -7,9 +7,10 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { toast } from 'sonner';
-import { Eye, EyeOff, Mail, Lock, CreditCard } from 'lucide-react';
+import { Eye, EyeOff, Mail, Lock, CreditCard, X } from 'lucide-react';
 import { login } from '@/lib/api/auth.api';
 import { useAuthStore } from '@/store/useAuthStore';
+import axios from 'axios';
 
 const loginSchema = z.object({
   dni: z.string().length(8, 'El DNI debe tener 8 dígitos').regex(/^\d+$/, 'Solo números'),
@@ -34,25 +35,38 @@ export default function LoginForm() {
     resolver: zodResolver(loginSchema),
   });
 
-  const onSubmit = async (data: LoginForm) => {
-    setLoading(true);
-    try {
-      const res = await login(data);
-      if (res.success && res.data) {
-        setAuth(res.data.usuario, res.data.token);
-        toast.success('Sesión iniciada correctamente');
-        const returnUrl = sessionStorage.getItem('returnUrl') || '/perfil';
-        sessionStorage.removeItem('returnUrl');
-        router.push(returnUrl);
-      } else {
-        toast.error(res.error?.mensaje || 'Credenciales inválidas');
-      }
-    } catch {
-      toast.error('Error de conexión. Intenta de nuevo.');
-    } finally {
-      setLoading(false);
+const onSubmit = async (data: LoginForm) => {
+  setLoading(true);
+  try {
+    const res = await login(data);
+    if (res.success && res.data) {
+      setAuth(res.data.usuario, res.data.token);
+      toast.success('Sesión iniciada correctamente');
+      const returnUrl = sessionStorage.getItem('returnUrl') || '/perfil';
+      sessionStorage.removeItem('returnUrl');
+      router.push(returnUrl);
+    } else {
+      toast.error(res.error?.mensaje || 'Credenciales inválidas');
     }
-  };
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      const status = error.response?.status;
+      const backendMessage = error.response?.data?.error?.mensaje;
+
+      if (status === 401) {
+        toast.error(backendMessage || 'Credenciales inválidas');
+      } else if (status === 400) {
+        toast.error(backendMessage || 'Datos inválidos');
+      } else {
+        toast.error(backendMessage || 'Error de conexión. Intenta de nuevo.');
+      }
+    } else {
+      toast.error('Error de conexión. Intenta de nuevo.');
+    }
+  } finally {
+    setLoading(false);
+  }
+};
 
   const inputWrapper = (fieldName: string, hasError: boolean) =>
     `group flex items-center gap-3 rounded-full bg-white/10 px-5 py-3.5 backdrop-blur-sm transition-all duration-300 border ${
@@ -62,23 +76,31 @@ export default function LoginForm() {
     } ${hasError ? 'border-red-300/50 ring-1 ring-red-300/30' : ''}`;
 
   return (
-    <main className="flex min-h-screen w-full bg-[#3BA99F]">
-      {/* Left side - Form */}
-      <div className="flex w-full flex-col justify-center px-6 py-12 sm:px-12 md:px-20 lg:w-1/2">
-        <div className="mb-2">
-          <h1 className="text-3xl font-light tracking-wide text-white/90 md:text-4xl lg:text-5xl">
-            Bienvenido a
-          </h1>
-          <h2 className="text-3xl font-bold tracking-tight text-white md:text-4xl lg:text-5xl">
-            Clínica X
-          </h2>
-        </div>
+    <main 
+      className="flex min-h-screen w-full items-center justify-center p-4 bg-[#31b9ad]" >
+      
+      {/* Close Button */}
+<Link
+  href="/"
+  className="absolute top-8 right-8 z-50 rounded-full bg-white/15 p-1.5 transition-colors hover:bg-white/30 sm:top-8 sm:right-8 sm:p-2 md:top-10 md:right-10 md:p-2.5"
+>
+  <X className="h-6 w-6 text-white sm:h-6 sm:w-6 md:h-8 md:w-8" />
+</Link>
 
-        <p className="mb-10 text-sm font-light text-white/70">
-          Ingresa tus credenciales para acceder a tu portal
-        </p>
+      {/* Central Container with border */}
+      <div className="flex w-full max-w-5xl">
+        {/* Left side - Form */}
+        <div className="flex w-full flex-col justify-center px-6 py-12 sm:px-12 md:px-20 lg:w-1/2">
+          <div className="mb-2">
+            <h1 className="text-3xl font-light tracking-wide text-white/90 md:text-4xl lg:text-5xl">
+              Bienvenido a
+            </h1>
+            <h2 className="text-3xl font-bold tracking-tight text-white md:text-4xl lg:text-5xl">
+              Clínica X
+            </h2>
+          </div>
 
-        <form onSubmit={handleSubmit(onSubmit)} className="w-full max-w-md space-y-4">
+          <form onSubmit={handleSubmit(onSubmit)} className="w-full max-w-md space-y-4">
           {/* DNI */}
           <div className="space-y-1.5">
             <label className="ml-1 text-xs font-medium uppercase tracking-wider text-white">
@@ -92,13 +114,17 @@ export default function LoginForm() {
                 maxLength={8}
                 placeholder="12345678"
                 className="w-full bg-transparent text-sm text-white placeholder-white/30 outline-none"
-                {...register('dni')}
+                {...register('dni', {
+                  onChange: (e) => {
+                    e.target.value = e.target.value.replace(/\D/g, '');
+                  },
+                })}
                 onFocus={() => setFocusedField('dni')}
                 onBlur={() => setFocusedField(null)}
               />
             </div>
             {errors.dni && (
-              <p className="ml-1 text-xs font-medium text-red-200">{errors.dni.message}</p>
+              <p className="ml-1 text-xs font-medium text-red-700/80">{errors.dni.message}</p>
             )}
           </div>
 
@@ -119,7 +145,7 @@ export default function LoginForm() {
               />
             </div>
             {errors.email && (
-              <p className="ml-1 text-xs font-medium text-red-200">{errors.email.message}</p>
+              <p className="ml-1 text-xs font-medium text-red-700/80">{errors.email.message}</p>
             )}
           </div>
 
@@ -147,7 +173,7 @@ export default function LoginForm() {
               </button>
             </div>
             {errors.password && (
-              <p className="ml-1 text-xs font-medium text-red-200">{errors.password.message}</p>
+              <p className="ml-1 text-xs font-medium text-red-700/80">{errors.password.message}</p>
             )}
           </div>
 
@@ -190,32 +216,16 @@ export default function LoginForm() {
             </Link>
           </p>
         </form>
-      </div>
+        </div>
 
-      {/* Right side - Illustration with organic wave shape */}
-      <div className="relative hidden w-1/2 items-center justify-center overflow-hidden lg:flex">
-        {/* <svg
-          className="absolute right-0 top-1/2 h-[85%] w-[90%] -translate-y-1/2"
-          viewBox="0 0 500 600"
-          preserveAspectRatio="xMidYMid meet"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            d="M 80,40
-               C 180,0 320,0 420,40
-               S 500,180 470,300
-               S 380,520 250,570
-               S 80,520 40,380
-               S 0,160 80,40
-               Z"
-            fill="white"
+        {/* Right side - Illustration */}
+        <div className="relative hidden w-1/2 items-center justify-center overflow-hidden lg:flex ">
+          <img
+            src="/assets/login-paciente.png"
+            alt="Ilustración Paciente"
+            className="relative z-10 max-h-[65%] w-auto object-contain"
           />
-        </svg> */}
-        <img
-          src="/assets/login-paciente.png"
-          alt="Ilustración Paciente"
-          className="relative z-10 max-h-[65%] w-auto object-contain drop-shadow-xl"
-        />
+        </div>
       </div>
     </main>
   );

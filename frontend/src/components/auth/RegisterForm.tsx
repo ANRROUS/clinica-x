@@ -79,7 +79,7 @@ export default function RegisterForm() {
     } ${hasError ? 'border-red-300/50 ring-1 ring-red-300/30' : ''}`;
 
   return (
-    <main className="flex min-h-screen w-full bg-[#3BA99F]">
+    <main className="flex min-h-screen w-full items-center justify-center bg-[#31b9ad]">
       {/* Left side - Form */}
       <div className="flex w-full flex-col justify-center px-6 py-8 sm:px-12 md:px-20 lg:w-1/2">
         <div className="mb-1">
