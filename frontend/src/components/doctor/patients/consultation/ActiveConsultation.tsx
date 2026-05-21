@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import { Stethoscope } from 'lucide-react';
@@ -9,8 +9,8 @@ import DiagnosisForm from './DiagnosisForm';
 import AnalysisOrderManager from './AnalysisOrderManager';
 import MedicationTable from './MedicationTable';
 import FinalizeConsultationModal from './FinalizeConsultationModal';
+import { useConsultationStore } from '@/store/useConsultationStore';
 import type { ConsultaMedicoDTO } from '@/lib/api/types';
-import type { AnalysisOrder, Medication } from '@/store/useConsultationStore';
 
 interface ActiveConsultationProps {
   consultation: ConsultaMedicoDTO | null;
@@ -26,17 +26,36 @@ export default function ActiveConsultation({
   onConsultationFinalized,
 }: ActiveConsultationProps) {
   const queryClient = useQueryClient();
-  const [diagnosis, setDiagnosis] = useState('');
-  const [analysisOrders, setAnalysisOrders] = useState<AnalysisOrder[]>([]);
-  const [medications, setMedications] = useState<Medication[]>([]);
   const [showFinalizeModal, setShowFinalizeModal] = useState(false);
-  const [starting, setStarting] = useState(false);
+
+  const {
+    consultationId: storedConsultationId,
+    diagnosis,
+    analysisOrders,
+    medications,
+    setConsultationId,
+    setDiagnosis,
+    addAnalysisOrder,
+    removeAnalysisOrder,
+    addMedication,
+    removeMedication,
+    reset: resetStore,
+  } = useConsultationStore();
+
+  // Sincronizar el store cuando cambia la consulta activa
+  useEffect(() => {
+    if (consultation && storedConsultationId !== consultation.id) {
+      resetStore();
+      setConsultationId(consultation.id);
+    }
+  }, [consultation, storedConsultationId, setConsultationId, resetStore]);
 
   const startMutation = useMutation({
     mutationFn: startConsultation,
     onSuccess: (res) => {
       if (res.success && res.data) {
         toast.success('Consulta iniciada');
+        setConsultationId(res.data.id);
         queryClient.invalidateQueries({ queryKey: ['doctor-active-patient'] });
       } else {
         toast.error(res.error?.mensaje || 'No se pudo iniciar la consulta');
@@ -46,15 +65,12 @@ export default function ActiveConsultation({
   });
 
   const finalizeMutation = useMutation({
-    mutationFn: ({ id, data }: { id: string; data: { diagnostico: string; analysisOrders: AnalysisOrder[]; medications: Medication[] } }) =>
+    mutationFn: ({ id, data }: { id: string; data: { diagnostico: string; analysisOrders: typeof analysisOrders; medications: typeof medications } }) =>
       finalizeConsultation(id, data),
-    onSuccess: (res) => {
-      if (res.success) {
-        toast.success('Consulta finalizada correctamente');
-        onConsultationFinalized();
-      } else {
-        toast.error(res.error?.mensaje || 'Error al finalizar consulta');
-      }
+    onSuccess: () => {
+      toast.success('Consulta finalizada correctamente');
+      resetStore();
+      onConsultationFinalized();
     },
     onError: () => toast.error('Error al finalizar consulta'),
   });
@@ -72,7 +88,6 @@ export default function ActiveConsultation({
           </p>
           <button
             onClick={() => {
-              setStarting(true);
               startMutation.mutate({ pacienteId: patientId });
             }}
             disabled={startMutation.isPending}
@@ -91,18 +106,14 @@ export default function ActiveConsultation({
 
       <AnalysisOrderManager
         orders={analysisOrders}
-        onAdd={(order) => setAnalysisOrders([...analysisOrders, order])}
-        onRemove={(index) =>
-          setAnalysisOrders(analysisOrders.filter((_, i) => i !== index))
-        }
+        onAdd={addAnalysisOrder}
+        onRemove={removeAnalysisOrder}
       />
 
       <MedicationTable
         medications={medications}
-        onAdd={(med) => setMedications([...medications, med])}
-        onRemove={(index) =>
-          setMedications(medications.filter((_, i) => i !== index))
-        }
+        onAdd={addMedication}
+        onRemove={removeMedication}
       />
 
       <div className="flex justify-end">
@@ -121,8 +132,9 @@ export default function ActiveConsultation({
               toast.error('El diagnóstico no puede estar vacío');
               return;
             }
+            const activeId = consultation.id;
             finalizeMutation.mutate({
-              id: consultation.id,
+              id: activeId,
               data: { diagnostico: diagnosis, analysisOrders, medications },
             });
             setShowFinalizeModal(false);

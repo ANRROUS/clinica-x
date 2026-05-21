@@ -22,8 +22,8 @@ const authServiceClient = new AuthServiceClient();
 // ─── Casos de uso ───────────────────────────────────────────────────────────
 const crearMedicoUseCase = new CrearMedicoUseCase(medicoRepository, authServiceClient);
 const actualizarMedicoUseCase = new ActualizarMedicoUseCase(medicoRepository, authServiceClient);
-const listarMedicosUseCase = new ListarMedicosUseCase(medicoRepository);
-const obtenerMedicoUseCase = new ObtenerMedicoUseCase(medicoRepository);
+const listarMedicosUseCase = new ListarMedicosUseCase(medicoRepository, authServiceClient);
+const obtenerMedicoUseCase = new ObtenerMedicoUseCase(medicoRepository, authServiceClient);
 const cambiarEstadoMedicoUseCase = new CambiarEstadoMedicoUseCase(medicoRepository);
 const obtenerMetricasDashboardUseCase = new ObtenerMetricasDashboardUseCase();
 

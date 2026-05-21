@@ -2,6 +2,7 @@
 
 import { FileText, FlaskConical, Pill, CheckCircle } from 'lucide-react';
 import type { ConsultaMedicoDTO } from '@/lib/api/types';
+import { parseApiDate, formatLima } from '@clinica-x/date-utils';
 
 interface ConsultationDetailProps {
   consultation: ConsultaMedicoDTO;
@@ -9,12 +10,8 @@ interface ConsultationDetailProps {
 }
 
 export default function ConsultationDetail({ consultation, onBack }: ConsultationDetailProps) {
-  const fecha = new Date(consultation.fechaInicio + 'Z');
-  const dateStr = fecha.toLocaleDateString('es-ES', {
-    day: '2-digit',
-    month: '2-digit',
-    year: 'numeric',
-  });
+  const fecha = parseApiDate(consultation.fechaInicio);
+  const dateStr = formatLima(fecha, 'dd/MM/yyyy');
 
   return (
     <div className="rounded-xl border border-gray-200 bg-white p-6">

@@ -1,7 +1,7 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
-import { useRouter, useParams } from 'next/navigation';
+import { useState, useEffect, useMemo } from 'react';
+import { useRouter, useParams, useSearchParams } from 'next/navigation';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useDoctorAuthStore } from '@/store/useDoctorAuthStore';
 import { getActivePatient, getDoctorPatients } from '@/lib/api/doctor.api';
@@ -11,6 +11,8 @@ import PatientTabs from '@/components/doctor/patients/PatientTabs';
 import ActiveConsultation from '@/components/doctor/patients/consultation/ActiveConsultation';
 import ConsultationHistory from '@/components/doctor/patients/history/ConsultationHistory';
 import type { ConsultaMedicoDTO } from '@/lib/api/types';
+import { nowLima, addMonthsLima, formatLima } from '@clinica-x/date-utils';
+import { parseApiDate } from '@/lib/date-utils';
 
 export default function DoctorPatientDetailPage() {
   const { isAuthenticated } = useDoctorAuthStore();
@@ -22,6 +24,11 @@ export default function DoctorPatientDetailPage() {
   const [activeTab, setActiveTab] = useState<'historial' | 'consulta'>('historial');
   const [activeConsultation, setActiveConsultation] = useState<ConsultaMedicoDTO | null>(null);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const { data: activeData } = useQuery({
     queryKey: ['doctor-active-patient'],
@@ -29,10 +36,23 @@ export default function DoctorPatientDetailPage() {
     enabled: isAuthenticated,
   });
 
-  const dateRange = {
-    desde: new Date(new Date().setMonth(new Date().getMonth() - 3)).toISOString().slice(0, 10),
-    hasta: new Date().toISOString().slice(0, 10),
-  };
+  const searchParams = useSearchParams();
+  const fromParam = searchParams.get('from');
+
+  const dateRange = useMemo(() => {
+    const hoy = nowLima();
+    let desde = addMonthsLima(hoy, -3);
+    if (fromParam) {
+      const fromDate = new Date(fromParam + 'T00:00:00');
+      if (!isNaN(fromDate.getTime()) && fromDate < desde) {
+        desde = fromDate;
+      }
+    }
+    return {
+      desde: formatLima(desde, 'yyyy-MM-dd'),
+      hasta: formatLima(hoy, 'yyyy-MM-dd'),
+    };
+  }, [fromParam]);
 
   const { data: patientsData } = useQuery({
     queryKey: ['doctor-patients', dateRange],
@@ -43,9 +63,14 @@ export default function DoctorPatientDetailPage() {
   useEffect(() => {
     if (activeData?.success && activeData.data) {
       const active = activeData.data;
-      setActiveConsultation(active);
-      if (active.pacienteId === patientId) {
-        setActiveTab('consulta');
+      const inicio = parseApiDate(active.fechaInicio);
+      const now = nowLima();
+      const appointmentEnd = new Date(inicio.getTime() + 60 * 60000);
+      if (now >= inicio && now <= appointmentEnd) {
+        setActiveConsultation(active);
+        if (active.pacienteId === patientId) {
+          setActiveTab('consulta');
+        }
       }
     }
   }, [activeData, patientId]);
@@ -56,7 +81,9 @@ export default function DoctorPatientDetailPage() {
     }
   }, [isAuthenticated, router]);
 
-  if (!isAuthenticated) return null;
+  if (!mounted || !isAuthenticated) {
+    return <div className="flex h-full" />;
+  }
 
   const patients = patientsData?.data || [];
   const currentPatient = patients.find((c) => c.pacienteId === patientId);
@@ -77,9 +104,7 @@ export default function DoctorPatientDetailPage() {
 
   const content = (
     <div className="flex flex-1 flex-col overflow-hidden">
-      {currentPatient && (
-        <PatientHeader patientId={patientId} patientName={patientName} />
-      )}
+      <PatientHeader patientId={patientId} patientName={patientName} />
 
       <PatientTabs
         activeTab={activeTab}

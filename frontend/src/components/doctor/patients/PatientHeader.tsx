@@ -20,8 +20,9 @@ export default function PatientHeader({ patientId, patientName }: PatientHeaderP
   });
 
   const patient = data?.data?.patient;
+  const displayName = patient ? `${patient.nombre} ${patient.apellido}`.trim() : patientName;
 
-  const initials = patientName
+  const initials = displayName
     .split(' ')
     .map((n) => n[0])
     .join('')
@@ -35,7 +36,7 @@ export default function PatientHeader({ patientId, patientName }: PatientHeaderP
           {initials}
         </div>
         <div>
-          <p className="text-lg font-bold text-gray-900">{patientName}</p>
+          <p className="text-lg font-bold text-gray-900">{displayName}</p>
           {patient?.dni && (
             <span className="inline-flex items-center rounded-md bg-brand-700 px-2 py-0.5 text-xs font-medium text-white">
               DNI: {patient.dni}

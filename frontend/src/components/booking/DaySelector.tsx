@@ -1,6 +1,7 @@
 'use client';
 
 import type { DiaDisponibilidadDTO } from '@/lib/api/types';
+import { parseLimaDate, getLimaDayOfWeek, getLimaDay } from '@clinica-x/date-utils';
 
 interface Props {
   days: DiaDisponibilidadDTO[];
@@ -8,13 +9,12 @@ interface Props {
   onSelect: (date: string) => void;
 }
 
-const DAY_NAMES = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'];
 const DAY_NAMES_FULL = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
 
 function formatDateLabel(dateStr: string): { dayName: string; dayNum: string } {
-  const d = new Date(dateStr + 'T00:00:00');
-  const dayName = DAY_NAMES_FULL[d.getDay()];
-  const dayNum = String(d.getDate());
+  const d = parseLimaDate(dateStr + 'T00:00:00');
+  const dayName = DAY_NAMES_FULL[getLimaDayOfWeek(d) % 7];
+  const dayNum = String(getLimaDay(d));
   return { dayName, dayNum };
 }
 

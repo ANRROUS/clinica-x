@@ -5,7 +5,7 @@
  */
 
 import { PrismaArchivoRepository } from '@/modules/archivos/infrastructure/adapters/out/persistence/prisma-archivo.repository';
-import { S3StorageAdapter } from '@/modules/archivos/infrastructure/adapters/out/storage/s3-storage.adapter';
+import { SupabaseStorageAdapter } from '@/modules/archivos/infrastructure/adapters/out/storage/supabase-storage.adapter';
 import { SubirArchivoUseCase } from '@/modules/archivos/application/features/subir-archivo/subir-archivo.use-case';
 import { ObtenerUrlFirmadaUseCase } from '@/modules/archivos/application/features/obtener-url-firmada/obtener-url-firmada.use-case';
 import { EliminarArchivoUseCase } from '@/modules/archivos/application/features/eliminar-archivo/eliminar-archivo.use-case';
@@ -14,7 +14,7 @@ import { createArchivosRouter } from '@/modules/archivos/infrastructure/adapters
 
 // ─── Adaptadores de salida ──────────────────────────────────────────────────
 const archivoRepository = new PrismaArchivoRepository();
-const storageAdapter = new S3StorageAdapter();
+const storageAdapter = new SupabaseStorageAdapter();
 
 // ─── Casos de uso ───────────────────────────────────────────────────────────
 const subirArchivoUseCase = new SubirArchivoUseCase(archivoRepository, storageAdapter);
@@ -30,3 +30,4 @@ const archivosController = new ArchivosController(
 
 // ─── Router ─────────────────────────────────────────────────────────────────
 export const archivosRouter = createArchivosRouter(archivosController);
+export { storageAdapter };

@@ -41,3 +41,12 @@ export class ErrorAuthService extends ErrorDominio {
     super(`Error comunicándose con auth-service: ${mensaje}`);
   }
 }
+
+export class DatosDuplicadosError extends ErrorDominio {
+  readonly codigo = 'DATOS_DUPLICADOS';
+  readonly httpStatus = 409;
+
+  constructor() {
+    super('Los datos proporcionados ya están en uso. Verifique el DNI, correo o nombre de usuario e intente nuevamente.');
+  }
+}

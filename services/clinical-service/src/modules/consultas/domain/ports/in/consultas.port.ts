@@ -16,9 +16,22 @@ export interface IniciarConsultaDto {
   motivoConsulta?: string;
 }
 
+export interface OrdenAnalisisInput {
+  examName: string;
+  specialty?: string;
+}
+
+export interface MedicamentoInput {
+  name: string;
+  days: number;
+  frequency: string;
+}
+
 export interface FinalizarConsultaDto {
   diagnostico?: string;
   notas?: string;
+  analysisOrders?: OrdenAnalisisInput[];
+  medications?: MedicamentoInput[];
 }
 
 export interface ListarConsultasDto {
@@ -42,6 +55,25 @@ export interface ConsultaDto {
   notas: string | null;
   fechaInicio: string;
   fechaFin: string | null;
+  pacienteNombre?: string;
+  pacienteApellido?: string;
+  pacienteDni?: string;
+  pacienteEmail?: string;
+  pacienteTelefono?: string;
+  analysisOrders?: { examName: string; specialty?: string }[];
+  medications?: { name: string; days: number; frequency: string }[];
+}
+
+export interface PacienteDetalleDto {
+  patient: {
+    id: string;
+    nombre: string;
+    apellido: string;
+    dni: string;
+    email: string;
+    telefono?: string;
+  };
+  consultations: ConsultaDto[];
 }
 
 // ─── Contratos de use cases ─────────────────────────────────────────────────
@@ -64,4 +96,8 @@ export interface IListarConsultasPacientePort {
 
 export interface IListarConsultasMedicoPort {
   execute(dto: ListarConsultasDto): Promise<Result<ConsultaDto[], Error>>;
+}
+
+export interface IObtenerPacienteDetallePort {
+  execute(medicoId: string, pacienteId: string): Promise<Result<PacienteDetalleDto, Error>>;
 }

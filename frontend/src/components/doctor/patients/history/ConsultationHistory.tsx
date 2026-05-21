@@ -7,6 +7,7 @@ import { getDoctorPatients } from '@/lib/api/doctor.api';
 import ConsultationList from './ConsultationList';
 import ConsultationDetail from './ConsultationDetail';
 import AIChat from './AIChat';
+import { nowLima, addYearsLima, formatLima } from '@clinica-x/date-utils';
 
 interface ConsultationHistoryProps {
   patientId: string;
@@ -16,9 +17,10 @@ export default function ConsultationHistory({ patientId }: ConsultationHistoryPr
   const { isAuthenticated } = useDoctorAuthStore();
   const [selectedConsultationId, setSelectedConsultationId] = useState<string | null>(null);
 
+  const hoy = nowLima();
   const dateRange = {
-    desde: new Date(new Date().setFullYear(new Date().getFullYear() - 2)).toISOString().slice(0, 10),
-    hasta: new Date().toISOString().slice(0, 10),
+    desde: formatLima(addYearsLima(hoy, -2), 'yyyy-MM-dd'),
+    hasta: formatLima(hoy, 'yyyy-MM-dd'),
   };
 
   const { data: patientsData, isLoading } = useQuery({

@@ -2,6 +2,7 @@
 
 import { Clock, FileText } from 'lucide-react';
 import type { ConsultaMedicoDTO } from '@/lib/api/types';
+import { parseApiDate, formatLima } from '@clinica-x/date-utils';
 
 interface ConsultationListProps {
   consultations: ConsultaMedicoDTO[];
@@ -45,12 +46,8 @@ export default function ConsultationList({
         {consultations
           .filter((c) => c.estado === 'FINALIZADA')
           .map((c, index) => {
-            const fecha = new Date(c.fechaInicio + 'Z');
-            const dateStr = fecha.toLocaleDateString('es-ES', {
-              day: '2-digit',
-              month: '2-digit',
-              year: '2-digit',
-            });
+            const fecha = parseApiDate(c.fechaInicio);
+            const dateStr = formatLima(fecha, 'dd/MM/yy');
             return (
               <button
                 key={c.id}

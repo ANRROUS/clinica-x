@@ -6,6 +6,7 @@
 
 import { PrismaCitaRepository } from '@/modules/citas/infrastructure/adapters/out/persistence/prisma-cita.repository';
 import { PrismaMedicoConsulta } from '@/modules/citas/infrastructure/adapters/out/persistence/prisma-medico-consulta.adapter';
+import { AuthServiceClient } from '@/modules/medicos/infrastructure/adapters/out/external-apis/auth-service.client';
 import { CrearCitaUseCase } from '@/modules/citas/application/features/crear-cita/crear-cita.use-case';
 import { CrearCitaAutomaticaUseCase } from '@/modules/citas/application/features/crear-cita-automatica/crear-cita-automatica.use-case';
 import { CancelarCitaUseCase } from '@/modules/citas/application/features/cancelar-cita/cancelar-cita.use-case';
@@ -21,6 +22,7 @@ import { createCitasRouter } from '@/modules/citas/infrastructure/adapters/in/ht
 // ─── Adaptadores de salida ──────────────────────────────────────────────────
 const citaRepository = new PrismaCitaRepository();
 const medicoConsulta = new PrismaMedicoConsulta();
+const authServiceClient = new AuthServiceClient();
 
 // ─── Casos de uso ───────────────────────────────────────────────────────────
 const crearCitaUseCase = new CrearCitaUseCase(citaRepository, medicoConsulta);
@@ -28,7 +30,7 @@ const crearCitaAutomaticaUseCase = new CrearCitaAutomaticaUseCase(citaRepository
 const cancelarCitaUseCase = new CancelarCitaUseCase(citaRepository);
 const reprogramarCitaUseCase = new ReprogramarCitaUseCase(citaRepository, medicoConsulta);
 const listarCitasPacienteUseCase = new ListarCitasPacienteUseCase(citaRepository, medicoConsulta);
-const listarCitasMedicoUseCase = new ListarCitasMedicoUseCase(citaRepository, medicoConsulta);
+const listarCitasMedicoUseCase = new ListarCitasMedicoUseCase(citaRepository, medicoConsulta, authServiceClient);
 const obtenerDisponibilidadUseCase = new ObtenerDisponibilidadUseCase(citaRepository, medicoConsulta);
 const obtenerDisponibilidadPorEspecialidadUseCase = new ObtenerDisponibilidadPorEspecialidadUseCase(citaRepository, medicoConsulta);
 const cambiarEstadoCitaUseCase = new CambiarEstadoCitaUseCase(citaRepository, medicoConsulta);

@@ -1,4 +1,5 @@
 import { create } from 'zustand';
+import { nowLima, addDaysLima, addMonthsLima } from '@clinica-x/date-utils';
 
 interface CalendarStore {
   view: 'mensual' | 'semanal' | 'diaria';
@@ -11,23 +12,19 @@ interface CalendarStore {
 
 export const useCalendarStore = create<CalendarStore>((set) => ({
   view: 'semanal',
-  currentDate: new Date(),
+  currentDate: nowLima(),
   setView: (v) => set({ view: v }),
   navigateNext: () =>
     set((state) => {
-      const d = new Date(state.currentDate);
-      if (state.view === 'mensual') d.setMonth(d.getMonth() + 1);
-      else if (state.view === 'semanal') d.setDate(d.getDate() + 7);
-      else d.setDate(d.getDate() + 1);
-      return { currentDate: d };
+      if (state.view === 'mensual') return { currentDate: addMonthsLima(state.currentDate, 1) };
+      if (state.view === 'semanal') return { currentDate: addDaysLima(state.currentDate, 7) };
+      return { currentDate: addDaysLima(state.currentDate, 1) };
     }),
   navigatePrev: () =>
     set((state) => {
-      const d = new Date(state.currentDate);
-      if (state.view === 'mensual') d.setMonth(d.getMonth() - 1);
-      else if (state.view === 'semanal') d.setDate(d.getDate() - 7);
-      else d.setDate(d.getDate() - 1);
-      return { currentDate: d };
+      if (state.view === 'mensual') return { currentDate: addMonthsLima(state.currentDate, -1) };
+      if (state.view === 'semanal') return { currentDate: addDaysLima(state.currentDate, -7) };
+      return { currentDate: addDaysLima(state.currentDate, -1) };
     }),
   goToDate: (date) => set({ currentDate: date }),
 }));

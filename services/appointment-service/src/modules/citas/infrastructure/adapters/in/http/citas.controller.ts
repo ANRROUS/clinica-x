@@ -17,6 +17,7 @@ import type {
   ICambiarEstadoCitaPort,
 } from '@/modules/citas/domain/ports/in/citas.port';
 import type { IMedicoConsultaPort } from '@/modules/citas/domain/ports/out/medico-consulta.port';
+import { nowLima, parseLimaDate, formatLima } from '@clinica-x/date-utils';
 
 // ─── Schemas Zod ────────────────────────────────────────────────────────────
 
@@ -104,7 +105,7 @@ export class CitasController {
         res.status(400).json({ success: false, error: { codigo: 'VALIDACION', mensaje: 'medicoId y fecha son requeridos' } });
         return;
       }
-      const fecha = new Date(fechaStr);
+      const fecha = parseLimaDate(fechaStr + 'T00:00:00');
       const resultado = await this.obtenerDisponibilidad.execute({ medicoId, fecha });
       this.manejarResultado(res, resultado as any);
     } catch (err) {
@@ -118,7 +119,7 @@ export class CitasController {
       const especialidadId = req.params.especialidadId;
       const resultado = await this.obtenerDisponibilidadPorEspecialidad.execute({
         especialidadId,
-        fechaDesde: new Date(),
+        fechaDesde: nowLima(),
       });
       this.manejarResultado(res, resultado as any);
     } catch (err) {
@@ -134,7 +135,7 @@ export class CitasController {
       const resultado = await this.crearCita.execute({
         pacienteId,
         medicoId: body.medicoId,
-        fechaHora: new Date(body.fechaHora),
+        fechaHora: parseLimaDate(body.fechaHora),
         tipoReserva: 'MANUAL',
         motivo: body.motivo,
       });
@@ -154,7 +155,7 @@ export class CitasController {
       const resultado = await this.crearCitaAutomatica.execute({
         pacienteId,
         medicoId: body.especialidadId, // En automática usamos medicoId del DTO como especialidadId
-        fechaHora: new Date(), // Ignorado en automática
+        fechaHora: nowLima(), // Ignorado en automática
         tipoReserva: 'AUTOMATICA',
         motivo: body.motivo,
       });
@@ -183,7 +184,7 @@ export class CitasController {
       const pacienteId = this.getPacienteId(req);
       const resultado = await this.reprogramarCita.execute(req.params.id, {
         pacienteId,
-        nuevaFechaHora: new Date(body.fechaHora),
+        nuevaFechaHora: parseLimaDate(body.fechaHora),
       });
       this.manejarResultado(res, resultado as any);
     } catch (err) {
@@ -211,8 +212,8 @@ export class CitasController {
         res.status(404).json({ success: false, error: { codigo: 'MEDICO_NO_ENCONTRADO', mensaje: 'No se encontró médico asociado al usuario' } });
         return;
       }
-      const fechaDesde = req.query.desde ? new Date(req.query.desde as string) : undefined;
-      const fechaHasta = req.query.hasta ? new Date(req.query.hasta as string) : undefined;
+      const fechaDesde = req.query.desde ? parseLimaDate(req.query.desde as string + 'T00:00:00') : undefined;
+      const fechaHasta = req.query.hasta ? parseLimaDate(req.query.hasta as string + 'T23:59:59.999') : undefined;
       const resultado = await this.listarCitasMedico.execute({ medicoId, fechaDesde, fechaHasta });
       this.manejarResultado(res, resultado as any);
     } catch (err) {

@@ -24,6 +24,7 @@ import { jwtMiddleware, requestIdMiddleware } from '@clinica-x/shared-middleware
 import { env } from './env';
 import { logger } from './logger';
 import { rutasProxy, rutasPublicas } from './proxy/routes';
+import { nowLima } from '@clinica-x/date-utils';
 
 const app = express();
 
@@ -62,7 +63,7 @@ app.get('/health', (_req, res) => {
       service: 'api-gateway',
       status: 'ok',
       upstreams: rutasProxy.map((r) => ({ prefijo: r.prefijo, upstream: r.upstream })),
-      timestamp: new Date().toISOString(),
+      timestamp: nowLima().toISOString(),
     },
   });
 });

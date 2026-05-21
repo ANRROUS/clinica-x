@@ -10,6 +10,16 @@ import { env } from '@/env';
 import { logger } from '@/shared/logger';
 import type { IAuthServiceClient } from '@/modules/medicos/domain/ports/out/medico.repository.port';
 
+class AuthServiceClientError extends Error {
+  constructor(
+    public readonly status: number,
+    public readonly code: string,
+    message: string,
+  ) {
+    super(message);
+  }
+}
+
 export class AuthServiceClient implements IAuthServiceClient {
   private readonly baseUrl: string;
 
@@ -46,9 +56,16 @@ export class AuthServiceClient implements IAuthServiceClient {
     });
 
     if (!response.ok) {
-      const text = await response.text();
-      logger.error({ status: response.status, body: text }, 'auth-service respondió error al crear usuario');
-      throw new Error(`Auth-service error ${response.status}: ${text}`);
+      let errorBody: any;
+      try {
+        errorBody = await response.json();
+      } catch {
+        errorBody = null;
+      }
+      const code = errorBody?.error?.codigo || 'AUTH_SERVICE_ERROR';
+      const message = errorBody?.error?.mensaje || 'Error desconocido del auth-service';
+      logger.error({ status: response.status, code, message }, 'auth-service respondió error al crear usuario');
+      throw new AuthServiceClientError(response.status, code, message);
     }
 
     const json = (await response.json()) as any;
@@ -72,5 +89,49 @@ export class AuthServiceClient implements IAuthServiceClient {
     logger.warn({ usuarioId, dto }, 'actualizarUsuario en auth-service: stub — se necesita endpoint admin en auth-service');
     // Stub: no hacemos nada por ahora. En una implementación real,
     // se llamaría a un endpoint tipo PUT /api/admin/users/:id
+  }
+
+  async obtenerUsuariosPorIds(ids: string[]): Promise<Array<{
+    id: string;
+    nombre: string;
+    apellido: string;
+    dni: string;
+    email: string;
+    telefono?: string;
+  }>> {
+    if (ids.length === 0) return [];
+    const url = `${this.baseUrl}/api/auth/internal/users?ids=${encodeURIComponent(ids.join(','))}`;
+    logger.debug({ url, total: ids.length }, 'Llamando a auth-service para obtener usuarios por ids');
+
+    const response = await fetch(url, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Internal-Api-Key': env.INTERNAL_API_KEY,
+      },
+    });
+
+    if (!response.ok) {
+      let errorBody: any;
+      try {
+        errorBody = await response.json();
+      } catch {
+        errorBody = null;
+      }
+      const code = errorBody?.error?.codigo || 'AUTH_SERVICE_ERROR';
+      const message = errorBody?.error?.mensaje || 'Error desconocido del auth-service';
+      logger.error({ status: response.status, code, message }, 'auth-service respondió error al obtener usuarios');
+      throw new AuthServiceClientError(response.status, code, message);
+    }
+
+    const json = (await response.json()) as any;
+    return (json.data?.usuarios ?? []) as Array<{
+      id: string;
+      nombre: string;
+      apellido: string;
+      dni: string;
+      email: string;
+      telefono?: string;
+    }>;
   }
 }

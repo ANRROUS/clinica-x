@@ -34,6 +34,14 @@ export class PrismaUsuarioRepository implements IUsuarioRepository {
     return raw ? this.toDomain(raw) : null;
   }
 
+  async buscarPorIds(ids: string[]): Promise<Usuario[]> {
+    if (ids.length === 0) return [];
+    const raws = await prisma.usuario.findMany({
+      where: { id: { in: ids } },
+    });
+    return raws.map((raw) => this.toDomain(raw));
+  }
+
   async buscarPorDni(dni: string): Promise<Usuario | null> {
     const raw = await prisma.usuario.findUnique({ where: { dni } });
     return raw ? this.toDomain(raw) : null;

@@ -7,6 +7,7 @@
 import { prisma } from '@/shared/prisma-client';
 import { Cita } from '@/modules/citas/domain/entities/cita.entity';
 import type { ICitaRepository } from '@/modules/citas/domain/ports/out/cita.repository.port';
+import { parseLimaDate } from '@clinica-x/date-utils';
 
 export class PrismaCitaRepository implements ICitaRepository {
   async guardar(cita: Cita): Promise<void> {
@@ -78,6 +79,42 @@ export class PrismaCitaRepository implements ICitaRepository {
     });
   }
 
+  async guardarSiLibre(cita: Cita, inicioRango: Date, finRango: Date): Promise<boolean> {
+    try {
+      await prisma.$transaction(async (tx) => {
+        const ocupadas = await tx.cita.count({
+          where: {
+            medicoId: cita.medicoId,
+            fechaHora: {
+              gt: inicioRango,
+              lt: finRango,
+            },
+            estado: { not: 'CANCELADA' },
+          },
+        });
+
+        if (ocupadas > 0) {
+          throw new Error('Slot ocupado');
+        }
+
+        await tx.cita.create({
+          data: {
+            id: cita.id,
+            pacienteId: cita.pacienteId,
+            medicoId: cita.medicoId,
+            fechaHora: cita.fechaHora,
+            estado: cita.estado,
+            tipoReserva: cita.tipoReserva,
+            motivo: cita.motivo,
+          },
+        });
+      });
+      return true;
+    } catch {
+      return false;
+    }
+  }
+
   async actualizar(cita: Cita): Promise<void> {
     await prisma.cita.update({
       where: { id: cita.id },
@@ -89,6 +126,40 @@ export class PrismaCitaRepository implements ICitaRepository {
     });
   }
 
+  async actualizarSiLibre(cita: Cita, inicioRango: Date, finRango: Date): Promise<boolean> {
+    try {
+      await prisma.$transaction(async (tx) => {
+        const ocupadas = await tx.cita.count({
+          where: {
+            medicoId: cita.medicoId,
+            id: { not: cita.id },
+            fechaHora: {
+              gt: inicioRango,
+              lt: finRango,
+            },
+            estado: { not: 'CANCELADA' },
+          },
+        });
+
+        if (ocupadas > 0) {
+          throw new Error('Slot ocupado');
+        }
+
+        await tx.cita.update({
+          where: { id: cita.id },
+          data: {
+            fechaHora: cita.fechaHora,
+            estado: cita.estado,
+            motivo: cita.motivo,
+          },
+        });
+      });
+      return true;
+    } catch {
+      return false;
+    }
+  }
+
   async eliminar(id: string): Promise<void> {
     await prisma.cita.delete({ where: { id } });
   }
@@ -97,7 +168,7 @@ export class PrismaCitaRepository implements ICitaRepository {
     const result = Cita.create(raw.id, {
       pacienteId: raw.pacienteId,
       medicoId: raw.medicoId,
-      fechaHora: new Date(raw.fechaHora),
+      fechaHora: parseLimaDate(raw.fechaHora),
       estado: raw.estado,
       tipoReserva: raw.tipoReserva,
       motivo: raw.motivo,

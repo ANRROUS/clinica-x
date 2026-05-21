@@ -6,6 +6,21 @@
 
 import { EntidadBase, Result, Ok, Err } from '@clinica-x/shared-kernel';
 import type { EstadoConsulta } from '@clinica-x/shared-types';
+import { nowLima } from '@clinica-x/date-utils';
+
+export interface OrdenAnalisisValue {
+  id?: string;
+  tipoAnalisis: string;
+  especialidad?: string;
+  descripcion?: string;
+}
+
+export interface MedicamentoValue {
+  id?: string;
+  nombre: string;
+  dias: number;
+  frecuencia: string;
+}
 
 export interface ConsultaProps {
   pacienteId: string;
@@ -17,6 +32,8 @@ export interface ConsultaProps {
   notas?: string;
   fechaInicio?: Date;
   fechaFin?: Date;
+  ordenesAnalisis?: OrdenAnalisisValue[];
+  medicamentos?: MedicamentoValue[];
 }
 
 export class Consulta extends EntidadBase<string> {
@@ -29,6 +46,8 @@ export class Consulta extends EntidadBase<string> {
   private _notas: string | undefined;
   private _fechaInicio: Date;
   private _fechaFin: Date | undefined;
+  private _ordenesAnalisis: OrdenAnalisisValue[];
+  private _medicamentos: MedicamentoValue[];
 
   private constructor(id: string, props: ConsultaProps) {
     super(id);
@@ -39,8 +58,25 @@ export class Consulta extends EntidadBase<string> {
     this._motivoConsulta = props.motivoConsulta;
     this._diagnostico = props.diagnostico;
     this._notas = props.notas;
-    this._fechaInicio = props.fechaInicio ?? new Date();
+    this._fechaInicio = props.fechaInicio ?? nowLima();
     this._fechaFin = props.fechaFin;
+    this._ordenesAnalisis = props.ordenesAnalisis ?? [];
+    this._medicamentos = props.medicamentos ?? [];
+  }
+
+  // ─── Métodos de negocio ───────────────────────────────────────────────────
+  finalizar(
+    diagnostico?: string,
+    notas?: string,
+    ordenesAnalisis?: OrdenAnalisisValue[],
+    medicamentos?: MedicamentoValue[],
+  ): void {
+    this._estado = 'FINALIZADA';
+    this._fechaFin = nowLima();
+    if (diagnostico) this._diagnostico = diagnostico;
+    if (notas) this._notas = notas;
+    if (ordenesAnalisis) this._ordenesAnalisis = ordenesAnalisis;
+  if (medicamentos) this._medicamentos = medicamentos;
   }
 
   static create(id: string, props: ConsultaProps): Result<Consulta, Error> {
@@ -63,15 +99,10 @@ export class Consulta extends EntidadBase<string> {
   get notas(): string | undefined { return this._notas; }
   get fechaInicio(): Date { return this._fechaInicio; }
   get fechaFin(): Date | undefined { return this._fechaFin; }
+  get ordenesAnalisis(): OrdenAnalisisValue[] { return this._ordenesAnalisis; }
+  get medicamentos(): MedicamentoValue[] { return this._medicamentos; }
 
   // ─── Métodos de negocio ───────────────────────────────────────────────────
-  finalizar(diagnostico?: string, notas?: string): void {
-    this._estado = 'FINALIZADA';
-    this._fechaFin = new Date();
-    if (diagnostico) this._diagnostico = diagnostico;
-    if (notas) this._notas = notas;
-  }
-
   esDelMedico(medicoId: string): boolean {
     return this._medicoId === medicoId;
   }

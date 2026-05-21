@@ -17,6 +17,7 @@ import { requestIdMiddleware, errorHandler } from '@clinica-x/shared-middleware'
 import { env } from './env';
 import { logger } from './shared/logger';
 import { disconnectPrisma } from './shared/prisma-client';
+import { nowLima } from '@clinica-x/date-utils';
 
 const app = express();
 
@@ -33,7 +34,7 @@ app.get('/health', (_req, res) => {
     data: {
       service: 'auth-service',
       status: 'ok',
-      timestamp: new Date().toISOString(),
+      timestamp: nowLima().toISOString(),
     },
   });
 });

@@ -6,6 +6,7 @@
 
 import type { Archivo } from '@/modules/archivos/domain/entities/archivo.entity';
 import type { ArchivoDto } from '@/modules/archivos/domain/ports/in/archivos.port';
+import { nowLima } from '@clinica-x/date-utils';
 
 export function toArchivoDto(archivo: Archivo, urlFirmada: string): ArchivoDto {
   return {
@@ -16,6 +17,6 @@ export function toArchivoDto(archivo: Archivo, urlFirmada: string): ArchivoDto {
     mimeType: archivo.mimeType,
     tamanoBytes: archivo.tamanoBytes,
     urlFirmada,
-    subidoEn: new Date().toISOString(), // Prisma no expone esto directamente en la entidad
+    subidoEn: nowLima().toISOString(), // Prisma no expone esto directamente en la entidad
   };
 }

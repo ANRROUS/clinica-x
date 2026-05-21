@@ -65,6 +65,8 @@ export interface CitaResponseDto {
   tipoReserva: TipoReserva;
   motivo?: string;
   voucherCode?: string;
+  pacienteNombre?: string;
+  pacienteApellido?: string;
 }
 
 export interface SlotDto {

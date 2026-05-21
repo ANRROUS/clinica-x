@@ -7,7 +7,7 @@
 import { prisma } from '@/shared/prisma-client';
 import { Medico } from '@/modules/medicos/domain/entities/medico.entity';
 import { HorarioMedico } from '@/modules/medicos/domain/value-objects/horario-medico.vo';
-import type { IMedicoRepository } from '@/modules/medicos/domain/ports/out/medico.repository.port';
+import type { IMedicoRepository, MedicoDetalle } from '@/modules/medicos/domain/ports/out/medico.repository.port';
 
 export class PrismaMedicoRepository implements IMedicoRepository {
   async guardar(medico: Medico): Promise<void> {
@@ -23,7 +23,7 @@ export class PrismaMedicoRepository implements IMedicoRepository {
     });
   }
 
-  async buscarPorId(id: string): Promise<any | null> {
+  async buscarPorId(id: string): Promise<MedicoDetalle | null> {
     const raw = await prisma.medico.findUnique({
       where: { id },
       include: {
@@ -49,7 +49,7 @@ export class PrismaMedicoRepository implements IMedicoRepository {
     return raw ? this.toDomainSimple(raw) : null;
   }
 
-  async listarTodos(): Promise<any[]> {
+  async listarTodos(): Promise<MedicoDetalle[]> {
     const raws = await prisma.medico.findMany({
       include: {
         especialidad: true,
@@ -95,7 +95,7 @@ export class PrismaMedicoRepository implements IMedicoRepository {
   }
 
   // ─── Mapeo Prisma → Dominio ───────────────────────────────────────────────
-  private toDomain(raw: any): any {
+  private toDomain(raw: any): MedicoDetalle {
     const medicoResult = Medico.create(raw.id, {
       usuarioId: raw.usuarioId,
       nombreUsuario: raw.nombreUsuario,
@@ -122,7 +122,7 @@ export class PrismaMedicoRepository implements IMedicoRepository {
     });
 
     return {
-      ...medicoResult.value,
+      medico: medicoResult.value,
       horarios,
       especialidadNombre: raw.especialidad?.nombre || 'Sin especialidad',
     };

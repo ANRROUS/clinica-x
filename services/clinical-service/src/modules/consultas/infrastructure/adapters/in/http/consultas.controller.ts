@@ -12,7 +12,10 @@ import type {
   IObtenerConsultaPort,
   IListarConsultasPacientePort,
   IListarConsultasMedicoPort,
+  IObtenerPacienteDetallePort,
 } from '@/modules/consultas/domain/ports/in/consultas.port';
+import type { IConsultaRepository } from '@/modules/consultas/domain/ports/out/consulta.repository.port';
+import { parseLimaDate } from '@clinica-x/date-utils';
 
 // ─── Schemas Zod ────────────────────────────────────────────────────────────
 
@@ -22,9 +25,27 @@ const iniciarConsultaSchema = z.object({
   motivoConsulta: z.string().optional(),
 });
 
+const ordenAnalisisSchema = z.object({
+  examName: z.string().min(1, 'examName es requerido'),
+  specialty: z.string().optional(),
+});
+
+const medicamentoSchema = z.object({
+  name: z.string().min(1, 'name es requerido'),
+  days: z.number().int().positive('days debe ser un número positivo'),
+  frequency: z.string().min(1, 'frequency es requerido'),
+});
+
+const subirResultadoAnalisisSchema = z.object({
+  analysisOrderId: z.string().uuid('analysisOrderId inválido'),
+  archivoId: z.string().uuid('archivoId inválido'),
+});
+
 const finalizarConsultaSchema = z.object({
   diagnostico: z.string().optional(),
   notas: z.string().optional(),
+  analysisOrders: z.array(ordenAnalisisSchema).optional(),
+  medications: z.array(medicamentoSchema).optional(),
 });
 
 export class ConsultasController {
@@ -34,6 +55,8 @@ export class ConsultasController {
     private readonly obtenerConsulta: IObtenerConsultaPort,
     private readonly listarConsultasPaciente: IListarConsultasPacientePort,
     private readonly listarConsultasMedico: IListarConsultasMedicoPort,
+    private readonly obtenerPacienteDetalle: IObtenerPacienteDetallePort,
+    private readonly consultaRepository: IConsultaRepository,
   ) {}
 
   // ─── Helpers ──────────────────────────────────────────────────────────────
@@ -91,6 +114,8 @@ export class ConsultasController {
       const resultado = await this.finalizarConsulta.execute(req.params.id, {
         diagnostico: body.diagnostico,
         notas: body.notas,
+        analysisOrders: body.analysisOrders,
+        medications: body.medications,
       });
       this.manejarResultado(res, resultado as any);
     } catch (err) {
@@ -123,8 +148,8 @@ export class ConsultasController {
   doctorPatients = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
       const medicoId = this.getUserId(req);
-      const fechaDesde = req.query.desde ? new Date(req.query.desde as string) : undefined;
-      const fechaHasta = req.query.hasta ? new Date(req.query.hasta as string) : undefined;
+      const fechaDesde = req.query.desde ? parseLimaDate(req.query.desde as string + 'T00:00:00') : undefined;
+      const fechaHasta = req.query.hasta ? parseLimaDate(req.query.hasta as string + 'T23:59:59.999') : undefined;
       const resultado = await this.listarConsultasMedico.execute({
         medicoId,
         fechaDesde,
@@ -155,6 +180,49 @@ export class ConsultasController {
       const resultado = await this.obtenerConsulta.execute(req.params.id);
       this.manejarResultado(res, resultado as any);
     } catch (err) {
+      next(err);
+    }
+  };
+
+  // ─── GET /api/medical/doctor/patients/:patientId ─────────────────────────
+  patientDetail = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    try {
+      const medicoId = this.getUserId(req);
+      const { patientId } = req.params;
+      const resultado = await this.obtenerPacienteDetalle.execute(medicoId, patientId);
+      this.manejarResultado(res, resultado as any);
+    } catch (err) {
+      next(err);
+    }
+  };
+
+  // ─── POST /api/medical/patient/analysis-results ──────────────────────────
+  uploadAnalysisResult = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    try {
+      const pacienteId = this.getUserId(req);
+      const body = subirResultadoAnalisisSchema.parse(req.body);
+
+      // Verificar que la orden de análisis pertenece al paciente
+      const orden = await this.consultaRepository.buscarOrdenAnalisisPorId(body.analysisOrderId);
+      if (!orden) {
+        res.status(404).json({ success: false, error: { codigo: 'NO_ENCONTRADO', mensaje: 'Orden de análisis no encontrada' } });
+        return;
+      }
+
+      const consulta = await this.consultaRepository.buscarPorId(orden.consultaId);
+      if (!consulta || consulta.pacienteId !== pacienteId) {
+        res.status(403).json({ success: false, error: { codigo: 'NO_AUTORIZADO', mensaje: 'No autorizado' } });
+        return;
+      }
+
+      await this.consultaRepository.actualizarOrdenAnalisis(body.analysisOrderId, {
+        archivoId: body.archivoId,
+        estado: 'COMPLETADA',
+      });
+
+      res.status(200).json({ success: true, data: { message: 'Resultado subido correctamente' } });
+    } catch (err) {
+      if (err instanceof ZodError) { this.manejarZodError(res, err); return; }
       next(err);
     }
   };

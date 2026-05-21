@@ -19,6 +19,7 @@ import {
   MedicoNoEncontradoError,
   MedicoDuplicadoError,
   ErrorAuthService,
+  DatosDuplicadosError,
 } from '@/modules/medicos/domain/exceptions/medico.errors';
 import type {
   IActualizarMedicoPort,
@@ -42,7 +43,7 @@ export class ActualizarMedicoUseCase implements IActualizarMedicoPort {
     }
 
     // Extraemos los datos del raw (el repo retorna Medico + horarios + especialidadNombre)
-    const { horarios: horariosActuales, especialidadNombre, ...medicoBase } = medicoRaw as any;
+    const { medico: medicoBase, horarios: horariosActuales, especialidadNombre } = medicoRaw;
 
     // 2. Verificar nombreUsuario único
     if (dto.username && dto.username !== medicoBase.nombreUsuario) {
@@ -63,7 +64,10 @@ export class ActualizarMedicoUseCase implements IActualizarMedicoPort {
         password: dto.password,
       });
     } catch (err: any) {
-      return Err(new ErrorAuthService(err.message || 'No se pudo actualizar el usuario'));
+      if (err.status === 409 && err.code === 'USUARIO_DUPLICADO') {
+        return Err(new DatosDuplicadosError());
+      }
+      return Err(new ErrorAuthService('Ocurrió un error al actualizar el usuario. Intente nuevamente más tarde.'));
     }
 
     // 4. Actualizar entidad Medico local

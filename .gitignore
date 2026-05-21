@@ -41,3 +41,8 @@ coverage/
 # Misc
 *.tsbuildinfo
 .eslintcache
+
+# Package Json
+
+**/src/generated/prisma/
+**/package.json

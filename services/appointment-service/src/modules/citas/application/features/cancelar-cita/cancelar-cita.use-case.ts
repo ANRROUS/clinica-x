@@ -17,6 +17,7 @@ import type {
   CancelarCitaDto,
 } from '@/modules/citas/domain/ports/in/citas.port';
 import type { ICitaRepository } from '@/modules/citas/domain/ports/out/cita.repository.port';
+import { nowLima } from '@clinica-x/date-utils';
 
 export class CancelarCitaUseCase implements ICancelarCitaPort {
   constructor(private readonly repo: ICitaRepository) {}
@@ -35,7 +36,7 @@ export class CancelarCitaUseCase implements ICancelarCitaPort {
       return Err(new CitaYaCanceladaError());
     }
 
-    if (!cita.puedeCancelarOReprogramar(new Date())) {
+    if (!cita.puedeCancelarOReprogramar(nowLima())) {
       return Err(new NoSePuedeCancelarError());
     }
 
