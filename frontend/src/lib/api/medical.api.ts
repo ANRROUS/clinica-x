@@ -15,7 +15,7 @@ export async function getConsultationById(
 
 export async function uploadFile(file: File): Promise<ApiResponse<any>> {
   const formData = new FormData();
-  formData.append('archivo', file);
+  formData.append('file', file);
   const res = await api.post('/api/files/upload', formData, {
     headers: { 'Content-Type': 'multipart/form-data' },
   });
@@ -26,5 +26,16 @@ export async function getFileSignedUrl(
   id: string,
 ): Promise<ApiResponse<{ url: string }>> {
   const res = await api.get(`/api/files/${id}/signed-url`);
+  return res.data;
+}
+
+export async function uploadAnalysisResult(
+  analysisOrderId: string,
+  archivoId: string,
+): Promise<ApiResponse<any>> {
+  const res = await api.post('/api/medical/patient/analysis-results', {
+    analysisOrderId,
+    archivoId,
+  });
   return res.data;
 }

@@ -9,6 +9,11 @@ const envSchema = z.object({
   DATABASE_URL: z.string().url(),
   DIRECT_URL: z.string().url(),
   JWT_SECRET: z.string().min(8, 'JWT_SECRET debe tener al menos 8 caracteres'),
+  // ─── Supabase Storage (nuevo) ───
+  SUPABASE_URL: z.string().url('SUPABASE_URL es requerida'),
+  SUPABASE_SERVICE_ROLE_KEY: z.string().min(1, 'SUPABASE_SERVICE_ROLE_KEY es requerida'),
+  SUPABASE_BUCKET: z.string().min(1).default('clinica-x-archivos'),
+  // ─── AWS S3 (se mantiene para compatibilidad) ───
   AWS_REGION: z.string().min(1),
   AWS_BUCKET: z.string().min(1),
   AWS_ACCESS_KEY_ID: z.string().min(1),

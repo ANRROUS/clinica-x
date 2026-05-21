@@ -23,6 +23,7 @@ export function createConsultasRouter(controller: ConsultasController): Router {
   // ─── Paciente ─────────────────────────────────────────────────────────────
   router.get('/patient/history', requireRole(['PACIENTE']), controller.patientHistory);
   router.get('/patient/consultation/:id', requireRole(['PACIENTE']), controller.patientConsultation);
+  router.post('/patient/analysis-results', requireRole(['PACIENTE']), controller.uploadAnalysisResult);
 
   return router;
 }

@@ -45,7 +45,16 @@ app.get('/health', (_req, res) => {
   });
 });
 
-import { archivosRouter } from '@/modules/archivos/infrastructure/di';
+import { archivosRouter, storageAdapter } from '@/modules/archivos/infrastructure/di';
+
+// ─── Inicialización del storage ─────────────────────────────────────────────
+const iniciarStorage = async (): Promise<void> => {
+  try {
+    await storageAdapter.inicializar();
+  } catch (err) {
+    logger.warn({ err }, 'No se pudo inicializar el bucket de Supabase Storage');
+  }
+};
 
 // Rutas de negocio — Fase 4 (archivos)
 app.use(
@@ -56,9 +65,10 @@ app.use(
 
 app.use(errorHandler);
 
-const server = app.listen(env.PORT, () => {
+const server = app.listen(env.PORT, async () => {
   logger.info(`📁 file-service escuchando en http://localhost:${env.PORT}`);
-  logger.info(`   Bucket S3: ${env.AWS_BUCKET} (region: ${env.AWS_REGION})`);
+  logger.info(`   Bucket: ${env.SUPABASE_BUCKET}`);
+  await iniciarStorage();
 });
 
 const shutdown = async (signal: string): Promise<void> => {

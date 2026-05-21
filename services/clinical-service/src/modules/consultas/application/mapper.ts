@@ -15,10 +15,20 @@ export function toConsultaDto(
     pacienteDni?: string;
     pacienteEmail?: string;
     pacienteTelefono?: string;
-    analysisOrders?: { examName: string; specialty?: string }[];
-    medications?: { name: string; days: number; frequency: string }[];
   },
 ): ConsultaDto {
+  const analysisOrders = consulta.ordenesAnalisis.map((o) => ({
+    id: o.id,
+    examName: o.tipoAnalisis,
+    specialty: o.especialidad,
+  }));
+
+  const medications = consulta.medicamentos.map((m) => ({
+    name: m.nombre,
+    days: m.dias,
+    frequency: m.frecuencia,
+  }));
+
   return {
     id: consulta.id,
     pacienteId: consulta.pacienteId,
@@ -35,7 +45,7 @@ export function toConsultaDto(
     pacienteDni: extras?.pacienteDni,
     pacienteEmail: extras?.pacienteEmail,
     pacienteTelefono: extras?.pacienteTelefono,
-    analysisOrders: extras?.analysisOrders,
-    medications: extras?.medications,
+    analysisOrders,
+    medications,
   };
 }

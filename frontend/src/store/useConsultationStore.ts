@@ -1,4 +1,5 @@
 import { create } from 'zustand';
+import { persist } from 'zustand/middleware';
 
 export interface AnalysisOrder {
   examName: string;
@@ -26,40 +27,47 @@ interface ConsultationStore {
   reset: () => void;
 }
 
-export const useConsultationStore = create<ConsultationStore>((set) => ({
-  consultationId: null,
-  diagnosis: '',
-  analysisOrders: [],
-  medications: [],
-  isDirty: false,
-  setConsultationId: (id) => set({ consultationId: id }),
-  setDiagnosis: (text) => set({ diagnosis: text, isDirty: true }),
-  addAnalysisOrder: (order) =>
-    set((state) => ({
-      analysisOrders: [...state.analysisOrders, order],
-      isDirty: true,
-    })),
-  removeAnalysisOrder: (index) =>
-    set((state) => ({
-      analysisOrders: state.analysisOrders.filter((_, i) => i !== index),
-      isDirty: true,
-    })),
-  addMedication: (med) =>
-    set((state) => ({
-      medications: [...state.medications, med],
-      isDirty: true,
-    })),
-  removeMedication: (index) =>
-    set((state) => ({
-      medications: state.medications.filter((_, i) => i !== index),
-      isDirty: true,
-    })),
-  reset: () =>
-    set({
+export const useConsultationStore = create<ConsultationStore>()(
+  persist(
+    (set) => ({
       consultationId: null,
       diagnosis: '',
       analysisOrders: [],
       medications: [],
       isDirty: false,
+      setConsultationId: (id) => set({ consultationId: id }),
+      setDiagnosis: (text) => set({ diagnosis: text, isDirty: true }),
+      addAnalysisOrder: (order) =>
+        set((state) => ({
+          analysisOrders: [...state.analysisOrders, order],
+          isDirty: true,
+        })),
+      removeAnalysisOrder: (index) =>
+        set((state) => ({
+          analysisOrders: state.analysisOrders.filter((_, i) => i !== index),
+          isDirty: true,
+        })),
+      addMedication: (med) =>
+        set((state) => ({
+          medications: [...state.medications, med],
+          isDirty: true,
+        })),
+      removeMedication: (index) =>
+        set((state) => ({
+          medications: state.medications.filter((_, i) => i !== index),
+          isDirty: true,
+        })),
+      reset: () =>
+        set({
+          consultationId: null,
+          diagnosis: '',
+          analysisOrders: [],
+          medications: [],
+          isDirty: false,
+        }),
     }),
-}));
+    {
+      name: 'clinica-x-consultation-draft',
+    },
+  ),
+);

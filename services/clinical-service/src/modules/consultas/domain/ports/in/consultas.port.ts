@@ -16,9 +16,22 @@ export interface IniciarConsultaDto {
   motivoConsulta?: string;
 }
 
+export interface OrdenAnalisisInput {
+  examName: string;
+  specialty?: string;
+}
+
+export interface MedicamentoInput {
+  name: string;
+  days: number;
+  frequency: string;
+}
+
 export interface FinalizarConsultaDto {
   diagnostico?: string;
   notas?: string;
+  analysisOrders?: OrdenAnalisisInput[];
+  medications?: MedicamentoInput[];
 }
 
 export interface ListarConsultasDto {
