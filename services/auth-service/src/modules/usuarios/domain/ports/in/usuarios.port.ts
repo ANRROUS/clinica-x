@@ -73,3 +73,11 @@ export interface IActualizarPerfilPort {
 export interface IListarUsuariosPorIdsPort {
   execute(ids: string[]): Promise<Result<UsuarioResponseDto[], Error>>;
 }
+
+export interface ISolicitarRecuperacionPort {
+  execute(email: string): Promise<Result<{ message: string }, Error>>;
+}
+
+export interface IRestablecerContrasenaPort {
+  execute(token: string, nuevaContrasena: string): Promise<Result<{ message: string }, Error>>;
+}

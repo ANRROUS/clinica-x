@@ -33,8 +33,10 @@ model Usuario {
   apellido     String
   telefono     String?
   rol          Rol      @default(PACIENTE)
-  creadoEn     DateTime @default(now()) @map("creado_en")
-  actualizadoEn DateTime @updatedAt @map("actualizado_en")
+  creadoEn        DateTime  @default(now()) @map("creado_en")
+  actualizadoEn   DateTime  @updatedAt @map("actualizado_en")
+  resetToken      String?   @map("reset_token")
+  resetTokenExpira DateTime? @map("reset_token_expira")
 
   @@map("usuarios")
 }

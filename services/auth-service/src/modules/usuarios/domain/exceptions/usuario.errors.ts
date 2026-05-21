@@ -26,3 +26,21 @@ export class UsuarioNoEncontradoError extends ErrorDominio {
     super(id ? `Usuario con id '${id}' no encontrado` : 'Usuario no encontrado');
   }
 }
+
+export class TokenInvalidoError extends ErrorDominio {
+  readonly codigo = 'TOKEN_INVALIDO';
+  readonly httpStatus = 400;
+
+  constructor() {
+    super('El enlace de recuperación no es válido');
+  }
+}
+
+export class TokenExpiradoError extends ErrorDominio {
+  readonly codigo = 'TOKEN_EXPIRADO';
+  readonly httpStatus = 400;
+
+  constructor() {
+    super('El enlace de recuperación ha expirado');
+  }
+}

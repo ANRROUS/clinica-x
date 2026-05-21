@@ -16,6 +16,9 @@ export interface IUsuarioRepository {
   buscarPorEmail(email: string): Promise<Usuario | null>;
   buscarPorDniYEmail(dni: string, email: string): Promise<Usuario | null>;
   actualizar(usuario: Usuario): Promise<void>;
+  buscarPorResetToken(resetToken: string): Promise<Usuario | null>;
+  guardarResetToken(usuarioId: string, resetToken: string, resetTokenExpira: Date): Promise<void>;
+  actualizarContrasenaYLimpiarToken(usuarioId: string, nuevoHash: string): Promise<void>;
 }
 
 export interface IHashService {
