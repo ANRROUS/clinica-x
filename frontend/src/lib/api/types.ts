@@ -45,6 +45,18 @@ export interface CitaDTO {
   voucherCode?: string;
 }
 
+export interface AnalysisOrderDTO {
+  id?: string;
+  examName: string;
+  specialty?: string;
+}
+
+export interface MedicationDTO {
+  name: string;
+  days: number;
+  frequency: string;
+}
+
 export interface ConsultaDTO {
   id: string;
   pacienteId: string;
@@ -56,6 +68,8 @@ export interface ConsultaDTO {
   notas?: string | null;
   fechaInicio: string;
   fechaFin?: string | null;
+  analysisOrders?: AnalysisOrderDTO[];
+  medications?: MedicationDTO[];
 }
 
 export interface ApiResponse<T> {

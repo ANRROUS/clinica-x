@@ -31,6 +31,7 @@ model Consulta {
   actualizadoEn  DateTime  @updatedAt
 
   ordenesAnalisis OrdenAnalisis[]
+  medicamentos    Medicamento[]
 
   @@map("consultas")
 }
@@ -39,8 +40,9 @@ model Consulta {
 model OrdenAnalisis {
   id           String   @id @default(uuid())
   consultaId   String
-  consulta     Consulta @relation(fields: [consultaId], references: [id])
+  consulta     Consulta @relation(fields: [consultaId], references: [id], onDelete: Cascade)
   tipoAnalisis String
+  especialidad String?  // Especialidad derivada sugerida por el médico
   descripcion  String?
   estado       String   // PENDIENTE | COMPLETADA
   resultado    String?
@@ -49,4 +51,18 @@ model OrdenAnalisis {
   actualizadoEn DateTime @updatedAt
 
   @@map("ordenes_analisis")
+}
+
+// ─── Medicamento recetado ────────────────────────────────────────────────────
+model Medicamento {
+  id         String   @id @default(uuid())
+  consultaId String
+  consulta   Consulta @relation(fields: [consultaId], references: [id], onDelete: Cascade)
+  nombre     String
+  dias       Int
+  frecuencia String
+  creadoEn   DateTime @default(now())
+  actualizadoEn DateTime @updatedAt
+
+  @@map("medicamentos")
 }

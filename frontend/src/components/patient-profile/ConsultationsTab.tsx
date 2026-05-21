@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { Loader2, FileText, Search, Check } from 'lucide-react';
 import { getPatientHistory, getConsultationById } from '@/lib/api/medical.api';
-import type { ConsultaDTO } from '@/lib/api/types';
+import type { ConsultaDTO, AnalysisOrderDTO, MedicationDTO } from '@/lib/api/types';
 import { parseLimaDate, getLimaDay, getLimaMonth, getLimaYear } from '@clinica-x/date-utils';
 
 const MONTH_NAMES = [
@@ -16,17 +16,6 @@ function formatDate(iso: string): string {
   const d = parseLimaDate(iso);
   return `${getLimaDay(d)} de ${MONTH_NAMES[getLimaMonth(d)]} de ${getLimaYear(d)}`;
 }
-
-// Mock data para visualización fiel al diseño
-const MOCK_ANALYSIS: Record<string, string[]> = {
-  'default': ['Hemograma completo', 'Exámen de orina'],
-};
-
-const MOCK_MEDICATIONS: Record<string, { name: string; days: number; frequency: string }[]> = {
-  'default': [
-    { name: 'Paracetamol', days: 5, frequency: '8 hrs.' },
-  ],
-};
 
 export default function ConsultationsTab() {
   const [selectedId, setSelectedId] = useState<string | null>(null);
@@ -46,10 +35,9 @@ export default function ConsultationsTab() {
   });
 
   const selectedConsultation = detailData?.data;
-  const isActive = selectedConsultation?.estado === 'ACTIVA';
 
-  const analysisList = selectedId ? (MOCK_ANALYSIS[selectedId] || MOCK_ANALYSIS['default']) : [];
-  const medicationsList = selectedId ? (MOCK_MEDICATIONS[selectedId] || MOCK_MEDICATIONS['default']) : [];
+  const analysisOrders: AnalysisOrderDTO[] = selectedConsultation?.analysisOrders ?? [];
+  const medications: MedicationDTO[] = selectedConsultation?.medications ?? [];
 
   if (loadingHistory) {
     return (
@@ -97,13 +85,13 @@ export default function ConsultationsTab() {
                 }`}
               >
                 <p className={`font-medium ${isSelected ? 'text-white' : 'text-[#008585]'}`}>
-                  Dra.: Anghelina Alva
+                  Consulta #{c.id.slice(0, 8)}
                 </p>
                 <p className={`mt-1 text-sm ${isSelected ? 'text-white/90' : 'text-gray-600'}`}>
                   Fecha: {formatDate(c.fechaInicio)}
                 </p>
                 <p className={`mt-1 text-sm ${isSelected ? 'text-white/90' : 'text-gray-600'}`}>
-                  Especialidad: Medicina General
+                  Estado: {c.estado === 'FINALIZADA' ? 'Finalizada' : 'Activa'}
                 </p>
               </button>
             );
@@ -133,64 +121,70 @@ export default function ConsultationsTab() {
                   <p className="text-sm text-gray-700">{selectedConsultation.diagnostico}</p>
                 ) : (
                   <p className="text-sm italic text-gray-400">
-                    {isActive ? 'El paciente presentó ...' : 'Sin diagnóstico registrado.'}
+                    {selectedConsultation.estado === 'ACTIVA'
+                      ? 'El paciente presentó ...'
+                      : 'Sin diagnóstico registrado.'}
                   </p>
                 )}
               </div>
             </div>
 
-            <hr className="border-gray-200" />
-
-            {/* Análisis Clínico */}
-            <div>
-              <h3 className="text-lg font-bold text-gray-900">Tu Análisis Clínico</h3>
-              <p className="mb-4 text-sm text-gray-500">
-                En caso tu paciente requiera análisis, ingresa cuales tiene que realizarse
-              </p>
-              <div className="flex flex-wrap gap-3">
-                {analysisList.map((analysis) => (
-                  <div
-                    key={analysis}
-                    className="flex items-center gap-2 rounded-full border border-[#008585] bg-white px-4 py-2 text-sm text-gray-800"
-                  >
-                    <span>{analysis}</span>
-                    <div className="flex h-5 w-5 items-center justify-center rounded-full bg-[#008585]">
-                      <Check className="h-3 w-3 text-white" />
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            <hr className="border-gray-200" />
-
-            {/* Medicamentos */}
-            <div>
-              <h3 className="text-lg font-bold text-gray-900">Tus Medicamentos</h3>
-              <p className="mb-4 text-sm text-gray-500">
-                Ingresa las instrucciones de los medicamentoes, días y horas para el paciente
-              </p>
-              <div className="overflow-hidden rounded-lg border border-gray-200">
-                <table className="w-full text-sm">
-                  <thead>
-                    <tr className="bg-[#008585] text-white">
-                      <th className="px-4 py-3 text-center font-medium">Nombre</th>
-                      <th className="px-4 py-3 text-center font-medium">Días</th>
-                      <th className="px-4 py-3 text-center font-medium">Frecuencia</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {medicationsList.map((med, idx) => (
-                      <tr key={idx} className="border-t border-gray-100">
-                        <td className="px-4 py-3 text-center text-gray-700">{med.name}</td>
-                        <td className="px-4 py-3 text-center text-gray-700">{med.days}</td>
-                        <td className="px-4 py-3 text-center text-gray-700">{med.frequency}</td>
-                      </tr>
+            {analysisOrders.length > 0 && (
+              <>
+                <hr className="border-gray-200" />
+                <div>
+                  <h3 className="text-lg font-bold text-gray-900">Tu Análisis Clínico</h3>
+                  <p className="mb-4 text-sm text-gray-500">
+                    Análisis solicitados durante la consulta
+                  </p>
+                  <div className="flex flex-wrap gap-3">
+                    {analysisOrders.map((order, idx) => (
+                      <div
+                        key={idx}
+                        className="flex items-center gap-2 rounded-full border border-[#008585] bg-white px-4 py-2 text-sm text-gray-800"
+                      >
+                        <span>{order.examName}</span>
+                        <div className="flex h-5 w-5 items-center justify-center rounded-full bg-[#008585]">
+                          <Check className="h-3 w-3 text-white" />
+                        </div>
+                      </div>
                     ))}
-                  </tbody>
-                </table>
-              </div>
-            </div>
+                  </div>
+                </div>
+              </>
+            )}
+
+            {medications.length > 0 && (
+              <>
+                <hr className="border-gray-200" />
+                <div>
+                  <h3 className="text-lg font-bold text-gray-900">Tus Medicamentos</h3>
+                  <p className="mb-4 text-sm text-gray-500">
+                    Medicamentos recetados durante la consulta
+                  </p>
+                  <div className="overflow-hidden rounded-lg border border-gray-200">
+                    <table className="w-full text-sm">
+                      <thead>
+                        <tr className="bg-[#008585] text-white">
+                          <th className="px-4 py-3 text-center font-medium">Nombre</th>
+                          <th className="px-4 py-3 text-center font-medium">Días</th>
+                          <th className="px-4 py-3 text-center font-medium">Frecuencia</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {medications.map((med, idx) => (
+                          <tr key={idx} className="border-t border-gray-100">
+                            <td className="px-4 py-3 text-center text-gray-700">{med.name}</td>
+                            <td className="px-4 py-3 text-center text-gray-700">{med.days}</td>
+                            <td className="px-4 py-3 text-center text-gray-700">{med.frequency}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </>
+            )}
           </div>
         ) : null}
       </div>

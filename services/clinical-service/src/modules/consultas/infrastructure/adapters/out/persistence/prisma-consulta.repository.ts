@@ -6,8 +6,16 @@
 
 import { prisma } from '@/shared/prisma-client';
 import { Consulta } from '@/modules/consultas/domain/entities/consulta.entity';
+import type { OrdenAnalisisValue, MedicamentoValue } from '@/modules/consultas/domain/entities/consulta.entity';
 import type { IConsultaRepository } from '@/modules/consultas/domain/ports/out/consulta.repository.port';
 import type { EstadoConsulta } from '@clinica-x/shared-types';
+
+const RELATIONS = {
+  include: {
+    ordenesAnalisis: true,
+    medicamentos: true,
+  } as const,
+};
 
 export class PrismaConsultaRepository implements IConsultaRepository {
   async guardar(consulta: Consulta): Promise<Consulta> {
@@ -24,6 +32,54 @@ export class PrismaConsultaRepository implements IConsultaRepository {
       fechaFin: consulta.fechaFin ?? null,
     };
 
+    // En estado FINALIZADA: persistir relaciones en una transacción
+    if (consulta.estado === 'FINALIZADA') {
+      const ordenesAnalisisData = consulta.ordenesAnalisis.map((o: OrdenAnalisisValue) => ({
+        tipoAnalisis: o.tipoAnalisis,
+        especialidad: o.especialidad ?? null,
+        descripcion: o.descripcion ?? null,
+        estado: 'PENDIENTE',
+      }));
+
+      const medicamentosData = consulta.medicamentos.map((m: MedicamentoValue) => ({
+        nombre: m.nombre,
+        dias: m.dias,
+        frecuencia: m.frecuencia,
+      }));
+
+      const registro = await prisma.$transaction(async (tx) => {
+        const actualizada = await tx.consulta.upsert({
+          where: { id: consulta.id },
+          update: data,
+          create: data,
+        });
+
+        // Reemplazar órdenes de análisis
+        await tx.ordenAnalisis.deleteMany({ where: { consultaId: consulta.id } });
+        if (ordenesAnalisisData.length > 0) {
+          await tx.ordenAnalisis.createMany({
+            data: ordenesAnalisisData.map((o) => ({ ...o, consultaId: consulta.id })),
+          });
+        }
+
+        // Reemplazar medicamentos
+        await tx.medicamento.deleteMany({ where: { consultaId: consulta.id } });
+        if (medicamentosData.length > 0) {
+          await tx.medicamento.createMany({
+            data: medicamentosData.map((m) => ({ ...m, consultaId: consulta.id })),
+          });
+        }
+
+        return tx.consulta.findUnique({
+          where: { id: consulta.id },
+          ...RELATIONS,
+        });
+      });
+
+      return this.toEntity(registro!);
+    }
+
+    // Para estado ACTIVA: solo upsert, sin tocar relaciones
     const registro = await prisma.consulta.upsert({
       where: { id: consulta.id },
       update: data,
@@ -34,7 +90,7 @@ export class PrismaConsultaRepository implements IConsultaRepository {
   }
 
   async buscarPorId(id: string): Promise<Consulta | null> {
-    const registro = await prisma.consulta.findUnique({ where: { id } });
+    const registro = await prisma.consulta.findUnique({ where: { id }, ...RELATIONS });
     if (!registro) return null;
     return this.toEntity(registro);
   }
@@ -43,6 +99,7 @@ export class PrismaConsultaRepository implements IConsultaRepository {
     const registros = await prisma.consulta.findMany({
       where: { pacienteId, ...(estado ? { estado } : {}) },
       orderBy: { fechaInicio: 'desc' },
+      ...RELATIONS,
     });
     return registros.map((r) => this.toEntity(r));
   }
@@ -51,6 +108,7 @@ export class PrismaConsultaRepository implements IConsultaRepository {
     const registros = await prisma.consulta.findMany({
       where: { medicoId, ...(estado ? { estado } : {}) },
       orderBy: { fechaInicio: 'desc' },
+      ...RELATIONS,
     });
     return registros.map((r) => this.toEntity(r));
   }
@@ -58,6 +116,7 @@ export class PrismaConsultaRepository implements IConsultaRepository {
   async buscarActivaPorPacienteYMedico(pacienteId: string, medicoId: string): Promise<Consulta | null> {
     const registro = await prisma.consulta.findFirst({
       where: { pacienteId, medicoId, estado: 'ACTIVA' },
+      ...RELATIONS,
     });
     if (!registro) return null;
     return this.toEntity(registro);
@@ -85,13 +144,47 @@ export class PrismaConsultaRepository implements IConsultaRepository {
           : {}),
       },
       orderBy: { fechaInicio: 'desc' },
+      ...RELATIONS,
     });
     return registros.map((r) => this.toEntity(r));
+  }
+
+  async actualizarOrdenAnalisis(id: string, data: { archivoId: string; resultado?: string; estado?: string }): Promise<void> {
+    await prisma.ordenAnalisis.update({
+      where: { id },
+      data: {
+        archivoId: data.archivoId,
+        resultado: data.resultado ?? null,
+        estado: data.estado ?? 'COMPLETADA',
+      },
+    });
+  }
+
+  async buscarOrdenAnalisisPorId(id: string): Promise<{ id: string; consultaId: string; tipoAnalisis: string; estado: string } | null> {
+    const orden = await prisma.ordenAnalisis.findUnique({
+      where: { id },
+      select: { id: true, consultaId: true, tipoAnalisis: true, estado: true },
+    });
+    return orden;
   }
 
   // ─── Helpers ──────────────────────────────────────────────────────────────
 
   private toEntity(registro: any): Consulta {
+    const ordenesAnalisis: OrdenAnalisisValue[] = (registro.ordenesAnalisis ?? []).map((o: any) => ({
+      id: o.id,
+      tipoAnalisis: o.tipoAnalisis,
+      especialidad: o.especialidad ?? undefined,
+      descripcion: o.descripcion ?? undefined,
+    }));
+
+    const medicamentos: MedicamentoValue[] = (registro.medicamentos ?? []).map((m: any) => ({
+      id: m.id,
+      nombre: m.nombre,
+      dias: m.dias,
+      frecuencia: m.frecuencia,
+    }));
+
     const resultado = Consulta.create(registro.id, {
       pacienteId: registro.pacienteId,
       medicoId: registro.medicoId,
@@ -102,6 +195,8 @@ export class PrismaConsultaRepository implements IConsultaRepository {
       notas: registro.notas ?? undefined,
       fechaInicio: registro.fechaInicio,
       fechaFin: registro.fechaFin ?? undefined,
+      ordenesAnalisis,
+      medicamentos,
     });
     if (resultado.isErr) {
       throw resultado.error;
