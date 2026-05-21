@@ -45,4 +45,3 @@ coverage/
 # Package Json
 
 **/src/generated/prisma/
-**/package.json
