@@ -218,12 +218,11 @@ const onSubmit = async (data: LoginForm) => {
         </form>
         </div>
 
-        {/* Right side - Illustration */}
-        <div className="relative hidden w-1/2 items-center justify-center overflow-hidden lg:flex ">
+        <div className="relative hidden w-1/2 items-center justify-center overflow-hidden lg:flex">
           <img
             src="/assets/login-paciente.png"
             alt="Ilustración Paciente"
-            className="relative z-10 max-h-[65%] w-auto object-contain"
+            className="relative z-10 max-h-[60vh] w-auto object-contain"
           />
         </div>
       </div>
