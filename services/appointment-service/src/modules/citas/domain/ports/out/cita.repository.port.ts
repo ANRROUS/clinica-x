@@ -18,6 +18,9 @@ export interface ICitaRepository {
   /** Busca todas las citas de un paciente, ordenadas por fecha descendente. */
   buscarPorPaciente(pacienteId: string): Promise<Cita[]>;
 
+  /** Busca citas de un paciente con un médico específico en un día (útil para evitar duplicados). */
+  buscarPorPacienteMedicoYDia(pacienteId: string, medicoId: string, fechaInicio: Date, fechaFin: Date): Promise<Cita[]>;
+
   /** Busca citas de un médico en un rango de fechas. */
   buscarPorMedico(medicoId: string, fechaDesde?: Date, fechaHasta?: Date): Promise<Cita[]>;
 

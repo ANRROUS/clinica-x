@@ -18,6 +18,7 @@ import {
   MedicoNoEncontradoError,
   MedicoInactivoError,
   SlotNoDisponibleError,
+  CitaDuplicadaMismoDiaError,
 } from '@/modules/citas/domain/exceptions/cita.errors';
 import type {
   ICrearCitaPort,
@@ -27,7 +28,7 @@ import type {
 import type { ICitaRepository } from '@/modules/citas/domain/ports/out/cita.repository.port';
 import type { IMedicoConsultaPort } from '@/modules/citas/domain/ports/out/medico-consulta.port';
 import { toCitaResponseDto } from '@/modules/citas/application/mapper';
-import { nowLima } from '@clinica-x/date-utils';
+import { nowLima, startOfDayLima, endOfDayLima } from '@clinica-x/date-utils';
 
 const CUATRO_HORAS_MS = 4 * 60 * 60 * 1000;
 
@@ -52,6 +53,19 @@ export class CrearCitaUseCase implements ICrearCitaPort {
     const diffMs = dto.fechaHora.getTime() - ahora.getTime();
     if (diffMs < CUATRO_HORAS_MS) {
       return Err(new SlotNoDisponibleError('Debes reservar con al menos 4 horas de anticipación'));
+    }
+
+    // 2.5. Verificar que el paciente no tenga otra cita el mismo día con el mismo médico
+    const inicioDia = startOfDayLima(dto.fechaHora);
+    const finDia = endOfDayLima(dto.fechaHora);
+    const citasExistentes = await this.repo.buscarPorPacienteMedicoYDia(
+      dto.pacienteId,
+      dto.medicoId,
+      inicioDia,
+      finDia,
+    );
+    if (citasExistentes.length > 0) {
+      return Err(new CitaDuplicadaMismoDiaError());
     }
 
     // 3-5. Crear entidad y persistir atómicamente (verifica + guarda en transacción)

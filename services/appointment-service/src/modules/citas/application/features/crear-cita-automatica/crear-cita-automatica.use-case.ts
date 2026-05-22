@@ -9,7 +9,10 @@
 
 import { Result, Ok, Err } from '@clinica-x/shared-kernel';
 import { Cita } from '@/modules/citas/domain/entities/cita.entity';
-import { SlotNoDisponibleError, MedicoNoEncontradoError } from '@/modules/citas/domain/exceptions/cita.errors';
+import {
+  SlotNoDisponibleError,
+  MedicoNoEncontradoError,
+} from '@/modules/citas/domain/exceptions/cita.errors';
 import type {
   ICrearCitaPort,
   CrearCitaDto,
@@ -18,7 +21,15 @@ import type {
 import type { ICitaRepository } from '@/modules/citas/domain/ports/out/cita.repository.port';
 import type { IMedicoConsultaPort } from '@/modules/citas/domain/ports/out/medico-consulta.port';
 import { toCitaResponseDto } from '@/modules/citas/application/mapper';
-import { nowLima, addDaysLima, getLimaDayOfWeek, startOfDayLima, endOfDayLima, buildLimaDate, formatLima } from '@clinica-x/date-utils';
+import {
+  nowLima,
+  addDaysLima,
+  getLimaDayOfWeek,
+  startOfDayLima,
+  endOfDayLima,
+  buildLimaDate,
+  formatLima,
+} from '@clinica-x/date-utils';
 
 const CUATRO_HORAS_MS = 4 * 60 * 60 * 1000;
 
@@ -50,6 +61,17 @@ export class CrearCitaAutomaticaUseCase implements ICrearCitaPort {
         const finDia = endOfDayLima(fecha);
         const citas = await this.repo.buscarPorMedicoYFecha(medico.id, inicioDia, finDia);
 
+        // Verificar si el paciente ya tiene una cita con este médico el mismo día
+        const citasPacienteConMedico = await this.repo.buscarPorPacienteMedicoYDia(
+          dto.pacienteId,
+          medico.id,
+          inicioDia,
+          finDia,
+        );
+        if (citasPacienteConMedico.length > 0) {
+          continue; // Saltar este día porque ya tiene cita con este médico
+        }
+
         for (const h of horarios) {
           let slotStart = this.parseTime(h.horaInicio, fecha);
           const slotEndMax = this.parseTime(h.horaFin, fecha);
@@ -58,10 +80,16 @@ export class CrearCitaAutomaticaUseCase implements ICrearCitaPort {
             const slotEnd = new Date(slotStart.getTime() + h.duracionSlot * 60 * 1000);
             if (slotEnd > slotEndMax) break;
 
-            const slotDateTime = buildLimaDate(formatLima(fecha, 'yyyy-MM-dd'), formatLima(slotStart, 'HH:mm:ss'));
+            const slotDateTime = buildLimaDate(
+              formatLima(fecha, 'yyyy-MM-dd'),
+              formatLima(slotStart, 'HH:mm:ss'),
+            );
 
             const diffMs = slotDateTime.getTime() - ahora.getTime();
-            if (diffMs >= CUATRO_HORAS_MS && !this.estaOcupado(slotStart, slotEnd, citas, h.duracionSlot)) {
+            if (
+              diffMs >= CUATRO_HORAS_MS &&
+              !this.estaOcupado(slotStart, slotEnd, citas, h.duracionSlot)
+            ) {
               // Slot libre encontrado
               const id = crypto.randomUUID();
               const citaResult = Cita.create(id, {
@@ -75,7 +103,11 @@ export class CrearCitaAutomaticaUseCase implements ICrearCitaPort {
 
               const inicioRango = new Date(slotDateTime.getTime() - 1);
               const finRango = new Date(slotDateTime.getTime() + h.duracionSlot * 60 * 1000);
-              const guardada = await this.repo.guardarSiLibre(citaResult.value, inicioRango, finRango);
+              const guardada = await this.repo.guardarSiLibre(
+                citaResult.value,
+                inicioRango,
+                finRango,
+              );
               if (!guardada) {
                 continue; // El slot fue tomado por otro usuario concurrente; seguir buscando
               }
@@ -96,15 +128,27 @@ export class CrearCitaAutomaticaUseCase implements ICrearCitaPort {
       }
     }
 
-    return Err(new SlotNoDisponibleError('No hay turnos disponibles para esta especialidad en los próximos días'));
+    return Err(
+      new SlotNoDisponibleError(
+        'No hay turnos disponibles para esta especialidad en los próximos días',
+      ),
+    );
   }
 
   private parseTime(timeStr: string, baseDate: Date): Date {
     const [h, m] = timeStr.split(':').map(Number);
-    return buildLimaDate(formatLima(baseDate, 'yyyy-MM-dd'), `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:00`);
+    return buildLimaDate(
+      formatLima(baseDate, 'yyyy-MM-dd'),
+      `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:00`,
+    );
   }
 
-  private estaOcupado(inicio: Date, fin: Date, citas: { fechaHora: Date }[], duracionSlotMinutos: number): boolean {
+  private estaOcupado(
+    inicio: Date,
+    fin: Date,
+    citas: { fechaHora: Date }[],
+    duracionSlotMinutos: number,
+  ): boolean {
     for (const c of citas) {
       const citaInicio = c.fechaHora;
       const citaFin = new Date(citaInicio.getTime() + duracionSlotMinutos * 60 * 1000);

@@ -37,6 +37,27 @@ export class PrismaCitaRepository implements ICitaRepository {
     return raws.map((r: any) => this.toDomain(r));
   }
 
+  async buscarPorPacienteMedicoYDia(
+    pacienteId: string,
+    medicoId: string,
+    fechaInicio: Date,
+    fechaFin: Date,
+  ): Promise<Cita[]> {
+    const raws = await prisma.cita.findMany({
+      where: {
+        pacienteId,
+        medicoId,
+        fechaHora: {
+          gte: fechaInicio,
+          lte: fechaFin,
+        },
+        estado: { not: 'CANCELADA' },
+      },
+      orderBy: { fechaHora: 'asc' },
+    });
+    return raws.map((r: any) => this.toDomain(r));
+  }
+
   async buscarPorMedico(medicoId: string, fechaDesde?: Date, fechaHasta?: Date): Promise<Cita[]> {
     const where: any = { medicoId };
     if (fechaDesde || fechaHasta) {
