@@ -9,6 +9,10 @@
 FROM node:20-alpine AS builder
 WORKDIR /workspace
 
+# Inyectar variables en build time para Next.js
+ARG NEXT_PUBLIC_API_BASE_URL
+ENV NEXT_PUBLIC_API_BASE_URL=$NEXT_PUBLIC_API_BASE_URL
+
 # Habilitar pnpm vía corepack
 RUN corepack enable && corepack prepare pnpm@8.15.0 --activate
 
