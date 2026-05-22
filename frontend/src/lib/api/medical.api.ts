@@ -25,9 +25,15 @@ export async function getConsultationById(
   return res.data;
 }
 
-export async function uploadFile(file: File): Promise<ApiResponse<any>> {
+export async function uploadFile(
+  file: File,
+  propietarioServicio: string,
+  propietarioRecursoId: string,
+): Promise<ApiResponse<any>> {
   const formData = new FormData();
   formData.append('file', file);
+  formData.append('propietarioServicio', propietarioServicio);
+  formData.append('propietarioRecursoId', propietarioRecursoId);
   const res = await api.post('/api/files/upload', formData, {
     headers: { 'Content-Type': 'multipart/form-data' },
   });
