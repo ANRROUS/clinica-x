@@ -3,9 +3,9 @@
 import { useState, useCallback, useEffect, useRef, useMemo } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import { useQuery } from '@tanstack/react-query';
-import { Search, ChevronLeft, ChevronRight } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Users } from 'lucide-react';
 import { useDoctorAuthStore } from '@/store/useDoctorAuthStore';
-import { getActivePatient, getDoctorPatients } from '@/lib/api/doctor.api';
+import { getActivePatient, getDoctorPatients, getDoctorSlotDuration } from '@/lib/api/doctor.api';
 import type { ConsultaMedicoDTO } from '@/lib/api/types';
 import { parseApiDate, nowLima, getLimaYear, getLimaMonth, getLimaDay } from '@clinica-x/date-utils';
 
@@ -28,50 +28,35 @@ export default function PatientSidebar({
   const router = useRouter();
   const pathname = usePathname();
 
+  const { data: slotDurationData } = useQuery({
+    queryKey: ['doctorSlotDuration'],
+    queryFn: async () => {
+      const res = await getDoctorSlotDuration();
+      return res.success ? res.data?.duracionSlot : 30;
+    },
+    staleTime: Infinity,
+    enabled: isAuthenticated,
+  });
+  const slotDuration = slotDurationData ?? 30;
+
   const validActiveConsultation = useMemo(() => {
     if (!activeConsultation) return null;
     const inicio = parseApiDate(activeConsultation.fechaInicio);
     const now = nowLima();
-    const fin = new Date(inicio.getTime() + 60 * 60000);
+    const fin = new Date(inicio.getTime() + slotDuration * 60000);
     return now >= inicio && now <= fin ? activeConsultation : null;
-  }, [activeConsultation]);
+  }, [activeConsultation, slotDuration]);
 
-  const [searchQuery, setSearchQuery] = useState('');
-  const [searchResults, setSearchResults] = useState<ConsultaMedicoDTO[]>([]);
-  const [isSearching, setIsSearching] = useState(false);
-  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-
-  const handleSearch = useCallback(
-    (query: string) => {
-      if (debounceRef.current) clearTimeout(debounceRef.current);
-      if (!query.trim()) {
-        setSearchResults([]);
-        setIsSearching(false);
-        return;
+  const generalList = useMemo(() => {
+    const unique = new Map<string, { id: string; name: string }>();
+    patients.forEach((c) => {
+      if (c.pacienteId && !unique.has(c.pacienteId)) {
+        const name = `${c.pacienteNombre || ''} ${c.pacienteApellido || ''}`.trim() || 'Paciente';
+        unique.set(c.pacienteId, { id: c.pacienteId, name });
       }
-      setIsSearching(true);
-      debounceRef.current = setTimeout(() => {
-        getDoctorPatients()
-          .then((res) => {
-            if (res.success && res.data) {
-              const q = query.toLowerCase();
-              const filtered = res.data.filter(
-                (c) =>
-                  c.pacienteNombre?.toLowerCase().includes(q) ||
-                  c.pacienteApellido?.toLowerCase().includes(q)
-              );
-              const unique = new Map<string, ConsultaMedicoDTO>();
-              filtered.forEach((c) => {
-                if (!unique.has(c.pacienteId)) unique.set(c.pacienteId, c);
-              });
-              setSearchResults(Array.from(unique.values()).slice(0, 10));
-            }
-          })
-          .finally(() => setIsSearching(false));
-      }, 300);
-    },
-    []
-  );
+    });
+    return Array.from(unique.values()).sort((a, b) => a.name.localeCompare(b.name, 'es'));
+  }, [patients]);
 
   const patientsToday = patients.filter((c) => {
     const fecha = parseApiDate(c.fechaInicio);
@@ -109,9 +94,9 @@ export default function PatientSidebar({
         <button
           onClick={() => router.push('/doctor/pacientes')}
           className="mb-4 rounded-lg p-2 text-white hover:bg-brand-600"
-          title="Buscar pacientes"
+          title="Pacientes"
         >
-          <Search className="h-5 w-5" />
+          <Users className="h-5 w-5" />
         </button>
         <div className="flex-1 space-y-2 overflow-y-auto">
           {validActiveConsultation && (
@@ -215,55 +200,30 @@ export default function PatientSidebar({
       </div>
 
       <div className="flex-1 overflow-y-auto px-4 py-3">
-        <p className="text-xs font-semibold uppercase text-white/90">General</p>
-        <div className="relative mt-2 border-b border-white/40">
-          <Search className="absolute left-0 top-1/2 h-4 w-4 -translate-y-1/2 text-white/70" />
-          <input
-            type="text"
-            value={searchQuery}
-            onChange={(e) => {
-              setSearchQuery(e.target.value);
-              handleSearch(e.target.value);
-            }}
-            placeholder="Ej. Juan Pérez"
-            className="w-full bg-transparent py-2 pl-7 pr-3 text-sm text-white placeholder-white/60 focus:outline-none"
-          />
-        </div>
-
-        {searchQuery.trim() && (
-          <div className="mt-2 space-y-1">
-            {isSearching ? (
-              <p className="py-2 text-center text-xs text-white/70">Buscando...</p>
-            ) : searchResults.length > 0 ? (
-              searchResults.map((p) => (
-                <button
-                  key={p.pacienteId}
-                  onClick={() => {
-                    setSearchQuery('');
-                    setSearchResults([]);
-                    router.push(`/doctor/pacientes/${p.pacienteId}`);
-                  }}
-                  className={`flex items-center gap-3 w-full rounded-lg border-l-4 bg-white px-3 py-2 text-left text-sm font-medium transition-colors ${
-                    currentPatientId === p.pacienteId
-                      ? 'border-white text-brand-500'
-                      : 'border-brand-300 text-gray-700 hover:bg-gray-50'
-                  }`}
-                >
-                  <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-accent-500 text-xs font-bold text-white">
-                    {(p.pacienteNombre?.[0] || '?').toUpperCase()}
-                  </div>
-                  <span className="truncate">
-                    {p.pacienteNombre
-                      ? `${p.pacienteNombre} ${p.pacienteApellido || ''}`.trim()
-                      : 'Paciente'}
-                  </span>
-                </button>
-              ))
-            ) : (
-              <p className="py-2 text-center text-xs text-white/70">
-                No se encontraron pacientes con ese nombre
-              </p>
-            )}
+        <p className="text-xs font-semibold uppercase text-white/90 mb-2">General</p>
+        {generalList.length > 0 ? (
+          <div className="space-y-1">
+            {generalList.map((p) => (
+              <button
+                key={p.id}
+                onClick={() => router.push(`/doctor/pacientes/${p.id}`)}
+                className={`flex items-center gap-3 w-full rounded-lg border-l-4 bg-white px-3 py-2 text-left text-sm font-medium transition-colors ${
+                  currentPatientId === p.id
+                    ? 'border-white text-brand-500'
+                    : 'border-brand-300 text-gray-700 hover:bg-gray-50'
+                }`}
+              >
+                <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-accent-500 text-xs font-bold text-white">
+                  {(p.name?.[0] || '?').toUpperCase()}
+                </div>
+                <span className="truncate">{p.name}</span>
+              </button>
+            ))}
+          </div>
+        ) : (
+          <div className="rounded-lg border border-dashed border-white/40 bg-white/10 px-3 py-3 mt-2 flex flex-col items-center justify-center gap-2">
+            <Users className="h-5 w-5 text-white/70" />
+            <p className="text-center text-xs text-white/70">No hay pacientes registrados</p>
           </div>
         )}
       </div>

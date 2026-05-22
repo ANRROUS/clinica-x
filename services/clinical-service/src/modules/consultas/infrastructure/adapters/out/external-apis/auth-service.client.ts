@@ -16,7 +16,7 @@ export class AuthServiceClient implements IAuthServiceClient {
 
   constructor() {
     this.baseUrl = env.AUTH_SERVICE_URL;
-    this.apiKey = 'clinica-x-internal-api-key-2025'; // should match what auth-service expects
+    this.apiKey = env.INTERNAL_API_KEY;
   }
 
   async obtenerUsuariosPorIds(ids: string[]): Promise<Array<{

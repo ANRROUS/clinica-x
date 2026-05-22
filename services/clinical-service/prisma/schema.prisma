@@ -38,19 +38,83 @@ model Consulta {
 
 // ─── Orden de análisis clínico ───────────────────────────────────────────────
 model OrdenAnalisis {
-  id           String   @id @default(uuid())
-  consultaId   String
-  consulta     Consulta @relation(fields: [consultaId], references: [id], onDelete: Cascade)
-  tipoAnalisis String
-  especialidad String?  // Especialidad derivada sugerida por el médico
-  descripcion  String?
-  estado       String   // PENDIENTE | COMPLETADA
-  resultado    String?
-  archivoId    String?  // Referencia al archivo en file-service
-  creadoEn     DateTime @default(now())
-  actualizadoEn DateTime @updatedAt
+  id                 String          @id @default(uuid())
+  consultaId         String
+  consulta           Consulta        @relation(fields: [consultaId], references: [id], onDelete: Cascade)
+  tipoAnalisis       String
+  especialidad       String?         // Especialidad derivada sugerida por el médico
+  descripcion        String?
+  estado             String          // PENDIENTE | COMPLETADA
+  resultado          String?
+  archivoId          String?         // Referencia al archivo en file-service
+  analisisResultadoId String?        @unique // FK lógica a analisis_resultados
+  creadoEn           DateTime        @default(now())
+  actualizadoEn      DateTime        @updatedAt
 
   @@map("ordenes_analisis")
+}
+
+// ─── Resultado de análisis procesado por OCR ─────────────────────────────────
+model AnalisisResultado {
+  id                     String          @id @default(uuid())
+  ordenAnalisisId        String?         @unique // FK a ordenes_analisis
+  pacienteId             String
+  archivoId              String          @unique // FK lógica a file_service.archivos
+  consultaId             String?         // FK lógica a consultas
+  tipoAnalisis           String          // SANGRE | ORINA | HECES
+  resultadoIdOriginal    String?         // Ej: "RES-SANGRE-OOI"
+  laboratorio            String?
+  medicoSolicitante      String?
+  fechaToma              DateTime?
+  horaToma               String?         // "HH:mm"
+  fechaResultado         DateTime?
+  datosMuestra           Json?           // Metadata de la muestra (subtipo, volumen, etc.)
+  pacienteNombreOcr      String?
+  pacienteIdOcr          String?
+  pacienteFechaNacimiento DateTime?
+  pacienteSexo           String?
+  pacienteEdad           Int?
+  estadoOcr              String          @default("PROCESANDO") // PROCESANDO | COMPLETADO | ERROR
+  errorOcr               String?
+  creadoEn               DateTime        @default(now())
+  actualizadoEn          DateTime        @updatedAt
+
+  grupos                 AnalisisGrupo[]
+
+  @@map("analisis_resultados")
+}
+
+// ─── Grupo de parámetros dentro de un resultado ──────────────────────────────
+model AnalisisGrupo {
+  id                   String          @id @default(uuid())
+  analisisResultadoId  String
+  analisisResultado    AnalisisResultado @relation(fields: [analisisResultadoId], references: [id], onDelete: Cascade)
+  nombreGrupo          String
+  orden                Int             @default(0)
+  creadoEn             DateTime        @default(now())
+
+  items                AnalisisItem[]
+
+  @@map("analisis_grupos")
+}
+
+// ─── Parámetro individual del análisis ────────────────────────────────────────
+model AnalisisItem {
+  id              String        @id @default(uuid())
+  grupoId         String
+  grupo           AnalisisGrupo @relation(fields: [grupoId], references: [id], onDelete: Cascade)
+  nombre          String
+  valor           String
+  unidad          String?
+  rangoMin        String?
+  rangoMax        String?
+  rangoReferencia String?
+  estado          String?       // "normal" | "[ANORMAL]"
+  nota            String?
+  orden           Int           @default(0)
+  creadoEn        DateTime      @default(now())
+
+  @@map("analisis_items")
 }
 
 // ─── Medicamento recetado ────────────────────────────────────────────────────

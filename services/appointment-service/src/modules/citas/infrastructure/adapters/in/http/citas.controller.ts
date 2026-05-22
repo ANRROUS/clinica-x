@@ -18,6 +18,7 @@ import type {
 } from '@/modules/citas/domain/ports/in/citas.port';
 import type { IMedicoConsultaPort } from '@/modules/citas/domain/ports/out/medico-consulta.port';
 import { nowLima, parseLimaDate, formatLima } from '@clinica-x/date-utils';
+import { prisma } from '@/shared/prisma-client';
 
 // ─── Schemas Zod ────────────────────────────────────────────────────────────
 
@@ -216,6 +217,24 @@ export class CitasController {
       const fechaHasta = req.query.hasta ? parseLimaDate(req.query.hasta as string + 'T23:59:59.999') : undefined;
       const resultado = await this.listarCitasMedico.execute({ medicoId, fechaDesde, fechaHasta });
       this.manejarResultado(res, resultado as any);
+    } catch (err) {
+      next(err);
+    }
+  };
+
+  // ─── GET /api/appointments/doctor/slot-duration ─────────────────────────────
+  obtenerSlotDuration = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    try {
+      const medicoId = await this.getMedicoId(req);
+      if (!medicoId) {
+        res.status(404).json({ success: false, error: { codigo: 'MEDICO_NO_ENCONTRADO', mensaje: 'No se encontró médico asociado al usuario' } });
+        return;
+      }
+      const horario = await prisma.horarioMedico.findFirst({
+        where: { medicoId },
+      });
+      const duracionSlot = horario?.duracionSlot ?? 30;
+      res.status(200).json({ success: true, data: { duracionSlot } });
     } catch (err) {
       next(err);
     }

@@ -39,3 +39,24 @@ export async function uploadAnalysisResult(
   });
   return res.data;
 }
+
+export async function getOcrResults(
+  archivoId: string,
+): Promise<ApiResponse<import('./types').AnalisisResultadoDTO>> {
+  const res = await api.get(`/api/ocr/results/${archivoId}`);
+  return res.data;
+}
+
+export async function getOcrResultByOrder(
+  ordenAnalisisId: string,
+): Promise<ApiResponse<import('./types').AnalisisResultadoDTO>> {
+  const res = await api.get(`/api/ocr/results/order/${ordenAnalisisId}`);
+  return res.data;
+}
+
+export async function getOcrStatus(
+  archivoId: string,
+): Promise<ApiResponse<{ archivoId: string; estadoOcr: string; errorOcr?: string }>> {
+  const res = await api.get(`/api/ocr/status/${archivoId}`);
+  return res.data;
+}
