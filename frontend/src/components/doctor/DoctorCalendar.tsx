@@ -25,7 +25,11 @@ interface DoctorCalendarProps {
   loading?: boolean;
 }
 
-export default function DoctorCalendar({ citas, onNavigateToPatient, loading }: DoctorCalendarProps) {
+export default function DoctorCalendar({
+  citas,
+  onNavigateToPatient,
+  loading,
+}: DoctorCalendarProps) {
   const [viewMode, setViewMode] = useState<ViewMode>('semanal');
   const [currentDate, setCurrentDate] = useState(nowLima());
 
@@ -49,14 +53,25 @@ export default function DoctorCalendar({ citas, onNavigateToPatient, loading }: 
 
   const formatDate = () => {
     const monthNames = [
-      'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
-      'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre',
+      'Enero',
+      'Febrero',
+      'Marzo',
+      'Abril',
+      'Mayo',
+      'Junio',
+      'Julio',
+      'Agosto',
+      'Septiembre',
+      'Octubre',
+      'Noviembre',
+      'Diciembre',
     ];
     if (viewMode === 'mensual') {
       return `${monthNames[getLimaMonth(currentDate)]} ${getLimaYear(currentDate)}`;
     }
     if (viewMode === 'semanal') {
-      const startOfWeek = addDaysLima(currentDate, -(getLimaDayOfWeek(currentDate) % 7));
+      const day = getLimaDayOfWeek(currentDate);
+      const startOfWeek = addDaysLima(currentDate, day === 7 ? -6 : 1 - day);
       const endOfWeek = addDaysLima(startOfWeek, 6);
       return `${getLimaDay(startOfWeek)} - ${getLimaDay(endOfWeek)} ${monthNames[getLimaMonth(endOfWeek)]} ${getLimaYear(endOfWeek)}`;
     }
@@ -73,13 +88,22 @@ export default function DoctorCalendar({ citas, onNavigateToPatient, loading }: 
     <div className="flex h-full flex-col">
       <div className="flex flex-wrap items-center justify-between gap-3 border-b border-gray-200 bg-white px-6 py-4">
         <div className="flex items-center gap-2">
-          <button onClick={navigatePrev} className="rounded-lg border border-gray-200 p-1.5 hover:bg-gray-50">
+          <button
+            onClick={navigatePrev}
+            className="rounded-lg border border-gray-200 p-1.5 hover:bg-gray-50"
+          >
             <ChevronLeft className="h-4 w-4" />
           </button>
-          <button onClick={goToToday} className="rounded-lg border border-gray-200 px-3 py-1.5 text-sm font-medium hover:bg-gray-50">
+          <button
+            onClick={goToToday}
+            className="rounded-lg border border-gray-200 px-3 py-1.5 text-sm font-medium hover:bg-gray-50"
+          >
             Hoy
           </button>
-          <button onClick={navigateNext} className="rounded-lg border border-gray-200 p-1.5 hover:bg-gray-50">
+          <button
+            onClick={navigateNext}
+            className="rounded-lg border border-gray-200 p-1.5 hover:bg-gray-50"
+          >
             <ChevronRight className="h-4 w-4" />
           </button>
           <h2 className="ml-2 text-lg font-semibold text-brand-500">{formatDate()}</h2>
@@ -120,9 +144,17 @@ export default function DoctorCalendar({ citas, onNavigateToPatient, loading }: 
             }}
           />
         ) : viewMode === 'semanal' ? (
-          <CalendarWeek currentDate={currentDate} citas={citas} onNavigateToPatient={onNavigateToPatient} />
+          <CalendarWeek
+            currentDate={currentDate}
+            citas={citas}
+            onNavigateToPatient={onNavigateToPatient}
+          />
         ) : (
-          <CalendarDay currentDate={currentDate} citas={citas} onNavigateToPatient={onNavigateToPatient} />
+          <CalendarDay
+            currentDate={currentDate}
+            citas={citas}
+            onNavigateToPatient={onNavigateToPatient}
+          />
         )}
       </div>
     </div>
