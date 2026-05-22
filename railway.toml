@@ -1,0 +1,92 @@
+# =============================================================================
+# railway.toml — Configuración de Monorepo para Railway (GitHub Integration)
+# =============================================================================
+# Railway detecta este archivo automáticamente cuando importas desde GitHub.
+# Define todos los servicios del monorepo y sus configuraciones.
+#
+# INSTRUCCIONES:
+# 1. Crea un proyecto en Railway: https://railway.app/new
+# 2. Ve a Project Settings → Source → GitHub Repo
+# 3. Selecciona tu repositorio de GitHub
+# 4. Railway detectará este archivo y creará los servicios automáticamente
+# 5. Configura las variables de entorno en el dashboard
+# =============================================================================
+
+[services]
+
+  [services.auth-service]
+  source = "github"
+  rootDirectory = "services/auth-service"
+  
+    [services.auth-service.deploy]
+    startCommand = "node dist/server.js"
+    healthcheckPath = "/health"
+    restartPolicyType = "ON_FAILURE"
+    restartPolicyMaxRetries = 10
+    numReplicas = 1
+
+  [services.appointment-service]
+  source = "github"
+  rootDirectory = "services/appointment-service"
+  
+    [services.appointment-service.deploy]
+    startCommand = "node dist/server.js"
+    healthcheckPath = "/health"
+    restartPolicyType = "ON_FAILURE"
+    restartPolicyMaxRetries = 10
+    numReplicas = 1
+
+  [services.clinical-service]
+  source = "github"
+  rootDirectory = "services/clinical-service"
+  
+    [services.clinical-service.deploy]
+    startCommand = "node dist/server.js"
+    healthcheckPath = "/health"
+    restartPolicyType = "ON_FAILURE"
+    restartPolicyMaxRetries = 10
+    numReplicas = 1
+
+  [services.file-service]
+  source = "github"
+  rootDirectory = "services/file-service"
+  
+    [services.file-service.deploy]
+    startCommand = "node dist/server.js"
+    healthcheckPath = "/health"
+    restartPolicyType = "ON_FAILURE"
+    restartPolicyMaxRetries = 10
+    numReplicas = 1
+
+  [services.ocr-service]
+  source = "github"
+  rootDirectory = "services/ocr-service"
+  
+    [services.ocr-service.deploy]
+    startCommand = "node dist/server.js"
+    healthcheckPath = "/health"
+    restartPolicyType = "ON_FAILURE"
+    restartPolicyMaxRetries = 10
+    numReplicas = 1
+
+  [services.api-gateway]
+  source = "github"
+  rootDirectory = "services/api-gateway"
+  
+    [services.api-gateway.deploy]
+    startCommand = "node dist/server.js"
+    healthcheckPath = "/health"
+    restartPolicyType = "ON_FAILURE"
+    restartPolicyMaxRetries = 10
+    numReplicas = 1
+
+  [services.frontend]
+  source = "github"
+  rootDirectory = "frontend"
+  
+    [services.frontend.deploy]
+    startCommand = "pnpm start"
+    healthcheckPath = "/"
+    restartPolicyType = "ON_FAILURE"
+    restartPolicyMaxRetries = 10
+    numReplicas = 1

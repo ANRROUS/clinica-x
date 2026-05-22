@@ -12,15 +12,6 @@ const prisma = new PrismaClient();
 
 const ESPECIALIDADES = [
   'Medicina General',
-  'Cardiología',
-  'Traumatología',
-  'Dermatología',
-  'Pediatría',
-  'Neurología',
-  'Ginecología',
-  'Oftalmología',
-  'Otorrinolaringología',
-  'Endocrinología',
 ];
 
 async function main(): Promise<void> {

@@ -1,6 +1,18 @@
 import { api } from './axios';
 import type { ApiResponse, ConsultaDTO } from './types';
 
+export interface CatalogoMedicamento {
+  id: string;
+  nombre: string;
+  activo: boolean;
+  createdAt: string;
+}
+
+export async function getMedicationCatalog(): Promise<ApiResponse<CatalogoMedicamento[]>> {
+  const res = await api.get('/api/medical/catalogos/medicamentos');
+  return res.data;
+}
+
 export async function getPatientHistory(): Promise<ApiResponse<ConsultaDTO[]>> {
   const res = await api.get('/api/medical/patient/history');
   return res.data;

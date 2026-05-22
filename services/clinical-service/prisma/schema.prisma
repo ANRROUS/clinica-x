@@ -117,6 +117,16 @@ model AnalisisItem {
   @@map("analisis_items")
 }
 
+// ─── Catálogo de medicamentos ────────────────────────────────────────────────
+model CatalogoMedicamento {
+  id        String   @id @default(uuid())
+  nombre    String   @unique
+  activo    Boolean  @default(true)
+  createdAt DateTime @default(now()) @map("creado_en")
+
+  @@map("catalogo_medicamentos")
+}
+
 // ─── Medicamento recetado ────────────────────────────────────────────────────
 model Medicamento {
   id         String   @id @default(uuid())

@@ -59,6 +59,7 @@ app.post('/api/medical/doctor/ai/chat', (_req, res) => {
 });
 
 import { consultasRouter } from '@/modules/consultas/infrastructure/di';
+import { prisma } from '@/shared/prisma-client';
 
 // Rutas de negocio — Fase 4 (consultas)
 app.use(
@@ -66,6 +67,19 @@ app.use(
   jwtMiddleware({ secret: env.JWT_SECRET }),
   consultasRouter,
 );
+
+// ─── Catálogos ───────────────────────────────────────────────────────────────
+app.get('/api/medical/catalogos/medicamentos', jwtMiddleware({ secret: env.JWT_SECRET }), async (_req, res, next) => {
+  try {
+    const medicamentos = await prisma.catalogoMedicamento.findMany({
+      where: { activo: true },
+      orderBy: { nombre: 'asc' },
+    });
+    res.json({ success: true, data: medicamentos });
+  } catch (err) {
+    next(err);
+  }
+});
 
 app.use(errorHandler);
 

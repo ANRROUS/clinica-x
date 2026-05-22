@@ -5,6 +5,7 @@ import { FileText, FlaskConical, Pill, CheckCircle, Eye } from 'lucide-react';
 import type { ConsultaMedicoDTO } from '@/lib/api/types';
 import { parseApiDate, formatLima } from '@clinica-x/date-utils';
 import AnalysisResultViewer from '@/components/patient-profile/AnalysisResultViewer';
+import { getAnalisisDisplayName } from '@/lib/utils';
 
 interface ConsultationDetailProps {
   consultation: ConsultaMedicoDTO;
@@ -64,12 +65,12 @@ export default function ConsultationDetail({ consultation, onBack }: Consultatio
                   className="inline-flex items-center gap-1.5 rounded-full border border-brand-300 bg-white px-3 py-1.5 text-sm font-medium text-brand-700"
                 >
                   <CheckCircle className="h-3.5 w-3.5 text-green-500" />
-                  <span>{order.examName}</span>
+                  <span>{getAnalisisDisplayName(order.examName)}</span>
                   {order.estado === 'COMPLETADA' && order.archivoId && (
                     <button
                       onClick={() => {
                         setViewingArchivoId(order.archivoId!);
-                        setViewingTitle(order.examName);
+                        setViewingTitle(getAnalisisDisplayName(order.examName));
                       }}
                       className="ml-1 rounded p-0.5 hover:bg-brand-50 text-brand-600 transition-colors"
                       title="Ver resultados"
