@@ -1,7 +1,7 @@
 "use client";
 
 import Link from 'next/link';
-import { Heart, Baby, Smile, Brain, Bone, Stethoscope } from 'lucide-react';
+import { Heart, Baby, Sparkles, Brain, Bone, Stethoscope } from 'lucide-react';
 
 const specialties = [
   {
@@ -23,9 +23,9 @@ const specialties = [
     color: '#F97316',
   },
   {
-    icon: Smile,
-    title: 'Odontología',
-    description: 'Atención dental integral, desde la estética de rutina hasta procedimientos restaurativos complejos.',
+    icon: Sparkles,
+    title: 'Dermatología',
+    description: 'Cuidado y tratamiento de la piel, diagnóstico de afecciones dermatológicas y procedimientos no invasivos.',
     color: '#008585',
   },
   {
@@ -36,8 +36,8 @@ const specialties = [
   },
   {
     icon: Bone,
-    title: 'Ortopedia',
-    description: 'Tratamiento quirúrgico y no quirúrgico para problemas musculoesqueléticos, asegurando la movilidad.',
+    title: 'Traumatología',
+    description: 'Atención de urgencias y tratamiento de lesiones traumáticas del sistema musculoesquelético.',
     color: '#65A30D',
   },
 ];
