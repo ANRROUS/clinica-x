@@ -91,6 +91,8 @@ export class OcrSpaceAdapter implements OcrProcessor {
         processingTime: data.ProcessingTimeInMilliseconds,
         pages: data.ParsedResults?.length,
         exitCode: data.OCRExitCode,
+        hasTextOverlay: data.ParsedResults?.some(r => r.TextOverlay?.Lines && r.TextOverlay.Lines.length > 0),
+        hasParsedText: data.ParsedResults?.some(r => r.ParsedText && r.ParsedText.length > 0),
       },
       'OCR.space respuesta recibida',
     );

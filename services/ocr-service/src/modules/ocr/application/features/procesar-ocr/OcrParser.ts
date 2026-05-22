@@ -16,7 +16,7 @@ interface OcrSpaceLine {
 }
 
 interface OcrSpaceParsedResult {
-  Overlay: {
+  TextOverlay?: {
     Lines: OcrSpaceLine[];
     HasOverlay: boolean;
     Message: string;
@@ -87,7 +87,13 @@ export class OcrParser {
       throw new Error('No OCR data found in response');
     }
 
-    const allLines = firstPage.Overlay.Lines;
+    const overlay = firstPage.TextOverlay;
+    const allLines = overlay?.Lines ?? this.parseFromParsedText(firstPage.ParsedText);
+    
+    if (!overlay?.Lines) {
+      console.warn('[OcrParser] TextOverlay no disponible, usando ParsedText como fallback');
+    }
+
     const header = this.parseHeader(allLines, tipoAnalisis);
     const grupos = this.parseGroups(allLines, tipoAnalisis);
 
@@ -353,6 +359,22 @@ export class OcrParser {
       }
     }
     return columns.length > 0 ? columns[columns.length - 1] : null;
+  }
+
+  private parseFromParsedText(parsedText: string): OcrSpaceLine[] {
+    const lines = parsedText.split(/\r?\n/).filter(line => line.trim().length > 0);
+    return lines.map((lineText, index) => ({
+      LineText: lineText.trim(),
+      Words: lineText.trim().split(/\s+/).map(word => ({
+        WordText: word,
+        Left: 0,
+        Top: index * 20,
+        Height: 12,
+        Width: word.length * 8,
+      })),
+      MaxHeight: 12,
+      MinTop: index * 20,
+    }));
   }
 
   private getTopValueForName(lines: OcrSpaceLine[], name: string, _targetTop: number): number | null {
