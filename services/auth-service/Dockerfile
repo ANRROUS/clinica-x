@@ -24,7 +24,8 @@ RUN pnpm install --frozen-lockfile --filter auth-service... || pnpm install --fi
 RUN cd services/auth-service && pnpm prisma generate
 
 # Compilar packages compartidos + el servicio
-RUN pnpm --filter @clinica-x/shared-kernel build \
+RUN pnpm --filter @clinica-x/date-utils build \
+ && pnpm --filter @clinica-x/shared-kernel build \
  && pnpm --filter @clinica-x/shared-types build \
  && pnpm --filter @clinica-x/shared-middleware build \
  && pnpm --filter auth-service build
