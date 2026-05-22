@@ -26,6 +26,7 @@ export class PrismaMedicoConsulta implements IMedicoConsultaPort {
       nombreUsuario: raw.nombreUsuario,
       activo: raw.activo,
       especialidadNombre: raw.especialidad?.nombre ?? 'Sin especialidad',
+      usuarioId: raw.usuarioId,
     };
   }
 
@@ -40,6 +41,7 @@ export class PrismaMedicoConsulta implements IMedicoConsultaPort {
       nombreUsuario: raw.nombreUsuario,
       activo: raw.activo,
       especialidadNombre: raw.especialidad?.nombre ?? 'Sin especialidad',
+      usuarioId: raw.usuarioId,
     };
   }
 
@@ -53,6 +55,7 @@ export class PrismaMedicoConsulta implements IMedicoConsultaPort {
       nombreUsuario: raw.nombreUsuario,
       activo: raw.activo,
       especialidadNombre: raw.especialidad?.nombre ?? 'Sin especialidad',
+      usuarioId: raw.usuarioId,
     }));
   }
 
@@ -74,5 +77,38 @@ export class PrismaMedicoConsulta implements IMedicoConsultaPort {
       horaFin: raw.horaFin,
       duracionSlot: raw.duracionSlot,
     }));
+  }
+
+  async listarHorariosPorMedicos(
+    medicoIds: string[],
+    diasSemana: number[],
+  ): Promise<Map<string, HorarioConsulta[]>> {
+    if (medicoIds.length === 0 || diasSemana.length === 0) {
+      return new Map();
+    }
+    const raws = await prisma.horarioMedico.findMany({
+      where: {
+        medicoId: { in: medicoIds },
+        diaSemana: { in: diasSemana },
+      },
+      orderBy: { horaInicio: 'asc' },
+    });
+
+    const map = new Map<string, HorarioConsulta[]>();
+    for (const raw of raws) {
+      const key = `${raw.medicoId}#${raw.diaSemana}`;
+      const horario: HorarioConsulta = {
+        horaInicio: raw.horaInicio,
+        horaFin: raw.horaFin,
+        duracionSlot: raw.duracionSlot,
+      };
+      const existing = map.get(key);
+      if (existing) {
+        existing.push(horario);
+      } else {
+        map.set(key, [horario]);
+      }
+    }
+    return map;
   }
 }

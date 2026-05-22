@@ -32,7 +32,7 @@ const reprogramarCitaUseCase = new ReprogramarCitaUseCase(citaRepository, medico
 const listarCitasPacienteUseCase = new ListarCitasPacienteUseCase(citaRepository, medicoConsulta);
 const listarCitasMedicoUseCase = new ListarCitasMedicoUseCase(citaRepository, medicoConsulta, authServiceClient);
 const obtenerDisponibilidadUseCase = new ObtenerDisponibilidadUseCase(citaRepository, medicoConsulta);
-const obtenerDisponibilidadPorEspecialidadUseCase = new ObtenerDisponibilidadPorEspecialidadUseCase(citaRepository, medicoConsulta);
+const obtenerDisponibilidadPorEspecialidadUseCase = new ObtenerDisponibilidadPorEspecialidadUseCase(citaRepository, medicoConsulta, authServiceClient);
 const cambiarEstadoCitaUseCase = new CambiarEstadoCitaUseCase(citaRepository, medicoConsulta);
 
 // ─── Controlador ────────────────────────────────────────────────────────────
