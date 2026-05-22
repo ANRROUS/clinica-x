@@ -23,9 +23,13 @@ export class ProcesarOcr {
   ) {}
 
   async execute(input: ProcesarOcrInput): Promise<string> {
-    logger.info({ archivoId: input.archivoId, tipo: input.tipoAnalisis }, 'Iniciando procesamiento OCR');
+    logger.info({ archivoId: input.archivoId, keyS3: input.keyS3, tipo: input.tipoAnalisis }, 'Iniciando procesamiento OCR');
 
-    const { buffer, filename } = await this.fileFetcher.download(input.archivoId, input.keyS3 || input.archivoId);
+    if (!input.keyS3) {
+      throw new Error('keyS3 es requerido para descargar el archivo de Supabase Storage');
+    }
+
+    const { buffer, filename } = await this.fileFetcher.download(input.archivoId, input.keyS3);
 
     const maxSize = 1 * 1024 * 1024;
     if (buffer.length > maxSize) {
