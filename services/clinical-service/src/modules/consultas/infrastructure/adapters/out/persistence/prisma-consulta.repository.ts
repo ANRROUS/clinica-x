@@ -176,6 +176,9 @@ export class PrismaConsultaRepository implements IConsultaRepository {
       tipoAnalisis: o.tipoAnalisis,
       especialidad: o.especialidad ?? undefined,
       descripcion: o.descripcion ?? undefined,
+      estado: o.estado ?? undefined,
+      archivoId: o.archivoId ?? undefined,
+      analisisResultadoId: o.analisisResultadoId ?? undefined,
     }));
 
     const medicamentos: MedicamentoValue[] = (registro.medicamentos ?? []).map((m: any) => ({

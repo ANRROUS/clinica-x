@@ -1,7 +1,7 @@
 'use client';
 
 import { useQuery } from '@tanstack/react-query';
-import { Mail, Phone, Pencil } from 'lucide-react';
+import { Mail, Phone } from 'lucide-react';
 import { useDoctorAuthStore } from '@/store/useDoctorAuthStore';
 import { getDoctorPatientDetail } from '@/lib/api/doctor.api';
 
@@ -49,12 +49,10 @@ export default function PatientHeader({ patientId, patientName }: PatientHeaderP
         <div className="flex items-center gap-1.5">
           <Mail className="h-4 w-4 text-gray-400" />
           <span>{patient?.email || '—'}</span>
-          <Pencil className="h-3 w-3 text-gray-300" />
         </div>
         <div className="flex items-center gap-1.5">
           <Phone className="h-4 w-4 text-gray-400" />
           <span>{patient?.telefono || '—'}</span>
-          <Pencil className="h-3 w-3 text-gray-300" />
         </div>
       </div>
     </div>

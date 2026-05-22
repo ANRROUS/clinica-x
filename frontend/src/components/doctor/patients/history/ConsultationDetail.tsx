@@ -1,8 +1,10 @@
 'use client';
 
-import { FileText, FlaskConical, Pill, CheckCircle } from 'lucide-react';
+import { useState } from 'react';
+import { FileText, FlaskConical, Pill, CheckCircle, Eye } from 'lucide-react';
 import type { ConsultaMedicoDTO } from '@/lib/api/types';
 import { parseApiDate, formatLima } from '@clinica-x/date-utils';
+import AnalysisResultViewer from '@/components/patient-profile/AnalysisResultViewer';
 
 interface ConsultationDetailProps {
   consultation: ConsultaMedicoDTO;
@@ -12,6 +14,9 @@ interface ConsultationDetailProps {
 export default function ConsultationDetail({ consultation, onBack }: ConsultationDetailProps) {
   const fecha = parseApiDate(consultation.fechaInicio);
   const dateStr = formatLima(fecha, 'dd/MM/yyyy');
+
+  const [viewingArchivoId, setViewingArchivoId] = useState<string | null>(null);
+  const [viewingTitle, setViewingTitle] = useState('');
 
   return (
     <div className="rounded-xl border border-gray-200 bg-white p-6">
@@ -59,7 +64,19 @@ export default function ConsultationDetail({ consultation, onBack }: Consultatio
                   className="inline-flex items-center gap-1.5 rounded-full border border-brand-300 bg-white px-3 py-1.5 text-sm font-medium text-brand-700"
                 >
                   <CheckCircle className="h-3.5 w-3.5 text-green-500" />
-                  {order.examName}
+                  <span>{order.examName}</span>
+                  {order.estado === 'COMPLETADA' && order.archivoId && (
+                    <button
+                      onClick={() => {
+                        setViewingArchivoId(order.archivoId!);
+                        setViewingTitle(order.examName);
+                      }}
+                      className="ml-1 rounded p-0.5 hover:bg-brand-50 text-brand-600 transition-colors"
+                      title="Ver resultados"
+                    >
+                      <Eye className="h-4 w-4" style={{ color: '#008585' }} />
+                    </button>
+                  )}
                 </span>
               ))}
             </div>
@@ -104,6 +121,17 @@ export default function ConsultationDetail({ consultation, onBack }: Consultatio
           )}
         </div>
       </div>
+
+      {viewingArchivoId && (
+        <AnalysisResultViewer
+          archivoId={viewingArchivoId}
+          title={viewingTitle}
+          onClose={() => {
+            setViewingArchivoId(null);
+            setViewingTitle('');
+          }}
+        />
+      )}
     </div>
   );
 }

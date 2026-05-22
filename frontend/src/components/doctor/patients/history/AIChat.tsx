@@ -1,10 +1,16 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Send, Bot, User, RefreshCw } from 'lucide-react';
+import { useDoctorAuthStore } from '@/store/useDoctorAuthStore';
+import { parseApiDate, formatLima } from '@clinica-x/date-utils';
+import type { ConsultaMedicoDTO } from '@/lib/api/types';
 
 interface AIChatProps {
   patientId: string;
+  patientName: string;
+  lastConsultation: ConsultaMedicoDTO | null;
+  onSelectDateFilter: (dateStr: string, consultationId: string) => void;
 }
 
 interface ChatMessage {
@@ -12,15 +18,37 @@ interface ChatMessage {
   content: string;
 }
 
-const WELCOME_MESSAGE =
-  'Buenos días, Doctor/a. Está consultando el perfil del paciente. ¿En qué puedo ayudarle a revisar hoy?';
+export default function AIChat({
+  patientId,
+  patientName,
+  lastConsultation,
+  onSelectDateFilter,
+}: AIChatProps) {
+  const { user } = useDoctorAuthStore();
+  const doctorLastName = user?.apellido || 'Médico';
 
-export default function AIChat({ patientId }: AIChatProps) {
-  const [messages, setMessages] = useState<ChatMessage[]>([
-    { role: 'assistant', content: WELCOME_MESSAGE },
-  ]);
+  const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (lastConsultation) {
+      const dateStr = formatLima(parseApiDate(lastConsultation.fechaInicio), 'dd/MM/yyyy');
+      setMessages([
+        {
+          role: 'assistant',
+          content: `Hola Dr. ${doctorLastName}, la última consulta realizada por el paciente ${patientName} fue el día ${dateStr}`,
+        },
+      ]);
+    } else {
+      setMessages([
+        {
+          role: 'assistant',
+          content: `Buenos días, Doctor/a. El paciente ${patientName} no tiene consultas anteriores registradas. ¿En qué puedo ayudarle a revisar hoy?`,
+        },
+      ]);
+    }
+  }, [patientId, patientName, lastConsultation, doctorLastName]);
 
   const handleSend = async () => {
     if (!input.trim() || loading) return;
@@ -30,7 +58,6 @@ export default function AIChat({ patientId }: AIChatProps) {
     setInput('');
     setLoading(true);
 
-    // Placeholder: the AI chat endpoint is pending backend implementation
     setTimeout(() => {
       setMessages((prev) => [
         ...prev,
@@ -45,8 +72,43 @@ export default function AIChat({ patientId }: AIChatProps) {
   };
 
   const handleNewChat = () => {
-    setMessages([{ role: 'assistant', content: WELCOME_MESSAGE }]);
+    if (lastConsultation) {
+      const dateStr = formatLima(parseApiDate(lastConsultation.fechaInicio), 'dd/MM/yyyy');
+      setMessages([
+        {
+          role: 'assistant',
+          content: `Hola Dr. ${doctorLastName}, la última consulta realizada por el paciente ${patientName} fue el día ${dateStr}`,
+        },
+      ]);
+    } else {
+      setMessages([
+        {
+          role: 'assistant',
+          content: `Buenos días, Doctor/a. El paciente ${patientName} no tiene consultas anteriores registradas. ¿En qué puedo ayudarle a revisar hoy?`,
+        },
+      ]);
+    }
     setInput('');
+  };
+
+  const renderMessageContent = (msg: ChatMessage, index: number) => {
+    if (index === 0 && lastConsultation) {
+      const fecha = parseApiDate(lastConsultation.fechaInicio);
+      const dateStrDisplay = formatLima(fecha, 'dd/MM/yyyy');
+      const dateStrRaw = formatLima(fecha, 'yyyy-MM-dd');
+      return (
+        <span className="inline-block">
+          Hola Dr. {doctorLastName}, la última consulta realizada por el paciente {patientName} fue el día{' '}
+          <button
+            onClick={() => onSelectDateFilter(dateStrRaw, lastConsultation.id)}
+            className="inline-flex items-center font-semibold text-brand-600 underline hover:text-brand-800 transition-colors mx-1"
+          >
+            {dateStrDisplay}
+          </button>
+        </span>
+      );
+    }
+    return <span>{msg.content}</span>;
   };
 
   return (
@@ -84,11 +146,12 @@ export default function AIChat({ patientId }: AIChatProps) {
                   ? 'bg-gray-200 text-gray-900'
                   : 'bg-brand-50 text-gray-900'
               }`}
+              style={msg.role === 'assistant' ? { backgroundColor: '#f0f9f9' } : undefined}
             >
               {msg.role === 'assistant' && (
                 <Bot className="mt-0.5 h-4 w-4 shrink-0 text-brand-500" />
               )}
-              <span>{msg.content}</span>
+              {renderMessageContent(msg, i)}
               {msg.role === 'user' && (
                 <User className="mt-0.5 h-4 w-4 shrink-0 text-gray-400" />
               )}

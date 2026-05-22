@@ -38,6 +38,13 @@ coverage/
 **/prisma/migrations/dev.db
 **/prisma/migrations/dev.db-journal
 
+# Supabase CLI (estado local, no comitear)
+supabase/.temp/
+
+# Scripts de salida temporal
+scripts/*-out.txt
+scripts/*-err.txt
+
 # Misc
 *.tsbuildinfo
 .eslintcache
@@ -45,4 +52,3 @@ coverage/
 # Package Json
 
 **/src/generated/prisma/
-**/package.json

@@ -10,7 +10,7 @@ export default function MissionSection() {
           <div className="relative flex justify-center lg:justify-start">
             <div className="relative w-full max-w-md overflow-hidden rounded-xl">
               <Image
-                src="/assets/image-frontend.png"
+                src="/assets/clinica_mision.jpg"
                 alt="Médico profesional de Clínica X"
                 width={500}
                 height={400}

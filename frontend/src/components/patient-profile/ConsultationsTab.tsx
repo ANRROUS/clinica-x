@@ -2,10 +2,11 @@
 
 import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { Loader2, FileText, Search, Check } from 'lucide-react';
+import { Loader2, FileText, Search, Check, Eye } from 'lucide-react';
 import { getPatientHistory, getConsultationById } from '@/lib/api/medical.api';
 import type { ConsultaDTO, AnalysisOrderDTO, MedicationDTO } from '@/lib/api/types';
 import { parseLimaDate, getLimaDay, getLimaMonth, getLimaYear } from '@clinica-x/date-utils';
+import AnalysisResultViewer from './AnalysisResultViewer';
 
 const MONTH_NAMES = [
   'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
@@ -20,6 +21,7 @@ function formatDate(iso: string): string {
 export default function ConsultationsTab() {
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [searchDate, setSearchDate] = useState('');
+  const [viewingResult, setViewingResult] = useState<{ archivoId: string; title: string } | null>(null);
 
   const { data: historyData, isLoading: loadingHistory } = useQuery({
     queryKey: ['patient-history'],
@@ -144,9 +146,24 @@ export default function ConsultationsTab() {
                         className="flex items-center gap-2 rounded-full border border-[#008585] bg-white px-4 py-2 text-sm text-gray-800"
                       >
                         <span>{order.examName}</span>
-                        <div className="flex h-5 w-5 items-center justify-center rounded-full bg-[#008585]">
-                          <Check className="h-3 w-3 text-white" />
-                        </div>
+                        {order.estado === 'COMPLETADA' && order.archivoId ? (
+                          <button
+                            onClick={() => {
+                              setViewingResult({
+                                archivoId: order.archivoId!,
+                                title: order.examName,
+                              });
+                            }}
+                            className="ml-1 rounded p-0.5 hover:bg-gray-100 text-[#008585] transition-colors"
+                            title="Ver resultados"
+                          >
+                            <Eye className="h-4 w-4" />
+                          </button>
+                        ) : (
+                          <div className="flex h-5 w-5 items-center justify-center rounded-full bg-[#008585]">
+                            <Check className="h-3 w-3 text-white" />
+                          </div>
+                        )}
                       </div>
                     ))}
                   </div>
@@ -188,6 +205,14 @@ export default function ConsultationsTab() {
           </div>
         ) : null}
       </div>
+
+      {viewingResult && (
+        <AnalysisResultViewer
+          archivoId={viewingResult.archivoId}
+          title={viewingResult.title}
+          onClose={() => setViewingResult(null)}
+        />
+      )}
     </div>
   );
 }

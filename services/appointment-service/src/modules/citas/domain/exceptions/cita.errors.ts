@@ -77,3 +77,12 @@ export class MedicoInactivoError extends ErrorDominio {
     super('El médico seleccionado no está activo');
   }
 }
+
+export class CitaDuplicadaMismoDiaError extends ErrorDominio {
+  readonly codigo = 'CITA_DUPLICADA_MISMO_DIA';
+  readonly httpStatus = 409;
+
+  constructor() {
+    super('Ya tienes una cita programada con este médico el mismo día');
+  }
+}

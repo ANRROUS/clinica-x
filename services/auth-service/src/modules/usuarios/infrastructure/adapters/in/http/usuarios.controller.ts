@@ -17,6 +17,8 @@ import type {
   IObtenerPerfilPort,
   IActualizarPerfilPort,
   IListarUsuariosPorIdsPort,
+  ISolicitarRecuperacionPort,
+  IRestablecerContrasenaPort,
 } from '@/modules/usuarios/domain/ports/in/usuarios.port';
 
 // ─── Schemas de validación Zod para entrada HTTP ────────────────────────────
@@ -44,6 +46,15 @@ const actualizarPerfilSchema = z.object({
   email: z.string().email().optional(),
 });
 
+const solicitarRecuperacionSchema = z.object({
+  email: z.string().email('Correo inválido'),
+});
+
+const restablecerContrasenaSchema = z.object({
+  token: z.string().min(1, 'Token requerido'),
+  nuevaContrasena: z.string().min(8, 'La contraseña debe tener al menos 8 caracteres'),
+});
+
 export class UsuariosController {
   constructor(
     private readonly crearUsuario: ICrearUsuarioPort,
@@ -51,6 +62,8 @@ export class UsuariosController {
     private readonly obtenerPerfil: IObtenerPerfilPort,
     private readonly actualizarPerfil: IActualizarPerfilPort,
     private readonly listarUsuariosPorIds: IListarUsuariosPorIdsPort,
+    private readonly solicitarRecuperacion: ISolicitarRecuperacionPort,
+    private readonly restablecerContrasena: IRestablecerContrasenaPort,
   ) {}
 
   // ─── POST /api/auth/register ──────────────────────────────────────────────
@@ -228,5 +241,69 @@ export class UsuariosController {
     }
 
     res.status(200).json({ success: true, data: { usuarios: resultado.value } });
+  };
+
+  // ─── POST /api/auth/forgot-password ──────────────────────────────────────
+  forgotPassword = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    try {
+      const dto = solicitarRecuperacionSchema.parse(req.body);
+      const resultado = await this.solicitarRecuperacion.execute(dto.email);
+
+      if (resultado.isErr) {
+        res.status(400).json({
+          success: false,
+          error: { codigo: 'ERROR', mensaje: resultado.error.message },
+        });
+        return;
+      }
+
+      res.status(200).json({ success: true, data: resultado.value });
+    } catch (err) {
+      if (err instanceof ZodError) {
+        res.status(400).json({
+          success: false,
+          error: {
+            codigo: 'VALIDACION',
+            mensaje: 'Datos inválidos',
+            detalles: err.errors.map((e) => ({ campo: e.path.join('.'), mensaje: e.message })),
+          },
+        });
+        return;
+      }
+      next(err);
+    }
+  };
+
+  // ─── POST /api/auth/reset-password ───────────────────────────────────────
+  resetPassword = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    try {
+      const dto = restablecerContrasenaSchema.parse(req.body);
+      const resultado = await this.restablecerContrasena.execute(dto.token, dto.nuevaContrasena);
+
+      if (resultado.isErr) {
+        const err = resultado.error as any;
+        const status = err.httpStatus || 400;
+        res.status(status).json({
+          success: false,
+          error: { codigo: err.codigo || 'ERROR', mensaje: resultado.error.message },
+        });
+        return;
+      }
+
+      res.status(200).json({ success: true, data: resultado.value });
+    } catch (err) {
+      if (err instanceof ZodError) {
+        res.status(400).json({
+          success: false,
+          error: {
+            codigo: 'VALIDACION',
+            mensaje: 'Datos inválidos',
+            detalles: err.errors.map((e) => ({ campo: e.path.join('.'), mensaje: e.message })),
+          },
+        });
+        return;
+      }
+      next(err);
+    }
   };
 }

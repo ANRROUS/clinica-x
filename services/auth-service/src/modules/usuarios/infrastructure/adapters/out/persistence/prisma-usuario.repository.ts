@@ -74,6 +74,37 @@ export class PrismaUsuarioRepository implements IUsuarioRepository {
     });
   }
 
+  async buscarPorResetToken(resetToken: string): Promise<Usuario | null> {
+    const raw = await prisma.usuario.findFirst({
+      where: {
+        resetToken,
+        resetTokenExpira: { gt: new Date() },
+      },
+    });
+    return raw ? this.toDomain(raw) : null;
+  }
+
+  async guardarResetToken(usuarioId: string, resetToken: string, resetTokenExpira: Date): Promise<void> {
+    await prisma.usuario.update({
+      where: { id: usuarioId },
+      data: {
+        resetToken,
+        resetTokenExpira,
+      },
+    });
+  }
+
+  async actualizarContrasenaYLimpiarToken(usuarioId: string, nuevoHash: string): Promise<void> {
+    await prisma.usuario.update({
+      where: { id: usuarioId },
+      data: {
+        passwordHash: nuevoHash,
+        resetToken: null,
+        resetTokenExpira: null,
+      },
+    });
+  }
+
   private toDomain(raw: any): Usuario {
     const dniResult = Dni.create(raw.dni);
     const emailResult = Email.create(raw.email);

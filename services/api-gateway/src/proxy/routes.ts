@@ -45,6 +45,12 @@ export const rutasProxy: RutaProxy[] = [
     upstream: env.FILE_SERVICE_URL,
     servicio: 'file-service',
   },
+  // --- ocr-service ---
+  {
+    prefijo: '/api/ocr',
+    upstream: env.OCR_SERVICE_URL,
+    servicio: 'ocr-service',
+  },
 ];
 
 /**

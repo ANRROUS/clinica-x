@@ -36,3 +36,16 @@ export async function updateMe(data: {
   const res = await api.put('/api/auth/me', data);
   return res.data;
 }
+
+export async function forgotPassword(email: string): Promise<ApiResponse<{ message: string }>> {
+  const res = await api.post('/api/auth/forgot-password', { email });
+  return res.data;
+}
+
+export async function resetPassword(
+  token: string,
+  nuevaContrasena: string,
+): Promise<ApiResponse<{ message: string }>> {
+  const res = await api.post('/api/auth/reset-password', { token, nuevaContrasena });
+  return res.data;
+}

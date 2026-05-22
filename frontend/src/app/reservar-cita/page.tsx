@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
-import { Sparkles, Loader2, ChevronDown } from 'lucide-react';
+import { Sparkles, Loader2, ChevronDown, AlertCircle } from 'lucide-react';
 import Header from '@/components/shared/Header';
 import Footer from '@/components/shared/Footer';
 import SpecialtySidebar from '@/components/booking/SpecialtySidebar';
@@ -14,19 +14,21 @@ import SlotSelector from '@/components/booking/SlotSelector';
 import ConfirmBookingModal from '@/components/booking/ConfirmBookingModal';
 import { useAuthStore } from '@/store/useAuthStore';
 import { useBookingStore } from '@/store/useBookingStore';
-import { buildLimaDate, toISOLima } from '@clinica-x/date-utils';
+import { buildLimaDate, toISOLima, formatLima } from '@clinica-x/date-utils';
 import {
   getSpecialties,
   getAvailabilityBySpecialty,
   getAvailabilityByDoctor,
   bookManual,
   bookAutomatic,
+  getPatientAppointments,
 } from '@/lib/api/appointments.api';
 import type {
   EspecialidadDTO,
   DisponibilidadDoctorDTO,
   SlotDTO,
   DiaDisponibilidadDTO,
+  CitaDTO,
 } from '@/lib/api/types';
 
 export default function ReservarCitaPage() {
@@ -102,12 +104,35 @@ export default function ReservarCitaPage() {
 
   const { data: doctorSlotsData, isLoading: loadingSlots } = useQuery({
     queryKey: ['availability-doctor', selectedDoctor?.doctorId, selectedDate],
-    queryFn: () =>
-      getAvailabilityByDoctor(selectedDoctor!.doctorId, selectedDate!),
+    queryFn: () => getAvailabilityByDoctor(selectedDoctor!.doctorId, selectedDate!),
     enabled: !!selectedDoctor && !!selectedDate,
   });
 
   const daySlots: SlotDTO[] = doctorSlotsData?.data ?? [];
+
+  // Obtener citas existentes del paciente para validación
+  const { data: patientAppointmentsData } = useQuery({
+    queryKey: ['patient-appointments'],
+    queryFn: getPatientAppointments,
+    enabled: isAuthenticated,
+  });
+
+  const patientAppointments: CitaDTO[] = patientAppointmentsData?.data ?? [];
+
+  // Verificar si ya existe una cita el mismo día con el mismo médico
+  const hasDuplicateAppointment = (): boolean => {
+    if (!selectedDoctor || !selectedDate) return false;
+
+    return patientAppointments.some((cita) => {
+      if (cita.estado === 'CANCELADA') return false;
+      if (cita.medicoId !== selectedDoctor.doctorId) return false;
+
+      const citaDate = formatLima(new Date(cita.fechaHora), 'yyyy-MM-dd');
+      return citaDate === selectedDate;
+    });
+  };
+
+  const isDuplicate = hasDuplicateAppointment();
 
   const handleSpecialtySelect = (id: string, name: string) => {
     setSpecialty(id, name);
@@ -145,7 +170,10 @@ export default function ReservarCitaPage() {
     setBookingLoading(true);
     try {
       const [hours, minutes] = selectedSlot.horaInicio.split(':').map(Number);
-      const d = buildLimaDate(selectedDate, `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:00`);
+      const d = buildLimaDate(
+        selectedDate,
+        `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:00`,
+      );
       const fechaHora = toISOLima(d);
       const res = await bookManual({
         medicoId: selectedDoctor.doctorId,
@@ -168,7 +196,7 @@ export default function ReservarCitaPage() {
     }
   };
 
-  const canConfirmManual = !!selectedDoctor && !!selectedDate && !!selectedSlot;
+  const canConfirmManual = !!selectedDoctor && !!selectedDate && !!selectedSlot && !isDuplicate;
 
   if (!mounted || !isAuthenticated) {
     return (
@@ -250,7 +278,9 @@ export default function ReservarCitaPage() {
 
                     {/* Selector de doctor */}
                     <div>
-                      <h3 className="mb-3 text-sm font-semibold text-gray-800">Elige al especialista:</h3>
+                      <h3 className="mb-3 text-sm font-semibold text-gray-800">
+                        Elige al especialista:
+                      </h3>
                       <DoctorSelector
                         doctors={doctors}
                         selectedId={selectedDoctor?.doctorId ?? null}
@@ -263,7 +293,9 @@ export default function ReservarCitaPage() {
                       <div className="space-y-6">
                         {/* Selector de día */}
                         <div>
-                          <h3 className="mb-3 text-sm font-semibold text-gray-800">Elige el Día:</h3>
+                          <h3 className="mb-3 text-sm font-semibold text-gray-800">
+                            Elige el Día:
+                          </h3>
                           <DaySelector
                             days={selectedDoctorDays}
                             selectedDate={selectedDate}
@@ -274,7 +306,9 @@ export default function ReservarCitaPage() {
                         {/* Selector de hora */}
                         {selectedDate && (
                           <div>
-                            <h3 className="mb-3 text-sm font-semibold text-gray-800">Elige la Hora:</h3>
+                            <h3 className="mb-3 text-sm font-semibold text-gray-800">
+                              Elige la Hora:
+                            </h3>
                             <SlotSelector
                               slots={daySlots}
                               selectedSlot={selectedSlot}
@@ -284,8 +318,25 @@ export default function ReservarCitaPage() {
                           </div>
                         )}
 
+                        {/* Advertencia de cita duplicada */}
+                        {selectedSlot && isDuplicate && (
+                          <div className="flex items-start gap-3 rounded-lg border border-amber-300 bg-amber-50 p-4">
+                            <AlertCircle className="h-5 w-5 shrink-0 text-amber-600 mt-0.5" />
+                            <div className="flex-1">
+                              <h4 className="text-sm font-semibold text-amber-900">
+                                Ya tienes una cita programada
+                              </h4>
+                                <p className="mt-1 text-sm text-amber-800">
+                                Ya cuentas con una cita el mismo día con{' '}
+                                {selectedDoctor?.doctorName}. No puedes reservar más de una cita
+                                por día con el mismo médico.
+                              </p>
+                            </div>
+                          </div>
+                        )}
+
                         {/* Botón confirmar */}
-                        {canConfirmManual && (
+                        {selectedSlot && !isDuplicate && (
                           <div className="flex justify-end pt-2">
                             <button
                               onClick={() => setModalOpen(true)}

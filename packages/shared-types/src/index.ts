@@ -11,3 +11,4 @@ export * from './roles';
 export * from './api-response';
 export * from './usuario';
 export * from './estados';
+export * from './ocr';

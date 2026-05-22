@@ -46,15 +46,64 @@ export interface CitaDTO {
 }
 
 export interface AnalysisOrderDTO {
-  id?: string;
+  id: string;
   examName: string;
   specialty?: string;
+  estado: 'PENDIENTE' | 'COMPLETADA';
+  archivoId?: string | null;
+  analisisResultadoId?: string | null;
+}
+
+export interface AnalisisItemDTO {
+  id: string;
+  nombre: string;
+  valor: string;
+  unidad?: string;
+  rangoMin?: string;
+  rangoMax?: string;
+  rangoReferencia?: string;
+  estado?: string;
+  nota?: string;
+  orden: number;
+}
+
+export interface AnalisisGrupoDTO {
+  id: string;
+  nombreGrupo: string;
+  orden: number;
+  items: AnalisisItemDTO[];
+}
+
+export interface AnalisisResultadoDTO {
+  id: string;
+  ordenAnalisisId?: string;
+  pacienteId: string;
+  archivoId: string;
+  consultaId?: string;
+  tipoAnalisis: 'SANGRE' | 'ORINA' | 'HECES';
+  resultadoIdOriginal?: string;
+  laboratorio?: string;
+  medicoSolicitante?: string;
+  fechaToma?: string;
+  horaToma?: string;
+  fechaResultado?: string;
+  datosMuestra?: Record<string, unknown>;
+  pacienteNombreOcr?: string;
+  pacienteIdOcr?: string;
+  pacienteSexo?: string;
+  pacienteEdad?: number;
+  estadoOcr: 'PROCESANDO' | 'COMPLETADO' | 'ERROR';
+  errorOcr?: string;
+  grupos: AnalisisGrupoDTO[];
+  creadoEn: string;
 }
 
 export interface MedicationDTO {
   name: string;
   days: number;
   frequency: string;
+  fechaInicio?: string;
+  fechaFin?: string;
 }
 
 export interface ConsultaDTO {
@@ -68,6 +117,8 @@ export interface ConsultaDTO {
   notas?: string | null;
   fechaInicio: string;
   fechaFin?: string | null;
+  medicoNombre?: string;
+  medicoApellido?: string;
   analysisOrders?: AnalysisOrderDTO[];
   medications?: MedicationDTO[];
 }
@@ -94,8 +145,6 @@ export interface ConsultaMedicoDTO extends ConsultaDTO {
   pacienteDni?: string;
   pacienteEmail?: string;
   pacienteTelefono?: string;
-  analysisOrders?: { examName: string; specialty?: string }[];
-  medications?: { name: string; days: number; frequency: string }[];
 }
 
 export interface PatientSummaryDTO {

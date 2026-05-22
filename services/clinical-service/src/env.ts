@@ -20,6 +20,8 @@ const envSchema = z.object({
   AUTH_SERVICE_URL: z.string().url().default('http://localhost:3000'),
   APPOINTMENT_SERVICE_URL: z.string().url().default('http://localhost:3001'),
   FILE_SERVICE_URL: z.string().url().default('http://localhost:3003'),
+  OCR_SERVICE_URL: z.string().url().default('http://localhost:3004'),
+  INTERNAL_API_KEY: z.string().default('internal-dev-key-change-in-prod'),
   NODE_ENV: z.enum(['development', 'production', 'test']).default('development'),
 });
 
