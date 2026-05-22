@@ -13,7 +13,8 @@ COPY services/api-gateway ./services/api-gateway
 
 RUN pnpm install --frozen-lockfile --filter api-gateway... || pnpm install --filter api-gateway...
 
-RUN pnpm --filter @clinica-x/shared-types build \
+RUN pnpm --filter @clinica-x/date-utils build \
+ && pnpm --filter @clinica-x/shared-types build \
  && pnpm --filter @clinica-x/shared-kernel build \
  && pnpm --filter @clinica-x/shared-middleware build \
  && pnpm --filter api-gateway build

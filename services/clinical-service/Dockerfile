@@ -15,13 +15,16 @@ RUN pnpm install --frozen-lockfile --filter clinical-service... || pnpm install 
 
 RUN cd services/clinical-service && pnpm prisma generate
 
-RUN pnpm --filter @clinica-x/shared-kernel build \
+RUN pnpm --filter @clinica-x/date-utils build \
+ && pnpm --filter @clinica-x/shared-kernel build \
  && pnpm --filter @clinica-x/shared-types build \
  && pnpm --filter @clinica-x/shared-middleware build \
  && pnpm --filter clinical-service build
 
 FROM node:20-alpine AS runtime
 WORKDIR /app
+
+RUN apk add --no-cache libc6-compat openssl
 
 RUN corepack enable && corepack prepare pnpm@8.15.0 --activate
 

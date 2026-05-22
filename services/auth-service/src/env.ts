@@ -13,12 +13,15 @@ const envSchema = z.object({
   DIRECT_URL: z.string().url(),
   JWT_SECRET: z.string().min(8, 'JWT_SECRET debe tener al menos 8 caracteres'),
   JWT_EXPIRES_IN: z.string().default('1d'),
-  NODE_ENV: z.enum(['development', 'production', 'test']).default('development'),
+  NODE_ENV: z.enum(['development', 'production', 'test']).default('production'),
   INTERNAL_API_KEY: z.string().min(8).default('internal-dev-key-change-in-prod'),
   SUPABASE_EDGE_FUNCTION_URL: z.string().url().default('http://localhost:54321/functions/v1'),
   SUPABASE_SERVICE_ROLE_KEY: z.string().min(1, 'SUPABASE_SERVICE_ROLE_KEY es requerida'),
   INTERNAL_EMAIL_SECRET: z.string().min(8, 'INTERNAL_EMAIL_SECRET debe tener al menos 8 caracteres'),
-  FRONTEND_URL: z.string().url().default('http://localhost:3100'),
+  FRONTEND_URL: z.string()
+    .transform((val) => val.replace(/\/+$/, ''))
+    .pipe(z.string().url())
+    .default('http://localhost:3100'),
 });
 
 const parsed = envSchema.safeParse(process.env);
