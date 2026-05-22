@@ -30,7 +30,7 @@ export default function TestOcrPage() {
 
   const uploadMutation = useMutation({
     mutationFn: async (file: File) => {
-      const res = await uploadFile(file);
+      const res = await uploadFile(file, 'ocr-service', PACIENTE_TEST_ID);
       if (!res.success || !res.data?.id) throw new Error('No se pudo subir el archivo');
       return res.data.id as string;
     },

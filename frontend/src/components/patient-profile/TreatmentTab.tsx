@@ -4,6 +4,7 @@ import { useRef, useState, useCallback } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { Loader2, FileText, Upload, FlaskConical, Pill, CheckCircle, Eye } from 'lucide-react';
 import { toast } from 'sonner';
+import { useAuthStore } from '@/store/useAuthStore';
 import { getPatientHistory, uploadFile, uploadAnalysisResult, getOcrStatus } from '@/lib/api/medical.api';
 import type { ConsultaDTO, AnalysisOrderDTO, MedicationDTO } from '@/lib/api/types';
 import { parseApiDate, formatLima, nowLima } from '@clinica-x/date-utils';
@@ -18,6 +19,7 @@ interface FlatAnalysisOrder {
 
 export default function TreatmentTab() {
   const queryClient = useQueryClient();
+  const { user } = useAuthStore();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [selectedOrder, setSelectedOrder] = useState<AnalysisOrderDTO | null>(null);
   const [uploadingId, setUploadingId] = useState<string | null>(null);
@@ -91,7 +93,12 @@ export default function TreatmentTab() {
     setUploadingId(selectedOrder.id);
 
     try {
-      const uploadRes = await uploadFile(file);
+      if (!user?.id) {
+        toast.error('Sesión no válida. Inicia sesión de nuevo.');
+        setUploadingId(null);
+        return;
+      }
+      const uploadRes = await uploadFile(file, 'clinical-service', user.id);
       if (!uploadRes.success || !uploadRes.data?.id) {
         toast.error('Error al subir el archivo');
         setUploadingId(null);
