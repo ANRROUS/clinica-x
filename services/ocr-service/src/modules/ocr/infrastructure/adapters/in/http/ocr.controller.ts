@@ -149,9 +149,23 @@ export class OcrController {
           estadoOcr: 'COMPLETADO',
         },
       });
-    } catch (error) {
-      logger.error({ error }, 'Error en procesar OCR admin');
-      next(error);
+    } catch (error: any) {
+      logger.error({ error: error.message, stack: error.stack }, 'Error en procesar OCR admin');
+
+      const mensaje = error.message || 'Error inesperado procesando OCR';
+      const status = error.message?.includes('timeout') ? 504
+        : error.message?.includes('API key') ? 502
+        : error.message?.includes('rate limit') ? 429
+        : error.message?.includes('excede el límite') ? 413
+        : 500;
+
+      res.status(status).json({
+        success: false,
+        error: {
+          codigo: 'OCR_ERROR',
+          mensaje,
+        },
+      });
     }
   };
 
