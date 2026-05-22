@@ -51,16 +51,25 @@ app.use(errorHandler);
 async function ensureTestUser(): Promise<void> {
   try {
     const testDni = '99999999';
+    const testId = '702dc3eb-d2cc-442d-b764-4e9f91095182';
     const existente = await prisma.usuario.findUnique({ where: { dni: testDni } });
     if (existente) {
-      logger.info('Usuario test OCR ya existe (DNI 99999999)');
+      if (existente.id !== testId) {
+        await prisma.usuario.update({
+          where: { dni: testDni },
+          data: { id: testId },
+        });
+        logger.info('Usuario test OCR actualizado a UUID válido');
+      } else {
+        logger.info('Usuario test OCR ya existe (DNI 99999999)');
+      }
       return;
     }
 
     const passwordHash = await bcrypt.hash('Andres123Clinica', 10);
     await prisma.usuario.create({
       data: {
-        id: 'test-ocr-001',
+        id: '702dc3eb-d2cc-442d-b764-4e9f91095182',
         dni: testDni,
         email: 'andres.salesland@gmail.com',
         passwordHash,

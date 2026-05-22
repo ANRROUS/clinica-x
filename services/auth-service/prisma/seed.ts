@@ -55,6 +55,7 @@ async function main() {
   const testDni = '99999999';
   const testEmail = 'andres.salesland@gmail.com';
   const testPassword = 'Andres123Clinica';
+  const testId = '702dc3eb-d2cc-442d-b764-4e9f91095182';
 
   const testExistente = await prisma.usuario.findUnique({
     where: { dni: testDni },
@@ -65,7 +66,7 @@ async function main() {
 
     await prisma.usuario.create({
       data: {
-        id: 'test-ocr-001',
+        id: testId,
         dni: testDni,
         email: testEmail,
         passwordHash: testPasswordHash,
@@ -80,6 +81,12 @@ async function main() {
     console.log(`   DNI: ${testDni}`);
     console.log(`   Email: ${testEmail}`);
     console.log(`   Password: ${testPassword}`);
+  } else if (testExistente.id !== testId) {
+    await prisma.usuario.update({
+      where: { dni: testDni },
+      data: { id: testId },
+    });
+    console.log('✅ Usuario TEST OCR actualizado a UUID válido');
   } else {
     console.log('⚠️ Usuario TEST OCR ya existe. Seed omitido.');
   }
