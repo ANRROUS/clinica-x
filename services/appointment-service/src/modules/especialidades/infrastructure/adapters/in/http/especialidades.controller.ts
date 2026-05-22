@@ -1,5 +1,6 @@
 import type { Request, Response, NextFunction } from 'express';
 import { ZodError, z } from 'zod';
+import { createLayerLogger, getTraceFromRequest } from '@/shared/layer-logger';
 import type {
   IListarEspecialidadesPort,
   ICrearEspecialidadPort,
@@ -41,13 +42,19 @@ export class EspecialidadesController {
   };
 
   crear = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    const log = createLayerLogger('appointment-service', getTraceFromRequest(req), 'especialidades', 'crear-especialidad');
     try {
+      log.info('controller', 'Request de creación de especialidad recibido');
+
       const dto = crearEspecialidadSchema.parse(req.body);
+      log.debug('application', 'DTO de especialidad validado', { input: { nombre: dto.nombre } });
+
       const resultado = await this.crearEspecialidad.execute(dto);
 
       if (resultado.isErr) {
         const err = resultado.error as any;
         const status = err.httpStatus || 400;
+        log.warn('controller', 'Error al crear especialidad', { error: { message: err.message, httpStatus: status } });
         res.status(status).json({
           success: false,
           error: { codigo: err.codigo || 'ERROR', mensaje: err.message },
@@ -55,9 +62,11 @@ export class EspecialidadesController {
         return;
       }
 
+      log.info('controller', 'Especialidad creada exitosamente', { output: { especialidadId: resultado.value?.id } });
       res.status(201).json({ success: true, data: resultado.value });
     } catch (err) {
       if (err instanceof ZodError) {
+        log.warn('controller', 'Error de validación Zod');
         res.status(400).json({
           success: false,
           error: {
@@ -68,6 +77,7 @@ export class EspecialidadesController {
         });
         return;
       }
+      log.error('controller', 'Error inesperado al crear especialidad', err as Error);
       next(err);
     }
   };

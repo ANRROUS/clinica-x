@@ -20,7 +20,7 @@ import cors from 'cors';
 import helmet from 'helmet';
 import rateLimit from 'express-rate-limit';
 import { createProxyMiddleware } from 'http-proxy-middleware';
-import { jwtMiddleware, requestIdMiddleware } from '@clinica-x/shared-middleware';
+import { jwtMiddleware, requestIdMiddleware, requestLogger } from '@clinica-x/shared-middleware';
 import { env } from './env';
 import { logger } from './logger';
 import { rutasProxy, rutasPublicas } from './proxy/routes';
@@ -44,6 +44,7 @@ app.use(
 );
 
 app.use(requestIdMiddleware());
+app.use(requestLogger(logger, 'api-gateway'));
 
 // ─── Rate limit global ──────────────────────────────────────────────────────
 app.use(

@@ -14,3 +14,5 @@ export * from './result';
 export * from './error-dominio';
 export * from './entidad-base';
 export * from './value-object-base';
+export * from './log-context';
+export * from './mask-sensitive';

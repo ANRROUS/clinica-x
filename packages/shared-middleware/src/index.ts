@@ -10,4 +10,5 @@ export * from './jwt-middleware';
 export * from './require-role';
 export * from './error-handler';
 export * from './request-id';
+export * from './request-logger';
 export * from './types';
