@@ -16,8 +16,9 @@ import helmet from 'helmet';
 import { requestIdMiddleware, errorHandler } from '@clinica-x/shared-middleware';
 import { env } from './env';
 import { logger } from './shared/logger';
-import { disconnectPrisma } from './shared/prisma-client';
+import { disconnectPrisma, prisma } from './shared/prisma-client';
 import { nowLima } from '@clinica-x/date-utils';
+import bcrypt from 'bcryptjs';
 
 const app = express();
 
@@ -46,20 +47,53 @@ app.use('/api/auth', usuariosRouter);
 // ─── Manejador global de errores (al final) ─────────────────────────────────
 app.use(errorHandler);
 
+// ─── Seed automático de usuario test OCR ────────────────────────────────────
+async function ensureTestUser(): Promise<void> {
+  try {
+    const testDni = '99999999';
+    const existente = await prisma.usuario.findUnique({ where: { dni: testDni } });
+    if (existente) {
+      logger.info('Usuario test OCR ya existe (DNI 99999999)');
+      return;
+    }
+
+    const passwordHash = await bcrypt.hash('Andres123Clinica', 10);
+    await prisma.usuario.create({
+      data: {
+        id: 'test-ocr-001',
+        dni: testDni,
+        email: 'andres.salesland@gmail.com',
+        passwordHash,
+        nombre: 'Test',
+        apellido: 'OCR',
+        telefono: null,
+        rol: 'PACIENTE',
+      },
+    });
+    logger.info('✅ Usuario test OCR creado automáticamente (DNI 99999999)');
+  } catch (err) {
+    logger.error({ err }, 'Error creando usuario test OCR');
+  }
+}
+
 // ─── Arranque ───────────────────────────────────────────────────────────────
-const server = app.listen(env.PORT, () => {
-  logger.info(`🔐 auth-service escuchando en http://localhost:${env.PORT}`);
-});
+(async function bootstrap() {
+  await ensureTestUser();
 
-// ─── Apagado limpio ─────────────────────────────────────────────────────────
-const shutdown = async (signal: string): Promise<void> => {
-  logger.info(`${signal} recibido, cerrando auth-service...`);
-  server.close(async () => {
-    await disconnectPrisma();
-    logger.info('auth-service cerrado correctamente');
-    process.exit(0);
+  const server = app.listen(env.PORT, () => {
+    logger.info(`🔐 auth-service escuchando en http://localhost:${env.PORT}`);
   });
-};
 
-process.on('SIGTERM', () => void shutdown('SIGTERM'));
-process.on('SIGINT', () => void shutdown('SIGINT'));
+  // ─── Apagado limpio ─────────────────────────────────────────────────────────
+  const shutdown = async (signal: string): Promise<void> => {
+    logger.info(`${signal} recibido, cerrando auth-service...`);
+    server.close(async () => {
+      await disconnectPrisma();
+      logger.info('auth-service cerrado correctamente');
+      process.exit(0);
+    });
+  };
+
+  process.on('SIGTERM', () => void shutdown('SIGTERM'));
+  process.on('SIGINT', () => void shutdown('SIGINT'));
+})();

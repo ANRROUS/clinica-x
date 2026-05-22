@@ -8,6 +8,7 @@ import { useAdminAuthStore } from '@/store/useAdminAuthStore';
 const navItems = [
   { href: '/admin/dashboard', label: 'Dashboard' },
   { href: '/admin/doctors/new', label: 'Nuevo Doctor' },
+  { href: '/admin/test-ocr', label: 'Test OCR' },
 ];
 
 export default function AdminHeader() {
@@ -36,9 +37,10 @@ export default function AdminHeader() {
         {/* Nav */}
         <nav className="flex items-center gap-10">
           {navItems.map(({ href, label }) => {
-            const isActive = href === '/admin/dashboard'
-              ? pathname === '/admin/dashboard'
-              : pathname.startsWith('/admin/doctors');
+            const isActive =
+              href === '/admin/dashboard'
+                ? pathname === '/admin/dashboard'
+                : pathname.startsWith(href);
             return (
               <Link
                 key={href}
