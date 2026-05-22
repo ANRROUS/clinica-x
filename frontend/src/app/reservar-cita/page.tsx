@@ -328,7 +328,7 @@ export default function ReservarCitaPage() {
                               </h4>
                               <p className="mt-1 text-sm text-amber-800">
                                 Ya cuentas con una cita el mismo día con{' '}
-                                {selectedDoctor?.doctorNombre}. No puedes reservar más de una cita
+                                {selectedDoctor?.doctorName}. No puedes reservar más de una cita
                                 por día con el mismo médico.
                               </p>
                             </div>

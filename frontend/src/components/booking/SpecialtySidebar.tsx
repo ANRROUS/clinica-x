@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { Search } from 'lucide-react';
 import type { EspecialidadDTO } from '@/lib/api/types';
 
@@ -10,16 +10,58 @@ interface Props {
   onSelect: (id: string, name: string) => void;
 }
 
+const VISIBLE_SPECIALTIES = [
+  { target: 'medicina general - integrador', label: 'Medicina General' },
+  { target: 'cardiologia', label: 'Cardiologia' },
+  { target: 'pediatria', label: 'Pediatria' },
+  { target: 'dermatologia', label: 'Dermatologia' },
+  { target: 'neurologia', label: 'Neurologia' },
+  { target: 'traumatologia', label: 'Traumatologia' },
+] as const;
+
+function normalizeText(value: string): string {
+  return value
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .trim();
+}
+
 export default function SpecialtySidebar({ specialties, selectedId, onSelect }: Props) {
   const [search, setSearch] = useState('');
 
-  const filtered = specialties.filter((s) =>
-    s.nombre.toLowerCase().includes(search.toLowerCase()),
+  const orderedSpecialties = useMemo(() => {
+    const normalized = specialties.map((specialty) => ({
+      ...specialty,
+      normalizedName: normalizeText(specialty.nombre),
+    }));
+
+    return VISIBLE_SPECIALTIES.flatMap((item) => {
+      const match = normalized.find(
+        (specialty) =>
+          specialty.normalizedName === item.target ||
+          specialty.normalizedName.includes(item.target),
+      );
+
+      return match
+        ? [
+            {
+              id: match.id,
+              nombre: item.label,
+            },
+          ]
+        : [];
+    }).sort((a, b) => a.nombre.localeCompare(b.nombre, 'es', { sensitivity: 'base' }));
+  }, [specialties]);
+
+  const filtered = orderedSpecialties.filter((s) =>
+    normalizeText(s.nombre).includes(normalizeText(search)),
   );
 
   return (
     <div className="flex h-full w-full flex-col">
       <h3 className="mb-4 text-base font-bold text-gray-900">Especialidad:</h3>
+
       <div className="relative mb-4">
         <input
           type="text"
@@ -30,14 +72,17 @@ export default function SpecialtySidebar({ specialties, selectedId, onSelect }: 
         />
         <Search className="absolute right-2 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
       </div>
+
       <div className="flex-1 space-y-2 overflow-y-auto">
         {filtered.length === 0 && (
           <p className="py-4 text-center text-sm text-gray-500">
             No se encontraron especialidades
           </p>
         )}
+
         {filtered.map((s) => {
           const isSelected = selectedId === s.id;
+
           return (
             <button
               key={s.id}
