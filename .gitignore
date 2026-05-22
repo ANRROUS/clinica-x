@@ -48,6 +48,7 @@ scripts/*-err.txt
 # Misc
 *.tsbuildinfo
 .eslintcache
+/docs
 
 # Package Json
 

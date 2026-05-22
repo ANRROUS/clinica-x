@@ -3,7 +3,6 @@ node_modules
 **/dist
 **/.next
 **/build
-**/out
 **/coverage
 .git
 .gitignore
