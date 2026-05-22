@@ -1,0 +1,18 @@
+# =============================================================================
+# railway.yaml — Configuración de proyecto para Railway (opcional)
+# =============================================================================
+# Este archivo configura el proyecto a nivel general.
+# Cada servicio tiene su propio railway.json para configuración específica.
+# =============================================================================
+
+build:
+  # Usar Docker para todos los servicios
+  builder: DOCKERFILE
+
+deploy:
+  # Healthcheck por defecto
+  healthcheckPath: /health
+  
+  # Política de reinicio
+  restartPolicyType: ON_FAILURE
+  restartPolicyMaxRetries: 10
