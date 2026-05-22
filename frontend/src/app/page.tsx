@@ -1,3 +1,6 @@
+"use client";
+
+import { useEffect } from 'react';
 import Header from '@/components/shared/Header';
 import Footer from '@/components/shared/Footer';
 import HeroSection from '@/components/landing/HeroSection';
@@ -6,6 +9,17 @@ import SpecialtiesSection from '@/components/landing/SpecialtiesSection';
 import ContactForm from '@/components/landing/ContactForm';
 
 export default function HomePage() {
+  useEffect(() => {
+    if (sessionStorage.getItem('scrollToSpecialties') !== '1') {
+      return;
+    }
+
+    sessionStorage.removeItem('scrollToSpecialties');
+
+    const target = document.getElementById('especialidades');
+    target?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }, []);
+
   return (
     <div className="flex min-h-screen flex-col">
       <Header />

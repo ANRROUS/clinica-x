@@ -25,7 +25,7 @@ function Popup({
       <div className="absolute inset-0 bg-black/60" />
       {/* Modal */}
       <div
-        className="relative z-10 w-full max-w-2xl rounded-2xl bg-[#001a3d] p-8 text-white shadow-2xl md:p-10"
+        className="relative z-10 w-full max-w-2xl rounded-md bg-[#343434] p-8 text-white shadow-2xl md:p-10"
         onClick={(e) => e.stopPropagation()}
       >
         <button
