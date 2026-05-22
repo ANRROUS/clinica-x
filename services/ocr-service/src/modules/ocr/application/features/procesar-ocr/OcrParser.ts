@@ -220,19 +220,35 @@ export class OcrParser {
     return grupos;
   }
 
-  private parseTable(lines: OcrSpaceLine[], tipo: TipoAnalisis): ParsedItem[] {
+  private parseTable(lines: OcrSpaceLine[], _tipo: TipoAnalisis): ParsedItem[] {
+    console.log(`[OcrParser] parseTable: ${lines.length} líneas recibidas`);
+
     const columns = this.detectColumns(lines);
-    if (columns.length === 0) return [];
+    console.log(`[OcrParser] detectColumns: ${columns.length} columnas → [${columns.map(c => c.name).join(', ')}]`);
+
+    if (columns.length === 0) {
+      console.log('[OcrParser] No se detectaron columnas, intentando fallback regex');
+      return this.parseTableByRegex(lines);
+    }
 
     const headerTop = this.findHeaderTop(lines, columns);
-    if (headerTop == null) return [];
+    console.log(`[OcrParser] findHeaderTop: ${headerTop}`);
+
+    if (headerTop == null) {
+      console.log('[OcrParser] No se encontró headerTop, intentando fallback regex');
+      return this.parseTableByRegex(lines);
+    }
 
     const dataLines = lines.filter(l => Math.abs(l.MinTop - headerTop) > 2 && !l.LineText.startsWith('grupo:'));
+    console.log(`[OcrParser] dataLines: ${dataLines.length} líneas después de filtrar header`);
+
     const rows = this.groupByTop(dataLines);
+    console.log(`[OcrParser] groupByTop: ${rows.size} filas agrupadas`);
+
     const items: ParsedItem[] = [];
 
     for (const [top, rowLines] of rows) {
-      const rowData = this.mapLinesToColumns(rowLines, columns, tipo);
+      const rowData = this.mapLinesToColumns(rowLines, columns);
       if (rowData.nombre && rowData.valor && rowData.valor !== 'null') {
         const existingItem = items.find(i =>
           i.nombre === rowData.nombre &&
@@ -254,11 +270,17 @@ export class OcrParser {
       }
     }
 
+    console.log(`[OcrParser] items extraídos: ${items.length}`);
     return items;
   }
 
   private detectColumns(lines: OcrSpaceLine[]): ColumnDef[] {
-    const HEADER_WORDS = new Set(['nombre', 'valor', 'unidad', 'rango_min', 'rango_max', 'rango_referencia', 'rango', 'estado', 'nota', 'min', 'max', 'referencia']);
+    const HEADER_WORDS = new Set([
+      'nombre', 'valor', 'unidad', 'rango_min', 'rango_max', 'rango_referencia',
+      'rango', 'estado', 'nota', 'min', 'max', 'referencia',
+      'parámetro', 'parametro', 'resultado', 'ref', 'mín', 'máx',
+      'rango_min', 'rango_max', 'rango_referencia'
+    ]);
     const columnMap = new Map<string, number>();
 
     for (const line of lines) {
@@ -328,7 +350,7 @@ export class OcrParser {
     return groups;
   }
 
-  private mapLinesToColumns(rowLines: OcrSpaceLine[], columns: ColumnDef[], tipo: TipoAnalisis): Record<string, string> {
+  private mapLinesToColumns(rowLines: OcrSpaceLine[], columns: ColumnDef[]): Record<string, string> {
     const result: Record<string, string> = {};
 
     for (const line of rowLines) {
@@ -342,9 +364,6 @@ export class OcrParser {
           result.nombre = result.nombre || word.WordText;
         }
       }
-    }
-
-    if (result.rango_referencia && !result.rangoMin && !result.rangoMax) {
     }
 
     return result;
@@ -384,6 +403,30 @@ export class OcrParser {
       }
     }
     return null;
+  }
+
+  private parseTableByRegex(lines: OcrSpaceLine[]): ParsedItem[] {
+    const items: ParsedItem[] = [];
+
+    for (const line of lines) {
+      const text = line.LineText.trim();
+      if (!text || text.startsWith('grupo:') || text.length < 3) continue;
+
+      const match = text.match(/^([A-Za-zÁÉÍÓÚáéíóúñÑ\s()]+?)\s+([\d.,-]+)\s+([a-zA-Z/]+)\s*([\d.,-]+\s*[-–]\s*[\d.,-]+)?\s*(normal|anormal|[Aa]lto|[Bb]ajo)?$/);
+      if (match) {
+        items.push({
+          nombre: match[1].trim(),
+          valor: match[2].trim(),
+          unidad: match[3]?.trim(),
+          rangoReferencia: match[4]?.trim(),
+          estado: match[5]?.trim() || 'normal',
+          orden: items.length + 1,
+        });
+      }
+    }
+
+    console.log(`[OcrParser] parseTableByRegex: ${items.length} items extraídos`);
+    return items;
   }
 }
 

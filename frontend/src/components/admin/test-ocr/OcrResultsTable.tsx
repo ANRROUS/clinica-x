@@ -114,9 +114,19 @@ export default function OcrResultsTable({ data }: Props) {
       ))}
 
       {data.grupos.length === 0 && (
-        <p className="py-8 text-center text-sm text-gray-500">
-          No se encontraron grupos de análisis en el resultado OCR.
-        </p>
+        <div className="rounded-lg border border-gray-200 p-6 text-center">
+          <p className="text-sm text-gray-500">
+            No se encontraron grupos de análisis en el resultado OCR.
+          </p>
+        </div>
+      )}
+
+      {data.grupos.some(g => g.items.length === 0) && (
+        <div className="rounded-lg border border-gray-200 p-6 text-center">
+          <p className="text-sm text-gray-500">
+            No se pudieron extraer los valores de la tabla. El formato del PDF puede no ser reconocible.
+          </p>
+        </div>
       )}
     </div>
   );
