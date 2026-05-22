@@ -11,6 +11,7 @@ export interface MedicoConsulta {
   nombreUsuario: string;
   activo: boolean;
   especialidadNombre: string;
+  usuarioId: string;
 }
 
 export interface HorarioConsulta {
@@ -29,5 +30,10 @@ export interface IMedicoConsultaPort {
   buscarPorUsuarioId(usuarioId: string): Promise<MedicoConsulta | null>;
   buscarPorEspecialidadActiva(especialidadId: string): Promise<MedicoConsulta[]>;
   listarHorarios(medicoId: string, diaSemana: number): Promise<HorarioConsulta[]>;
+  /** Obtiene todos los horarios de varios médicos para varios días de la semana en una sola query. */
+  listarHorariosPorMedicos(
+    medicoIds: string[],
+    diasSemana: number[],
+  ): Promise<Map<string, HorarioConsulta[]>>;
   listarEspecialidades(): Promise<EspecialidadDTO[]>;
 }

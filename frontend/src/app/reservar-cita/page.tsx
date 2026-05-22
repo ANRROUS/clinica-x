@@ -34,7 +34,7 @@ import type {
 export default function ReservarCitaPage() {
   const router = useRouter();
   const queryClient = useQueryClient();
-  const { isAuthenticated } = useAuthStore();
+  const { isAuthenticated, _hasHydrated, hydrate, user } = useAuthStore();
   const {
     selectedSpecialtyId,
     selectedSpecialtyName,
@@ -54,18 +54,17 @@ export default function ReservarCitaPage() {
 
   const [modalOpen, setModalOpen] = useState(false);
   const [bookingLoading, setBookingLoading] = useState(false);
-  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    setMounted(true);
-  }, []);
+    hydrate();
+  }, [hydrate]);
 
   useEffect(() => {
-    if (!isAuthenticated) {
+    if (_hasHydrated && (!isAuthenticated || user?.rol !== 'PACIENTE')) {
       sessionStorage.setItem('returnUrl', '/reservar-cita');
       router.push('/login');
     }
-  }, [isAuthenticated, router]);
+  }, [_hasHydrated, isAuthenticated, user, router]);
 
   useEffect(() => {
     if (prefillFromOrder) {
@@ -89,7 +88,7 @@ export default function ReservarCitaPage() {
   } = useQuery({
     queryKey: ['availability-specialty', selectedSpecialtyId],
     queryFn: () => getAvailabilityBySpecialty(selectedSpecialtyId!),
-    enabled: !!selectedSpecialtyId,
+    enabled: !!selectedSpecialtyId && isAuthenticated,
   });
 
   const doctors: DisponibilidadDoctorDTO[] = doctorsData?.data ?? [];
@@ -198,12 +197,11 @@ export default function ReservarCitaPage() {
 
   const canConfirmManual = !!selectedDoctor && !!selectedDate && !!selectedSlot && !isDuplicate;
 
-  if (!mounted || !isAuthenticated) {
+  if (!_hasHydrated || !isAuthenticated || user?.rol !== 'PACIENTE') {
     return (
-      <div className="flex min-h-screen flex-col bg-white">
-        <Header />
-        <main className="flex-1" />
-        <Footer />
+      <div className="flex min-h-screen flex-col items-center justify-center bg-white">
+        <Loader2 className="h-10 w-10 animate-spin text-[#008585]" />
+        <p className="mt-4 text-sm text-gray-500">Verificando sesión...</p>
       </div>
     );
   }
@@ -286,6 +284,10 @@ export default function ReservarCitaPage() {
                         selectedId={selectedDoctor?.doctorId ?? null}
                         onSelect={handleDoctorSelect}
                         loading={loadingDoctors}
+                        error={doctorsError}
+                        onRetry={() =>
+                          queryClient.invalidateQueries({ queryKey: ['availability-specialty', selectedSpecialtyId] })
+                        }
                       />
                     </div>
 

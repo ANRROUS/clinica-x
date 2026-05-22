@@ -27,6 +27,9 @@ export interface ICitaRepository {
   /** Busca citas de un médico en un día específico (útil para disponibilidad). */
   buscarPorMedicoYFecha(medicoId: string, fechaInicio: Date, fechaFin: Date): Promise<Cita[]>;
 
+  /** Busca citas de varios médicos en un rango de fechas (batch, útil para disponibilidad por especialidad). */
+  buscarPorMedicosYFecha(medicoIds: string[], fechaInicio: Date, fechaFin: Date): Promise<Cita[]>;
+
   /** Cuenta citas de un médico en un rango de tiempo. */
   contarCitasEnRango(medicoId: string, inicio: Date, fin: Date): Promise<number>;
 
