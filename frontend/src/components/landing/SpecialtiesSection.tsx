@@ -57,14 +57,18 @@ export default function SpecialtiesSection() {
   const handleClick = (title: string) => {
     // always scroll to specialties on return
     sessionStorage.setItem('scrollToSpecialties', '1');
-    // if logged in go to reservar-cita and set preferred name, otherwise go to register
+    
+    // Set the preferred name regardless of auth status
+    const targetName = title === 'Medicina General' ? 'Medicina General - Integrador' : title;
+    sessionStorage.setItem('preferredSpecialtyName', targetName);
+    
+    // if logged in go directly to reservar-cita, otherwise go to login
     if (isAuthenticated) {
-      const targetName = title === 'Medicina General' ? 'Medicina General - Integrador' : title;
-      sessionStorage.setItem('preferredSpecialtyName', targetName);
       router.push('/reservar-cita');
-      return;
+    } else {
+      sessionStorage.setItem('returnUrl', '/reservar-cita');
+      router.push('/login');
     }
-    router.push('/register');
   };
 
   return (
