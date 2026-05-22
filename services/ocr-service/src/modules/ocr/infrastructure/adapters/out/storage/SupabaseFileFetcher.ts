@@ -3,14 +3,15 @@ import { env } from '@/env';
 import { logger } from '@/shared/logger';
 
 export interface FileFetcher {
-  download(archivoId: string): Promise<{ buffer: Buffer; filename: string; mimeType: string }>;
+  download(archivoId: string, keyS3?: string): Promise<{ buffer: Buffer; filename: string; mimeType: string }>;
 }
 
 export class SupabaseFileFetcher implements FileFetcher {
-  async download(archivoId: string): Promise<{ buffer: Buffer; filename: string; mimeType: string }> {
-    logger.info({ archivoId }, 'Descargando archivo desde Supabase Storage');
+  async download(archivoId: string, keyS3?: string): Promise<{ buffer: Buffer; filename: string; mimeType: string }> {
+    const s3Key = keyS3 || archivoId;
+    logger.info({ archivoId, keyS3: s3Key }, 'Descargando archivo desde Supabase Storage');
 
-    const url = `${env.SUPABASE_URL}/storage/v1/object/${env.SUPABASE_BUCKET}/${archivoId}`;
+    const url = `${env.SUPABASE_URL}/storage/v1/object/${env.SUPABASE_BUCKET}/${s3Key}`;
 
     try {
       const response = await axios.get<ArrayBuffer>(url, {
@@ -28,12 +29,12 @@ export class SupabaseFileFetcher implements FileFetcher {
 
       return {
         buffer,
-        filename: archivoId,
+        filename: s3Key.split('/').pop() || archivoId,
         mimeType: contentType,
       };
     } catch (error) {
-      logger.error({ error, archivoId }, 'Error descargando archivo de Supabase');
-      throw new Error(`Error descargando archivo de Supabase Storage: ${archivoId}`);
+      logger.error({ error, archivoId, keyS3: s3Key }, 'Error descargando archivo de Supabase');
+      throw new Error(`Error descargando archivo de Supabase Storage: ${s3Key}`);
     }
   }
 }

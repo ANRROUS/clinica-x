@@ -26,6 +26,7 @@ export interface ArchivoDto {
   nombreOriginal: string;
   mimeType: string;
   tamanoBytes: number;
+  keyS3: string;
   urlFirmada: string;
   subidoEn: string;
 }

@@ -7,6 +7,7 @@ import { OcrParser } from './OcrParser';
 
 export interface ProcesarOcrInput {
   archivoId: string;
+  keyS3?: string;
   ordenAnalisisId: string;
   pacienteId: string;
   tipoAnalisis: TipoAnalisis;
@@ -24,7 +25,7 @@ export class ProcesarOcr {
   async execute(input: ProcesarOcrInput): Promise<string> {
     logger.info({ archivoId: input.archivoId, tipo: input.tipoAnalisis }, 'Iniciando procesamiento OCR');
 
-    const { buffer, filename } = await this.fileFetcher.download(input.archivoId);
+    const { buffer, filename } = await this.fileFetcher.download(input.archivoId, input.keyS3 || input.archivoId);
 
     const maxSize = 1 * 1024 * 1024;
     if (buffer.length > maxSize) {
