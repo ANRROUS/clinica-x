@@ -170,6 +170,9 @@ importers:
       '@clinica-x/date-utils':
         specifier: workspace:*
         version: link:../../packages/date-utils
+      '@clinica-x/shared-kernel':
+        specifier: workspace:*
+        version: link:../../packages/shared-kernel
       '@clinica-x/shared-middleware':
         specifier: workspace:*
         version: link:../../packages/shared-middleware
