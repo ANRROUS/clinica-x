@@ -23,6 +23,7 @@ const PACIENTE_TEST_ID = '702dc3eb-d2cc-442d-b764-4e9f91095182';
 export default function TestOcrPage() {
   const { isAuthenticated } = useAdminAuthStore();
   const [archivoId, setArchivoId] = useState<string | null>(null);
+  const [keyS3, setKeyS3] = useState<string | null>(null);
   const [uploadedFile, setUploadedFile] = useState<{ name: string; size: number } | null>(null);
   const [tipoAnalisis, setTipoAnalisis] = useState<'SANGRE' | 'ORINA' | 'HECES'>('SANGRE');
   const [resultId, setResultId] = useState<string | null>(null);
@@ -31,11 +32,12 @@ export default function TestOcrPage() {
   const uploadMutation = useMutation({
     mutationFn: async (file: File) => {
       const res = await uploadFile(file, 'ocr-service', PACIENTE_TEST_ID);
-      if (!res.success || !res.data?.id) throw new Error('No se pudo subir el archivo');
-      return res.data.id as string;
+      if (!res.success || !res.data?.id || !res.data?.keyS3) throw new Error('No se pudo subir el archivo');
+      return { id: res.data.id as string, keyS3: res.data.keyS3 as string };
     },
-    onSuccess: (id) => {
+    onSuccess: ({ id, keyS3 }) => {
       setArchivoId(id);
+      setKeyS3(keyS3);
       toast.success('Archivo subido correctamente');
     },
     onError: () => {
@@ -45,9 +47,10 @@ export default function TestOcrPage() {
 
   const processMutation = useMutation({
     mutationFn: async () => {
-      if (!archivoId) throw new Error('No hay archivo');
+      if (!archivoId || !keyS3) throw new Error('No hay archivo');
       const res = await processOcrAdmin({
         archivoId,
+        keyS3,
         tipoAnalisis,
         pacienteId: PACIENTE_TEST_ID,
       });
@@ -89,6 +92,7 @@ export default function TestOcrPage() {
 
   const handleUpload = (file: File) => {
     setArchivoId(null);
+    setKeyS3(null);
     setResultId(null);
     setResultado(null);
     setUploadedFile({ name: file.name, size: file.size });

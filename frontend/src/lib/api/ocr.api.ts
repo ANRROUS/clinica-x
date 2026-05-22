@@ -3,6 +3,7 @@ import type { ApiResponse, AnalisisResultadoDTO } from './types';
 
 export interface ProcessOcrAdminInput {
   archivoId: string;
+  keyS3: string;
   tipoAnalisis: 'SANGRE' | 'ORINA' | 'HECES';
   pacienteId: string;
   ordenAnalisisId?: string;

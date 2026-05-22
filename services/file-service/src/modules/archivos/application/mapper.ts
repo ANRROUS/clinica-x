@@ -16,6 +16,7 @@ export function toArchivoDto(archivo: Archivo, urlFirmada: string): ArchivoDto {
     nombreOriginal: archivo.nombreOriginal,
     mimeType: archivo.mimeType,
     tamanoBytes: archivo.tamanoBytes,
+    keyS3: archivo.keyS3,
     urlFirmada,
     subidoEn: nowLima().toISOString(), // Prisma no expone esto directamente en la entidad
   };

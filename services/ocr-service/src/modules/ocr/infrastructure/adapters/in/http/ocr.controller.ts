@@ -105,14 +105,14 @@ export class OcrController {
 
   procesarAdmin = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
-      const { archivoId, tipoAnalisis, pacienteId, ordenAnalisisId, consultaId } = req.body;
+      const { archivoId, keyS3, tipoAnalisis, pacienteId, ordenAnalisisId, consultaId } = req.body;
 
-      if (!archivoId || !tipoAnalisis || !pacienteId) {
+      if (!archivoId || !keyS3 || !tipoAnalisis || !pacienteId) {
         res.status(400).json({
           success: false,
           error: {
             codigo: 'VALIDATION_ERROR',
-            mensaje: 'Faltan campos requeridos: archivoId, tipoAnalisis, pacienteId',
+            mensaje: 'Faltan campos requeridos: archivoId, keyS3, tipoAnalisis, pacienteId',
           },
         });
         return;
@@ -134,6 +134,7 @@ export class OcrController {
 
       const resultId = await this.procesarOcr.execute({
         archivoId,
+        keyS3,
         ordenAnalisisId: dummyOrdenId,
         pacienteId,
         tipoAnalisis,
