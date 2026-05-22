@@ -18,7 +18,7 @@ const TIPOS_ANALISIS = [
 ] as const;
 
 // ID del usuario test creado por seed (DNI 99999999)
-const PACIENTE_TEST_ID = 'test-ocr-001';
+const PACIENTE_TEST_ID = '702dc3eb-d2cc-442d-b764-4e9f91095182';
 
 export default function TestOcrPage() {
   const { isAuthenticated } = useAdminAuthStore();
