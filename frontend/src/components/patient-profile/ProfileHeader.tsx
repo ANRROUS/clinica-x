@@ -3,13 +3,12 @@
 import { useState } from 'react';
 import { Pencil, Save, X } from 'lucide-react';
 import { toast } from 'sonner';
-import type { UsuarioDTO } from '@/lib/api/types';
 import { updateMe } from '@/lib/api/auth.api';
 import { useAuthStore } from '@/store/useAuthStore';
 
 export default function ProfileHeader() {
   const { user, updateUser } = useAuthStore();
-  const [editing, setEditing] = useState<'email' | 'telefono' | null>(null);
+  const [editing, setEditing] = useState<'telefono' | null>(null);
   const [editValue, setEditValue] = useState('');
   const [saving, setSaving] = useState(false);
 
@@ -18,7 +17,7 @@ export default function ProfileHeader() {
   const initials = `${user.nombre?.[0] || ''}`;
   const fullName = `${user.nombre} ${user.apellido}`;
 
-  const startEdit = (field: 'email' | 'telefono') => {
+  const startEdit = (field: 'telefono') => {
     setEditing(field);
     setEditValue((user as any)[field] || '');
   };
@@ -30,11 +29,10 @@ export default function ProfileHeader() {
 
   const saveEdit = async () => {
     if (!editing) return;
+    if (editing === 'telefono' && !/^\d{9}$/.test(editValue)) return;
     setSaving(true);
     try {
-      const data: any = {};
-      data[editing] = editValue;
-      const res = await updateMe(data);
+      const res = await updateMe({ telefono: editValue });
       if (res.success && res.data) {
         updateUser(res.data);
         toast.success('Información actualizada');
@@ -66,57 +64,38 @@ export default function ProfileHeader() {
       <div className="flex-1 sm:ml-auto sm:text-right">
         <div className="space-y-2">
           <div className="flex items-center justify-start gap-2 text-sm text-gray-700 sm:justify-end">
-            <Pencil className="h-3.5 w-3.5 text-gray-400" />
-            <span className="text-gray-400">|</span>
             <span className="font-semibold text-gray-900">Correo electrónico:</span>
-            {editing === 'email' ? (
-              <span className="flex items-center gap-2">
-                <input
-                  type="email"
-                  value={editValue}
-                  onChange={(e) => setEditValue(e.target.value)}
-                  className="w-44 rounded border border-gray-300 px-2 py-1 text-sm"
-                />
-                <button onClick={saveEdit} disabled={saving} className="text-[#008585] hover:text-[#007070]">
-                  <Save className="h-4 w-4" />
-                </button>
-                <button onClick={cancelEdit} className="text-gray-400 hover:text-gray-600">
-                  <X className="h-4 w-4" />
-                </button>
-              </span>
-            ) : (
-              <>
-                <span>{user.email}</span>
-                <button onClick={() => startEdit('email')} className="text-gray-400 hover:text-[#008585]">
-                  <Pencil className="h-3.5 w-3.5" />
-                </button>
-              </>
-            )}
+            <span>{user.email}</span>
           </div>
 
           <div className="flex items-center justify-start gap-2 text-sm text-gray-700 sm:justify-end">
-            <Pencil className="h-3.5 w-3.5 text-gray-400" />
-            <span className="text-gray-400">|</span>
             <span className="font-semibold text-gray-900">Teléfono:</span>
             {editing === 'telefono' ? (
               <span className="flex items-center gap-2">
                 <input
                   type="tel"
+                  inputMode="numeric"
+                  maxLength={9}
                   value={editValue}
-                  onChange={(e) => setEditValue(e.target.value)}
+                  onChange={(e) => setEditValue(e.target.value.replace(/\D/g, '').slice(0, 9))}
                   className="w-40 rounded border border-gray-300 px-2 py-1 text-sm"
                 />
-                <button onClick={saveEdit} disabled={saving} className="text-[#008585] hover:text-[#007070]">
+                <button
+                  type="button"
+                  onClick={saveEdit}
+                  disabled={saving || !/^\d{9}$/.test(editValue)}
+                  className="text-[#008585] hover:text-[#007070] disabled:cursor-not-allowed disabled:text-gray-300 disabled:hover:text-gray-300"
+                >
                   <Save className="h-4 w-4" />
                 </button>
-                <button onClick={cancelEdit} className="text-gray-400 hover:text-gray-600">
+                <button type="button" onClick={cancelEdit} className="text-gray-400 hover:text-gray-600">
                   <X className="h-4 w-4" />
                 </button>
               </span>
             ) : (
               <>
                 <span>{user.telefono || 'No especificado'}</span>
-                <button onClick={() => startEdit('telefono')} className="text-gray-400 hover:text-[#008585]">
+                <button type="button" onClick={() => startEdit('telefono')} className="text-gray-400 hover:text-[#008585]">
                   <Pencil className="h-3.5 w-3.5" />
                 </button>
               </>
