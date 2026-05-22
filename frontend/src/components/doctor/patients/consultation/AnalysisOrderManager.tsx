@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { Plus, X, FlaskConical } from 'lucide-react';
 import type { AnalysisOrder } from '@/store/useConsultationStore';
+import { getAnalisisDisplayName } from '@/lib/utils';
 
 interface AnalysisOrderManagerProps {
   orders: AnalysisOrder[];
@@ -13,13 +14,11 @@ interface AnalysisOrderManagerProps {
 export default function AnalysisOrderManager({ orders, onAdd, onRemove }: AnalysisOrderManagerProps) {
   const [showForm, setShowForm] = useState(false);
   const [examName, setExamName] = useState('SANGRE');
-  const [specialty, setSpecialty] = useState('');
 
   const handleAdd = () => {
     if (!examName.trim()) return;
-    onAdd({ examName: examName.trim(), specialty: specialty.trim() || undefined });
+    onAdd({ examName: examName.trim() });
     setExamName('SANGRE');
-    setSpecialty('');
     setShowForm(false);
   };
 
@@ -39,7 +38,7 @@ export default function AnalysisOrderManager({ orders, onAdd, onRemove }: Analys
         </button>
       </div>
       <p className="mb-3 text-sm text-gray-500">
-        En caso tu paciente requiera análisis, ingresa cuales tiene que realizarse
+        En caso tu paciente requiera análisis, selecciona cuáles tiene que realizarse
       </p>
 
       {showForm && (
@@ -52,20 +51,10 @@ export default function AnalysisOrderManager({ orders, onAdd, onRemove }: Analys
                 onChange={(e) => setExamName(e.target.value)}
                 className="w-full bg-white rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-brand-500 focus:outline-none focus:ring-1 focus:ring-brand-500"
               >
-                <option value="SANGRE">Sangre</option>
-                <option value="ORINA">Orina</option>
-                <option value="HECES">Heces</option>
+                <option value="SANGRE">Análisis de Sangre</option>
+                <option value="ORINA">Análisis de Orina</option>
+                <option value="HECES">Análisis de Heces</option>
               </select>
-            </div>
-            <div className="flex-1">
-              <label className="mb-1 block text-xs font-medium text-gray-700">Especialidad (opcional)</label>
-              <input
-                type="text"
-                value={specialty}
-                onChange={(e) => setSpecialty(e.target.value)}
-                placeholder="Ej. Cardiología"
-                className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-brand-500 focus:outline-none focus:ring-1 focus:ring-brand-500"
-              />
             </div>
             <button
               onClick={handleAdd}
@@ -85,7 +74,7 @@ export default function AnalysisOrderManager({ orders, onAdd, onRemove }: Analys
               key={index}
               className="inline-flex items-center gap-1.5 rounded-full border border-brand-300 bg-white px-3 py-1.5 text-sm font-medium text-brand-700"
             >
-              {order.examName}
+              {getAnalisisDisplayName(order.examName)}
               <button
                 onClick={() => onRemove(index)}
                 className="ml-0.5 rounded-full p-0.5 hover:bg-red-100 hover:text-red-600"

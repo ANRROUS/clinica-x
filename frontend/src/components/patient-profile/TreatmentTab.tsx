@@ -8,6 +8,7 @@ import { getPatientHistory, uploadFile, uploadAnalysisResult, getOcrStatus } fro
 import type { ConsultaDTO, AnalysisOrderDTO, MedicationDTO } from '@/lib/api/types';
 import { parseApiDate, formatLima, nowLima } from '@clinica-x/date-utils';
 import AnalysisResultViewer from './AnalysisResultViewer';
+import { getAnalisisDisplayName } from '@/lib/utils';
 
 interface FlatAnalysisOrder {
   order: AnalysisOrderDTO;
@@ -160,7 +161,7 @@ export default function TreatmentTab() {
                   key={idx}
                   className="flex flex-col items-center rounded-xl border-2 border-[#008585] bg-white p-6 text-center"
                 >
-                  <p className="text-lg font-semibold text-gray-900">{order.examName}</p>
+                  <p className="text-lg font-semibold text-gray-900">{getAnalisisDisplayName(order.examName)}</p>
                   <p className="mt-1 text-xs text-gray-500">{item.medicoName}</p>
                   <p className="mt-1 text-xs text-gray-400">Fecha consulta: {fechaStr}</p>
 
@@ -204,7 +205,7 @@ export default function TreatmentTab() {
                         onClick={() => {
                           setViewingResult({
                             archivoId: order.archivoId!,
-                            title: order.examName,
+                                title: getAnalisisDisplayName(order.examName),
                           });
                         }}
                         className="flex items-center gap-2 rounded-lg bg-[#003F86] px-6 py-2 text-sm font-medium text-white hover:bg-[#002d5e] transition"

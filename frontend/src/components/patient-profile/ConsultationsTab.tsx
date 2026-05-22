@@ -7,6 +7,7 @@ import { getPatientHistory, getConsultationById } from '@/lib/api/medical.api';
 import type { ConsultaDTO, AnalysisOrderDTO, MedicationDTO } from '@/lib/api/types';
 import { parseLimaDate, getLimaDay, getLimaMonth, getLimaYear } from '@clinica-x/date-utils';
 import AnalysisResultViewer from './AnalysisResultViewer';
+import { getAnalisisDisplayName } from '@/lib/utils';
 
 const MONTH_NAMES = [
   'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
@@ -145,13 +146,13 @@ export default function ConsultationsTab() {
                         key={idx}
                         className="flex items-center gap-2 rounded-full border border-[#008585] bg-white px-4 py-2 text-sm text-gray-800"
                       >
-                        <span>{order.examName}</span>
+                        <span>{getAnalisisDisplayName(order.examName)}</span>
                         {order.estado === 'COMPLETADA' && order.archivoId ? (
                           <button
                             onClick={() => {
                               setViewingResult({
                                 archivoId: order.archivoId!,
-                                title: order.examName,
+                                title: getAnalisisDisplayName(order.examName),
                               });
                             }}
                             className="ml-1 rounded p-0.5 hover:bg-gray-100 text-[#008585] transition-colors"

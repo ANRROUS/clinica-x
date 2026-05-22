@@ -1,8 +1,9 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Plus, Trash2, Pill } from 'lucide-react';
 import type { Medication } from '@/store/useConsultationStore';
+import { getMedicationCatalog } from '@/lib/api/medical.api';
 
 interface MedicationTableProps {
   medications: Medication[];
@@ -11,10 +12,23 @@ interface MedicationTableProps {
 }
 
 export default function MedicationTable({ medications, onAdd, onRemove }: MedicationTableProps) {
+  const [catalog, setCatalog] = useState<string[]>([]);
   const [name, setName] = useState('');
   const [days, setDays] = useState('');
   const [frequency, setFrequency] = useState('');
   const [showForm, setShowForm] = useState(false);
+
+  useEffect(() => {
+    getMedicationCatalog()
+      .then((res) => {
+        if (res.success && Array.isArray(res.data)) {
+          setCatalog(res.data.map((m) => m.nombre));
+        }
+      })
+      .catch(() => {
+        // fallback: si falla el API, el select quedará vacío y el médico puede seguir usando el flujo
+      });
+  }, []);
 
   const handleAdd = () => {
     if (!name.trim() || !days || !frequency.trim()) return;
@@ -45,21 +59,26 @@ export default function MedicationTable({ medications, onAdd, onRemove }: Medica
         </button>
       </div>
       <p className="mb-3 text-sm text-gray-500">
-        Ingresa las instrucciones de los medicamentos, días y horas para el paciente
+        Selecciona el medicamento del catálogo e ingresa las instrucciones de días y frecuencia
       </p>
 
       {showForm && (
         <div className="mb-4 rounded-lg border border-brand-200 bg-brand-50 p-4">
           <div className="flex items-end gap-3">
             <div className="flex-1">
-              <label className="mb-1 block text-xs font-medium text-gray-700">Nombre</label>
-              <input
-                type="text"
+              <label className="mb-1 block text-xs font-medium text-gray-700">Medicamento</label>
+              <select
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                placeholder="Ej. Paracetamol"
-                className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-brand-500 focus:outline-none focus:ring-1 focus:ring-brand-500"
-              />
+                className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm focus:border-brand-500 focus:outline-none focus:ring-1 focus:ring-brand-500"
+              >
+                <option value="">Selecciona...</option>
+                {catalog.map((med) => (
+                  <option key={med} value={med}>
+                    {med}
+                  </option>
+                ))}
+              </select>
             </div>
             <div className="w-20">
               <label className="mb-1 block text-xs font-medium text-gray-700">Días</label>
