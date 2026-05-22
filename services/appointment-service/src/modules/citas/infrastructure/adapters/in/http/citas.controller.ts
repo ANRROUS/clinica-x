@@ -6,6 +6,7 @@
 
 import type { Request, Response, NextFunction } from 'express';
 import { ZodError, z } from 'zod';
+import { createLayerLogger, getTraceFromRequest } from '@/shared/layer-logger';
 import type {
   ICrearCitaPort,
   ICancelarCitaPort,
@@ -130,8 +131,13 @@ export class CitasController {
 
   // ─── POST /api/appointments/book/manual ───────────────────────────────────
   reservarManual = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    const log = createLayerLogger('appointment-service', getTraceFromRequest(req), 'citas', 'crear-cita-manual');
     try {
+      log.info('controller', 'Request de reserva manual recibido');
+
       const body = crearCitaSchema.parse(req.body);
+      log.debug('application', 'DTO de cita validado', { input: { medicoId: body.medicoId, fechaHora: body.fechaHora } });
+
       const pacienteId = this.getPacienteId(req);
       const resultado = await this.crearCita.execute({
         pacienteId,
@@ -140,9 +146,23 @@ export class CitasController {
         tipoReserva: 'MANUAL',
         motivo: body.motivo,
       });
+
+      if (resultado.isErr) {
+        const err = resultado.error as any;
+        log.warn('controller', 'Error al crear cita', { error: { message: err.message, httpStatus: err.httpStatus } });
+        this.manejarResultado(res, resultado as any, 201);
+        return;
+      }
+
+      log.info('controller', 'Cita creada exitosamente', { output: { citaId: resultado.value?.id } });
       this.manejarResultado(res, resultado as any, 201);
     } catch (err) {
-      if (err instanceof ZodError) { this.manejarZodError(res, err); return; }
+      if (err instanceof ZodError) {
+        log.warn('controller', 'Error de validación Zod', { error: { name: 'ZodError', message: 'Datos inválidos' } });
+        this.manejarZodError(res, err);
+        return;
+      }
+      log.error('controller', 'Error inesperado al crear cita', err as Error);
       next(err);
     }
   };
@@ -196,11 +216,23 @@ export class CitasController {
 
   // ─── DELETE /api/appointments/patient/:id ─────────────────────────────────
   cancelar = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    const log = createLayerLogger('appointment-service', getTraceFromRequest(req), 'citas', 'cancelar-cita');
     try {
+      log.info('controller', 'Request de cancelación de cita recibido', { input: { citaId: req.params.id } });
+
       const pacienteId = this.getPacienteId(req);
       const resultado = await this.cancelarCita.execute(req.params.id, { pacienteId });
+
+      if (resultado.isErr) {
+        const err = resultado.error as any;
+        log.warn('controller', 'Error al cancelar cita', { error: { message: err.message } });
+      } else {
+        log.info('controller', 'Cita cancelada exitosamente');
+      }
+
       this.manejarResultado(res, resultado as any);
     } catch (err) {
+      log.error('controller', 'Error inesperado al cancelar cita', err as Error);
       next(err);
     }
   };
@@ -242,12 +274,29 @@ export class CitasController {
 
   // ─── PATCH /api/appointments/doctor/:id/status ─────────────────────────────
   cambiarEstado = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    const log = createLayerLogger('appointment-service', getTraceFromRequest(req), 'citas', 'cambiar-estado-cita');
     try {
+      log.info('controller', 'Request de cambio de estado recibido', { input: { citaId: req.params.id } });
+
       const body = cambiarEstadoSchema.parse(req.body);
+      log.debug('application', 'DTO de cambio de estado validado', { input: { estado: body.estado } });
+
       const resultado = await this.cambiarEstadoCita.execute(req.params.id, { estado: body.estado });
+
+      if (resultado.isErr) {
+        log.warn('controller', 'Error al cambiar estado de cita', { error: { message: (resultado.error as any).message } });
+      } else {
+        log.info('controller', 'Estado de cita cambiado exitosamente', { output: { estado: body.estado } });
+      }
+
       this.manejarResultado(res, resultado as any);
     } catch (err) {
-      if (err instanceof ZodError) { this.manejarZodError(res, err); return; }
+      if (err instanceof ZodError) {
+        log.warn('controller', 'Error de validación Zod');
+        this.manejarZodError(res, err);
+        return;
+      }
+      log.error('controller', 'Error inesperado al cambiar estado', err as Error);
       next(err);
     }
   };

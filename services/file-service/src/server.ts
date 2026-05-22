@@ -18,7 +18,7 @@
 import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
-import { requestIdMiddleware, errorHandler, jwtMiddleware } from '@clinica-x/shared-middleware';
+import { requestIdMiddleware, errorHandler, jwtMiddleware, requestLogger } from '@clinica-x/shared-middleware';
 import { env } from './env';
 import { logger } from './shared/logger';
 import { disconnectPrisma } from './shared/prisma-client';
@@ -30,6 +30,7 @@ app.use(helmet());
 app.use(cors());
 app.use(express.json({ limit: '1mb' }));
 app.use(requestIdMiddleware());
+app.use(requestLogger(logger, 'file-service'));
 
 app.get('/health', (_req, res) => {
   res.json({

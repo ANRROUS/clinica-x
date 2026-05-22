@@ -6,6 +6,7 @@
 
 import type { Request, Response, NextFunction } from 'express';
 import { ZodError, z } from 'zod';
+import { createLayerLogger, getTraceFromRequest } from '@/shared/layer-logger';
 import type {
   ICrearMedicoPort,
   IActualizarMedicoPort,
@@ -65,14 +66,19 @@ export class MedicosController {
 
   // ─── POST /api/admin/doctors ────────────────────────────────────────────────
   crear = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    const log = createLayerLogger('appointment-service', getTraceFromRequest(req), 'medicos', 'crear-medico');
     try {
+      log.info('controller', 'Request de creación de médico recibido');
+
       const dto = crearMedicoSchema.parse(req.body);
-      console.log('[CrearMedico] DTO parsed:', JSON.stringify(dto));
+      log.debug('application', 'DTO de médico validado', { input: { nombre: dto.nombre, apellido: dto.apellido, dni: dto.dni, email: dto.email } });
+
       const resultado = await this.crearMedico.execute(dto);
 
       if (resultado.isErr) {
         const err = resultado.error as any;
         const status = err.httpStatus || 400;
+        log.warn('controller', 'Error al crear médico', { error: { message: err.message, httpStatus: status } });
         res.status(status).json({
           success: false,
           error: { codigo: err.codigo || 'ERROR', mensaje: err.message },
@@ -80,9 +86,11 @@ export class MedicosController {
         return;
       }
 
+      log.info('controller', 'Médico creado exitosamente', { output: { medicoId: resultado.value?.id } });
       res.status(201).json({ success: true, data: { doctor: resultado.value } });
     } catch (err) {
       if (err instanceof ZodError) {
+        log.warn('controller', 'Error de validación Zod', { error: { name: 'ZodError', message: 'Datos inválidos' } });
         res.status(400).json({
           success: false,
           error: {
@@ -93,6 +101,7 @@ export class MedicosController {
         });
         return;
       }
+      log.error('controller', 'Error inesperado al crear médico', err as Error);
       next(err);
     }
   };
