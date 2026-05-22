@@ -82,6 +82,34 @@ export default function ReservarCitaPage() {
 
   const specialties: EspecialidadDTO[] = specialtiesData?.data ?? [];
 
+  // If arrived from landing with a preferred specialty name, select it
+  useEffect(() => {
+    const pref = typeof window !== 'undefined' ? sessionStorage.getItem('preferredSpecialtyName') : null;
+    if (!pref) return;
+    if (!specialties || specialties.length === 0) return;
+
+    const prefNorm = pref.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').trim();
+
+    // Priority 1: Exact match
+    let found = specialties.find((s) => {
+      const nameNorm = s.nombre.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').trim();
+      return nameNorm === prefNorm;
+    });
+
+    // Priority 2: Partial match
+    if (!found) {
+      found = specialties.find((s) => {
+        const nameNorm = s.nombre.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').trim();
+        return nameNorm.includes(prefNorm) || prefNorm.includes(nameNorm);
+      });
+    }
+
+    if (found) {
+      setSpecialty(found.id, found.nombre);
+      sessionStorage.removeItem('preferredSpecialtyName');
+    }
+  }, [specialties, setSpecialty]);
+
   const {
     data: doctorsData,
     isLoading: loadingDoctors,
