@@ -283,6 +283,9 @@ importers:
       '@types/node':
         specifier: ^20.11.0
         version: 20.19.41
+      cpx2:
+        specifier: ^9.0.0
+        version: 9.0.0
       prisma:
         specifier: ^5.18.0
         version: 5.22.0
@@ -435,6 +438,9 @@ importers:
       '@types/node':
         specifier: ^20.11.0
         version: 20.19.41
+      cpx2:
+        specifier: ^9.0.0
+        version: 9.0.0
       prisma:
         specifier: ^5.18.0
         version: 5.22.0
@@ -517,6 +523,9 @@ importers:
       '@types/node':
         specifier: ^20.11.0
         version: 20.19.41
+      cpx2:
+        specifier: ^9.0.0
+        version: 9.0.0
       prisma:
         specifier: ^5.18.0
         version: 5.22.0

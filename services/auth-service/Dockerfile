@@ -34,6 +34,8 @@ RUN pnpm --filter @clinica-x/date-utils build \
 FROM node:20-alpine AS runtime
 WORKDIR /app
 
+RUN apk add --no-cache libc6-compat openssl
+
 RUN corepack enable && corepack prepare pnpm@8.15.0 --activate
 
 ENV NODE_ENV=production
