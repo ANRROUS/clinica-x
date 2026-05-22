@@ -1,4 +1,5 @@
 import type { Request, Response, NextFunction } from 'express';
+import { randomUUID } from 'crypto';
 import type { ProcesarOcr } from '../../../../application/features/procesar-ocr/ProcesarOcr';
 import type { ObtenerResultado } from '../../../../application/features/obtener-resultado/ObtenerResultado';
 import { logger } from '@/shared/logger';
@@ -98,6 +99,57 @@ export class OcrController {
       const results = await this.obtenerResultado.listByPacienteId(pacienteId);
       res.json({ success: true, data: results });
     } catch (error) {
+      next(error);
+    }
+  };
+
+  procesarAdmin = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    try {
+      const { archivoId, tipoAnalisis, pacienteId, ordenAnalisisId, consultaId } = req.body;
+
+      if (!archivoId || !tipoAnalisis || !pacienteId) {
+        res.status(400).json({
+          success: false,
+          error: {
+            codigo: 'VALIDATION_ERROR',
+            mensaje: 'Faltan campos requeridos: archivoId, tipoAnalisis, pacienteId',
+          },
+        });
+        return;
+      }
+
+      const VALID_TIPOS = ['SANGRE', 'ORINA', 'HECES'];
+      if (!VALID_TIPOS.includes(tipoAnalisis)) {
+        res.status(400).json({
+          success: false,
+          error: {
+            codigo: 'VALIDATION_ERROR',
+            mensaje: `tipoAnalisis inválido. Debe ser: ${VALID_TIPOS.join(', ')}`,
+          },
+        });
+        return;
+      }
+
+      const dummyOrdenId = ordenAnalisisId || randomUUID();
+
+      const resultId = await this.procesarOcr.execute({
+        archivoId,
+        ordenAnalisisId: dummyOrdenId,
+        pacienteId,
+        tipoAnalisis,
+        consultaId,
+      });
+
+      res.json({
+        success: true,
+        data: {
+          id: resultId,
+          archivoId,
+          estadoOcr: 'COMPLETADO',
+        },
+      });
+    } catch (error) {
+      logger.error({ error }, 'Error en procesar OCR admin');
       next(error);
     }
   };

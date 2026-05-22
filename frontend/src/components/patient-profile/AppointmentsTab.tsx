@@ -22,6 +22,7 @@ import {
   getLimaMonth,
   getLimaYear,
   formatDateExtended,
+  formatLima,
   todayLimaString,
   diffInMsLima,
 } from '@clinica-x/date-utils';
@@ -52,7 +53,8 @@ function CancelModal({
         <p className="mt-2 text-sm text-gray-600">
           ¿Seguro que quieres cancelar tu cita con{' '}
           <span className="font-medium">{appointment.doctorName || 'el médico'}</span> el{' '}
-          <span className="font-medium">{formatDateExtended(appointment.fechaHora)}</span>?
+          <span className="font-medium">{formatDateExtended(appointment.fechaHora)}</span> a las{' '}
+          <span className="font-medium">{formatLima(appointment.fechaHora, 'HH:mm')}</span>?
         </p>
         <div className="mt-4 flex gap-3">
           <button
@@ -139,7 +141,11 @@ function RescheduleModal({
         <div className="mb-4 rounded-lg bg-[#008585]/10 p-3 text-sm text-gray-700">
           <p><span className="font-semibold">Especialidad:</span> {appointment.specialty || '—'}</p>
           <p><span className="font-semibold">Médico:</span> {appointment.doctorName || '—'}</p>
-          <p><span className="font-semibold">Fecha actual:</span> {formatDateExtended(appointment.fechaHora)}</p>
+          <p>
+            <span className="font-semibold">Fecha actual:</span>{' '}
+            {formatDateExtended(appointment.fechaHora)} a las{' '}
+            {formatLima(appointment.fechaHora, 'HH:mm')}
+          </p>
         </div>
 
         <div className="mb-4">
@@ -277,6 +283,9 @@ export default function AppointmentsTab() {
               <p className="mt-1 text-sm text-gray-700">{appt.doctorName || 'Médico'}</p>
               <p className="mt-3 text-sm text-gray-600">
                 Fecha: {formatDateExtended(appt.fechaHora)}
+              </p>
+              <p className="mt-1 text-sm text-gray-600">
+                Hora: {formatLima(appt.fechaHora, 'HH:mm')}
               </p>
 
               <div className="mt-6 flex items-center justify-center gap-3">

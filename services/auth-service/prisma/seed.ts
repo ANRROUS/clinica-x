@@ -26,31 +26,63 @@ async function main() {
     where: { rol: 'ADMIN' },
   });
 
-  if (existente) {
+  if (!existente) {
+    const passwordHash = await bcrypt.hash(adminPassword, 10);
+
+    await prisma.usuario.create({
+      data: {
+        id: 'admin-seed-001',
+        dni: adminDni,
+        email: adminEmail,
+        passwordHash,
+        nombre: 'Administrador',
+        apellido: 'Sistema',
+        telefono: null,
+        rol: 'ADMIN',
+      },
+    });
+
+    console.log('✅ Usuario ADMIN creado exitosamente:');
+    console.log(`   DNI: ${adminDni}`);
+    console.log(`   Email: ${adminEmail}`);
+    console.log(`   Password: ${adminPassword}`);
+    console.log('   ⚠️ Cambia esta contraseña en producción');
+  } else {
     console.log('⚠️ Ya existe un usuario ADMIN. Seed omitido.');
-    return;
   }
 
-  const passwordHash = await bcrypt.hash(adminPassword, 10);
+  // ─── Usuario TEST OCR ──────────────────────────────────────────────────
+  const testDni = '99999999';
+  const testEmail = 'andres.salesland@gmail.com';
+  const testPassword = 'Andres123Clinica';
 
-  await prisma.usuario.create({
-    data: {
-      id: 'admin-seed-001',
-      dni: adminDni,
-      email: adminEmail,
-      passwordHash,
-      nombre: 'Administrador',
-      apellido: 'Sistema',
-      telefono: null,
-      rol: 'ADMIN',
-    },
+  const testExistente = await prisma.usuario.findUnique({
+    where: { dni: testDni },
   });
 
-  console.log('✅ Usuario ADMIN creado exitosamente:');
-  console.log(`   DNI: ${adminDni}`);
-  console.log(`   Email: ${adminEmail}`);
-  console.log(`   Password: ${adminPassword}`);
-  console.log('   ⚠️ Cambia esta contraseña en producción');
+  if (!testExistente) {
+    const testPasswordHash = await bcrypt.hash(testPassword, 10);
+
+    await prisma.usuario.create({
+      data: {
+        id: 'test-ocr-001',
+        dni: testDni,
+        email: testEmail,
+        passwordHash: testPasswordHash,
+        nombre: 'Test',
+        apellido: 'OCR',
+        telefono: null,
+        rol: 'PACIENTE',
+      },
+    });
+
+    console.log('✅ Usuario TEST OCR creado exitosamente:');
+    console.log(`   DNI: ${testDni}`);
+    console.log(`   Email: ${testEmail}`);
+    console.log(`   Password: ${testPassword}`);
+  } else {
+    console.log('⚠️ Usuario TEST OCR ya existe. Seed omitido.');
+  }
 }
 
 main()

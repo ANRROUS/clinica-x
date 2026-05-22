@@ -2,6 +2,7 @@ import { Router } from 'express';
 import type { Request, Response, NextFunction } from 'express';
 import type { OcrController } from './ocr.controller';
 import { env } from '@/env';
+import { requireRole } from '@clinica-x/shared-middleware';
 
 function requireInternalApiKey(req: Request, res: Response, next: NextFunction): void {
   const apiKey = req.headers['x-internal-api-key'];
@@ -19,6 +20,7 @@ export function createOcrRouter(controller: OcrController): Router {
   const router = Router();
 
   router.post('/process', requireInternalApiKey, controller.procesar);
+  router.post('/admin/process', requireRole(['ADMIN']), controller.procesarAdmin);
   router.get('/results/:archivoId', controller.obtenerPorArchivo);
   router.get('/results/order/:ordenAnalisisId', controller.obtenerPorOrden);
   router.get('/results/paciente/:pacienteId', controller.listarPorPaciente);
