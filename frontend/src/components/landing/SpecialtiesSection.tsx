@@ -1,9 +1,15 @@
 "use client";
 
 import Link from 'next/link';
-import { Heart, Baby, Smile, Brain, Bone } from 'lucide-react';
+import { Heart, Baby, Smile, Brain, Bone, Stethoscope } from 'lucide-react';
 
 const specialties = [
+  {
+    icon: Stethoscope,
+    title: 'Medicina General',
+    description: 'Atención integral primaria para diagnóstico, prevención y manejo inicial de enfermedades.',
+    color: '#003F86',
+  },
   {
     icon: Heart,
     title: 'Cardiología',
@@ -45,7 +51,7 @@ export default function SpecialtiesSection() {
             Nuestras Especialidades Clínicas
           </h2>
           <p className="mt-3 text-sm text-[#008585]">
-            Experiencia integral en 5 disciplinas, entregada con precisión.
+            Experiencia integral en 6 disciplinas, entregada con precisión.
           </p>
         </div>
 
