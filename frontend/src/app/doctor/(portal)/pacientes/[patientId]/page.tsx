@@ -4,7 +4,7 @@ import { useState, useEffect, useMemo } from 'react';
 import { useRouter, useParams, useSearchParams } from 'next/navigation';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useDoctorAuthStore } from '@/store/useDoctorAuthStore';
-import { getActivePatient, getDoctorPatients } from '@/lib/api/doctor.api';
+import { getActivePatient, getDoctorPatients, getDoctorSlotDuration } from '@/lib/api/doctor.api';
 import PatientSidebar from '@/components/doctor/patients/PatientSidebar';
 import PatientHeader from '@/components/doctor/patients/PatientHeader';
 import PatientTabs from '@/components/doctor/patients/PatientTabs';
@@ -60,12 +60,23 @@ export default function DoctorPatientDetailPage() {
     enabled: isAuthenticated,
   });
 
+  const { data: slotDurationData } = useQuery({
+    queryKey: ['doctorSlotDuration'],
+    queryFn: async () => {
+      const res = await getDoctorSlotDuration();
+      return res.success ? res.data?.duracionSlot : 30;
+    },
+    staleTime: Infinity,
+    enabled: isAuthenticated,
+  });
+  const slotDuration = slotDurationData ?? 30;
+
   useEffect(() => {
     if (activeData?.success && activeData.data) {
       const active = activeData.data;
       const inicio = parseApiDate(active.fechaInicio);
       const now = nowLima();
-      const appointmentEnd = new Date(inicio.getTime() + 60 * 60000);
+      const appointmentEnd = new Date(inicio.getTime() + slotDuration * 60000);
       if (now >= inicio && now <= appointmentEnd) {
         setActiveConsultation(active);
         if (active.pacienteId === patientId) {
@@ -73,7 +84,7 @@ export default function DoctorPatientDetailPage() {
         }
       }
     }
-  }, [activeData, patientId]);
+  }, [activeData, patientId, slotDuration]);
 
   useEffect(() => {
     if (!isAuthenticated) {

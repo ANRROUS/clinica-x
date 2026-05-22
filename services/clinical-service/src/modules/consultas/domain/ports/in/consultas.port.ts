@@ -60,8 +60,10 @@ export interface ConsultaDto {
   pacienteDni?: string;
   pacienteEmail?: string;
   pacienteTelefono?: string;
-  analysisOrders?: { examName: string; specialty?: string }[];
-  medications?: { name: string; days: number; frequency: string }[];
+  medicoNombre?: string;
+  medicoApellido?: string;
+  analysisOrders?: { id: string; examName: string; specialty?: string; estado: string; archivoId?: string | null; analisisResultadoId?: string | null }[];
+  medications?: { name: string; days: number; frequency: string; fechaInicio?: string; fechaFin?: string }[];
 }
 
 export interface PacienteDetalleDto {

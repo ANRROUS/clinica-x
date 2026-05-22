@@ -16,6 +16,8 @@ import type {
 } from '@/modules/consultas/domain/ports/in/consultas.port';
 import type { IConsultaRepository } from '@/modules/consultas/domain/ports/out/consulta.repository.port';
 import { parseLimaDate } from '@clinica-x/date-utils';
+import { env } from '@/env';
+import { logger } from '@/shared/logger';
 
 // ─── Schemas Zod ────────────────────────────────────────────────────────────
 
@@ -221,9 +223,44 @@ export class ConsultasController {
       });
 
       res.status(200).json({ success: true, data: { message: 'Resultado subido correctamente' } });
+
+      this.dispararOcrBackground(orden, pacienteId, body.archivoId).catch((err) => {
+        logger.error({ err, archivoId: body.archivoId }, 'Error en OCR background');
+      });
     } catch (err) {
       if (err instanceof ZodError) { this.manejarZodError(res, err); return; }
       next(err);
     }
   };
+
+  private async dispararOcrBackground(
+    orden: { id: string; tipoAnalisis: string },
+    pacienteId: string,
+    archivoId: string,
+  ): Promise<void> {
+    const ocrUrl = `${env.OCR_SERVICE_URL}/api/ocr/process`;
+    const payload = {
+      archivoId,
+      ordenAnalisisId: orden.id,
+      pacienteId,
+      tipoAnalisis: orden.tipoAnalisis || 'SANGRE',
+    };
+
+    logger.info({ ocrUrl, payload }, 'Disparando OCR background');
+
+    const response = await fetch(ocrUrl, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Internal-Api-Key': env.INTERNAL_API_KEY,
+      },
+      body: JSON.stringify(payload),
+    });
+
+    if (!response.ok) {
+      logger.error({ status: response.status, payload }, 'OCR service responded with error');
+    } else {
+      logger.info({ archivoId }, 'OCR processing completed successfully');
+    }
+  }
 }

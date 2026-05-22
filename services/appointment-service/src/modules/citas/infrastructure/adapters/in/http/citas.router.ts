@@ -27,6 +27,7 @@ export function createCitasRouter(controller: CitasController): Router {
 
   // ─── Médico ───────────────────────────────────────────────────────────────
   router.get('/doctor/calendar', requireRole(['MEDICO']), controller.calendarioMedico);
+  router.get('/doctor/slot-duration', requireRole(['MEDICO']), controller.obtenerSlotDuration);
   router.patch('/doctor/:id/status', requireRole(['MEDICO']), controller.cambiarEstado);
 
   return router;

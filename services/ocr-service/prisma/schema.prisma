@@ -1,0 +1,86 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model OrdenAnalisis {
+  id                 String   @id @default(uuid())
+  consultaId         String
+  tipoAnalisis       String
+  especialidad       String?
+  descripcion        String?
+  estado             String   // PENDIENTE | COMPLETADA
+  resultado          String?
+  archivoId          String?
+  analisisResultadoId String? @unique
+  creadoEn           DateTime @default(now())
+  actualizadoEn      DateTime @updatedAt
+
+  @@map("ordenes_analisis")
+}
+
+model AnalisisResultado {
+  id                     String          @id @default(uuid())
+  ordenAnalisisId        String?         @unique
+  pacienteId             String
+  archivoId              String          @unique
+  consultaId             String?
+  tipoAnalisis           String
+  resultadoIdOriginal    String?
+  laboratorio            String?
+  medicoSolicitante      String?
+  fechaToma              DateTime?
+  horaToma               String?
+  fechaResultado         DateTime?
+  datosMuestra           Json?
+  pacienteNombreOcr      String?
+  pacienteIdOcr          String?
+  pacienteFechaNacimiento DateTime?
+  pacienteSexo           String?
+  pacienteEdad           Int?
+  estadoOcr              String          @default("PROCESANDO")
+  errorOcr               String?
+  creadoEn               DateTime        @default(now())
+  actualizadoEn          DateTime        @updatedAt
+
+  grupos                 AnalisisGrupo[]
+
+  @@map("analisis_resultados")
+}
+
+model AnalisisGrupo {
+  id                   String          @id @default(uuid())
+  analisisResultadoId  String
+  analisisResultado    AnalisisResultado @relation(fields: [analisisResultadoId], references: [id], onDelete: Cascade)
+  nombreGrupo          String
+  orden                Int             @default(0)
+  creadoEn             DateTime        @default(now())
+
+  items                AnalisisItem[]
+
+  @@map("analisis_grupos")
+}
+
+model AnalisisItem {
+  id              String        @id @default(uuid())
+  grupoId         String
+  grupo           AnalisisGrupo @relation(fields: [grupoId], references: [id], onDelete: Cascade)
+  nombre          String
+  valor           String
+  unidad          String?
+  rangoMin        String?
+  rangoMax        String?
+  rangoReferencia String?
+  estado          String?
+  nota            String?
+  orden           Int           @default(0)
+  creadoEn        DateTime      @default(now())
+
+  @@map("analisis_items")
+}

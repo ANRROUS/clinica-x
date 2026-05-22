@@ -3,11 +3,11 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useQuery } from '@tanstack/react-query';
+import { CalendarX2 } from 'lucide-react';
 import { useDoctorAuthStore } from '@/store/useDoctorAuthStore';
-import { getDoctorPatients, getActivePatient } from '@/lib/api/doctor.api';
+import { getDoctorPatients, getActivePatient, getDoctorSlotDuration } from '@/lib/api/doctor.api';
 import PatientSidebar from '@/components/doctor/patients/PatientSidebar';
-import PatientHistory from '@/components/doctor/PatientHistory';
-import { nowLima, addMonthsLima, formatLima } from '@clinica-x/date-utils';
+import { nowLima, addMonthsLima, formatLima, parseApiDate } from '@clinica-x/date-utils';
 
 export default function DoctorPacientesPage() {
   const { isAuthenticated } = useDoctorAuthStore();
@@ -26,20 +26,45 @@ export default function DoctorPacientesPage() {
     setMounted(true);
   }, []);
 
-  const { data: patientsData, isLoading } = useQuery({
+  const { data: patientsData } = useQuery({
     queryKey: ['doctor-patients', dateRange],
     queryFn: () => getDoctorPatients(dateRange),
     enabled: isAuthenticated,
   });
 
-  const { data: activeData } = useQuery({
+  const { data: activeData, isLoading: isActiveLoading } = useQuery({
     queryKey: ['doctor-active-patient'],
     queryFn: getActivePatient,
     enabled: isAuthenticated,
   });
 
+  const { data: slotDurationData } = useQuery({
+    queryKey: ['doctorSlotDuration'],
+    queryFn: async () => {
+      const res = await getDoctorSlotDuration();
+      return res.success ? res.data?.duracionSlot : 30;
+    },
+    staleTime: Infinity,
+    enabled: isAuthenticated,
+  });
+  const slotDuration = slotDurationData ?? 30;
+
   const patients = patientsData?.data || [];
   const activeConsultation = activeData?.data || null;
+
+  const isConsultationValid = (() => {
+    if (!activeConsultation) return false;
+    const inicio = parseApiDate(activeConsultation.fechaInicio);
+    const now = nowLima();
+    const fin = new Date(inicio.getTime() + slotDuration * 60000);
+    return now >= inicio && now <= fin;
+  })();
+
+  useEffect(() => {
+    if (mounted && isAuthenticated && isConsultationValid && activeConsultation) {
+      router.replace(`/doctor/pacientes/${activeConsultation.pacienteId}`);
+    }
+  }, [mounted, isAuthenticated, isConsultationValid, activeConsultation, router]);
 
   useEffect(() => {
     if (!isAuthenticated) {
@@ -52,95 +77,29 @@ export default function DoctorPacientesPage() {
   }
 
   return (
-    <div className="flex h-full">
+    <div className="flex h-full w-full">
       <PatientSidebar
         activeConsultation={activeConsultation}
         patients={patients}
         onSelectPatient={(id) => router.push(`/doctor/pacientes/${id}`)}
       />
 
-      <div className="flex flex-1 flex-col overflow-hidden">
-        <div className="border-b border-gray-200 bg-white px-6 py-4">
-          <h1 className="text-xl font-bold text-gray-900">Mis Pacientes</h1>
-          <p className="text-sm text-gray-500">
-            Selecciona un paciente del panel lateral para ver su historial
-          </p>
-        </div>
-
-        <div className="flex-1 overflow-y-auto bg-gray-50 p-6">
-          {activeConsultation && (
-            <div className="mb-6 rounded-xl border border-amber-200 bg-amber-50 p-4">
-              <div className="flex items-center gap-3">
-                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-amber-200 text-sm font-bold text-amber-800">
-                  {activeConsultation.pacienteNombre?.[0] || '?'}
-                </div>
-                <div className="flex-1">
-                  <p className="font-medium text-amber-900">
-                    Consulta activa: {activeConsultation.pacienteNombre || 'Paciente'}
-                  </p>
-                  <p className="text-xs text-amber-700">
-                    {activeConsultation.motivoConsulta || 'Sin motivo registrado'}
-                  </p>
-                </div>
-                <button
-                  onClick={() =>
-                    router.push(`/doctor/pacientes/${activeConsultation.pacienteId}`)
-                  }
-                  className="rounded-lg bg-amber-600 px-3 py-1.5 text-sm font-medium text-white hover:bg-amber-700"
-                >
-                  Ir a consulta
-                </button>
-              </div>
-            </div>
-          )}
-
-          <div className="mb-4 flex flex-wrap items-end gap-3">
-            <div>
-              <label className="mb-1 block text-xs font-medium text-gray-600">Desde</label>
-              <input
-                type="date"
-                value={dateRange.desde}
-                onChange={(e) =>
-                  setDateRange((prev) => ({ ...prev, desde: e.target.value }))
-                }
-                className="rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
-              />
-            </div>
-            <div>
-              <label className="mb-1 block text-xs font-medium text-gray-600">Hasta</label>
-              <input
-                type="date"
-                value={dateRange.hasta}
-                onChange={(e) =>
-                  setDateRange((prev) => ({ ...prev, hasta: e.target.value }))
-                }
-                className="rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
-              />
-            </div>
-            <button
-              onClick={() => {
-                const hasta = nowLima();
-                const desde = addMonthsLima(hasta, -1);
-                setDateRange({
-                  desde: formatLima(desde, 'yyyy-MM-dd'),
-                  hasta: formatLima(hasta, 'yyyy-MM-dd'),
-                });
-              }}
-              className="rounded-lg border border-gray-200 px-3 py-2 text-sm text-gray-600 hover:bg-gray-50"
-            >
-              Último mes
-            </button>
+      <div className="flex flex-1 flex-col overflow-hidden bg-gray-50">
+        {isActiveLoading || isConsultationValid ? (
+          <div className="flex flex-1 items-center justify-center text-gray-400">
+            Cargando consulta actual...
           </div>
-
-          {isLoading ? (
-            <div className="flex justify-center py-16 text-gray-400">Cargando pacientes...</div>
-          ) : (
-            <PatientHistory
-              patients={patients}
-              onViewConsultation={(id) => router.push(`/doctor/pacientes/${id}`)}
-            />
-          )}
-        </div>
+        ) : (
+          <div className="flex flex-1 flex-col items-center justify-center p-8 text-center">
+            <div className="mb-4 rounded-full bg-brand-50 p-4 text-brand-500">
+              <CalendarX2 className="h-12 w-12" style={{ color: '#008585' }} />
+            </div>
+            <h2 className="text-xl font-bold text-gray-900 mb-2">No tienes consultas actuales</h2>
+            <p className="text-gray-500 max-w-sm">
+              En este momento no cuentas con ninguna consulta en desarrollo. Selecciona un paciente del menú lateral para ver su historial o buscar otros pacientes.
+            </p>
+          </div>
+        )}
       </div>
     </div>
   );

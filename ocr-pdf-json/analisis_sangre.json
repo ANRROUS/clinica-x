@@ -1,0 +1,6613 @@
+{
+  "ParsedResults": [
+    {
+      "Overlay": {
+        "Lines": [
+          {
+            "LineText": "21/5/26, 19:54",
+            "Words": [
+              {
+                "WordText": "21/5/26,",
+                "Left": 32,
+                "Top": 22,
+                "Height": 9.5,
+                "Width": 38
+              },
+              {
+                "WordText": "19:54",
+                "Left": 74.5,
+                "Top": 22.5,
+                "Height": 8,
+                "Width": 25.5
+              }
+            ],
+            "MaxHeight": 9.5,
+            "MinTop": 22
+          },
+          {
+            "LineText": "CLINICA X",
+            "Words": [
+              {
+                "WordText": "CLINICA",
+                "Left": 84.5,
+                "Top": 91,
+                "Height": 15.5,
+                "Width": 79
+              },
+              {
+                "WordText": "X",
+                "Left": 169,
+                "Top": 91,
+                "Height": 15,
+                "Width": 13.5
+              }
+            ],
+            "MaxHeight": 15.5,
+            "MinTop": 91
+          },
+          {
+            "LineText": "laboratorio: Lab Central SAC",
+            "Words": [
+              {
+                "WordText": "laboratorio:",
+                "Left": 84,
+                "Top": 119,
+                "Height": 8.5,
+                "Width": 57
+              },
+              {
+                "WordText": "Lab",
+                "Left": 145,
+                "Top": 119,
+                "Height": 8.5,
+                "Width": 16.5
+              },
+              {
+                "WordText": "Central",
+                "Left": 165,
+                "Top": 119,
+                "Height": 8.5,
+                "Width": 34
+              },
+              {
+                "WordText": "SAC",
+                "Left": 203,
+                "Top": 119.5,
+                "Height": 8,
+                "Width": 18.5
+              }
+            ],
+            "MaxHeight": 8.5,
+            "MinTop": 119
+          },
+          {
+            "LineText": "PACIENTE (paciente)",
+            "Words": [
+              {
+                "WordText": "PACIENTE",
+                "Left": 79.5,
+                "Top": 177.5,
+                "Height": 10,
+                "Width": 61.5
+              },
+              {
+                "WordText": "(paciente)",
+                "Left": 145,
+                "Top": 176.5,
+                "Height": 14.5,
+                "Width": 64
+              }
+            ],
+            "MaxHeight": 14.5,
+            "MinTop": 176.5
+          },
+          {
+            "LineText": "id: PAC-00123",
+            "Words": [
+              {
+                "WordText": "id:",
+                "Left": 84,
+                "Top": 210.5,
+                "Height": 9.5,
+                "Width": 12.5
+              },
+              {
+                "WordText": "PAC-00123",
+                "Left": 100.5,
+                "Top": 211,
+                "Height": 11,
+                "Width": 53.5
+              }
+            ],
+            "MaxHeight": 11,
+            "MinTop": 210.5
+          },
+          {
+            "LineText": "nombre: Juan Pérez",
+            "Words": [
+              {
+                "WordText": "nombre:",
+                "Left": 84,
+                "Top": 227,
+                "Height": 9.5,
+                "Width": 45
+              },
+              {
+                "WordText": "Juan",
+                "Left": 132.5,
+                "Top": 227.5,
+                "Height": 9,
+                "Width": 24
+              },
+              {
+                "WordText": "Pérez",
+                "Left": 161,
+                "Top": 227,
+                "Height": 9.5,
+                "Width": 28.5
+              }
+            ],
+            "MaxHeight": 9.5,
+            "MinTop": 227
+          },
+          {
+            "LineText": "fecha_nacimiento: 1985-03-14",
+            "Words": [
+              {
+                "WordText": "fecha_nacimiento:",
+                "Left": 84,
+                "Top": 243.5,
+                "Height": 12,
+                "Width": 99
+              },
+              {
+                "WordText": "1985-03-14",
+                "Left": 186.5,
+                "Top": 244,
+                "Height": 11,
+                "Width": 54
+              }
+            ],
+            "MaxHeight": 12,
+            "MinTop": 243.5
+          },
+          {
+            "LineText": "MUESTRA (muestra)",
+            "Words": [
+              {
+                "WordText": "MUESTRA",
+                "Left": 79.5,
+                "Top": 310.5,
+                "Height": 10,
+                "Width": 63
+              },
+              {
+                "WordText": "(muestra)",
+                "Left": 146,
+                "Top": 309.5,
+                "Height": 14.5,
+                "Width": 62
+              }
+            ],
+            "MaxHeight": 14.5,
+            "MinTop": 309.5
+          },
+          {
+            "LineText": "tipo: sangre",
+            "Words": [
+              {
+                "WordText": "tipo:",
+                "Left": 84,
+                "Top": 343.5,
+                "Height": 12,
+                "Width": 24.5
+              },
+              {
+                "WordText": "sangre",
+                "Left": 112,
+                "Top": 345.5,
+                "Height": 10,
+                "Width": 35
+              }
+            ],
+            "MaxHeight": 12,
+            "MinTop": 343.5
+          },
+          {
+            "LineText": "subtipo: venosa",
+            "Words": [
+              {
+                "WordText": "subtipo:",
+                "Left": 84,
+                "Top": 360,
+                "Height": 11.5,
+                "Width": 43.5
+              },
+              {
+                "WordText": "venosa",
+                "Left": 130.5,
+                "Top": 362.5,
+                "Height": 6.5,
+                "Width": 37
+              }
+            ],
+            "MaxHeight": 11.5,
+            "MinTop": 360
+          },
+          {
+            "LineText": "condicion: ayunas 12h",
+            "Words": [
+              {
+                "WordText": "condicion:",
+                "Left": 84,
+                "Top": 376.5,
+                "Height": 9,
+                "Width": 55
+              },
+              {
+                "WordText": "ayunas",
+                "Left": 142.5,
+                "Top": 379,
+                "Height": 9,
+                "Width": 36
+              },
+              {
+                "WordText": "12h",
+                "Left": 186,
+                "Top": 376.5,
+                "Height": 9,
+                "Width": 16
+              }
+            ],
+            "MaxHeight": 9,
+            "MinTop": 376.5
+          },
+          {
+            "LineText": "medico solicitante: Dr. Garcia Ramos",
+            "Words": [
+              {
+                "WordText": "medico",
+                "Left": 84,
+                "Top": 393,
+                "Height": 9,
+                "Width": 39
+              },
+              {
+                "WordText": "solicitante:",
+                "Left": 130,
+                "Top": 393,
+                "Height": 9,
+                "Width": 58.5
+              },
+              {
+                "WordText": "Dr.",
+                "Left": 193,
+                "Top": 393.5,
+                "Height": 8.5,
+                "Width": 14
+              },
+              {
+                "WordText": "Garcia",
+                "Left": 211,
+                "Top": 393,
+                "Height": 9,
+                "Width": 31.5
+              },
+              {
+                "WordText": "Ramos",
+                "Left": 247,
+                "Top": 393.5,
+                "Height": 8.5,
+                "Width": 35
+              }
+            ],
+            "MaxHeight": 9,
+            "MinTop": 393
+          },
+          {
+            "LineText": "RESULTADOS POR GRUPOS (grupos)",
+            "Words": [
+              {
+                "WordText": "RESULTADOS",
+                "Left": 79.5,
+                "Top": 460,
+                "Height": 10,
+                "Width": 84
+              },
+              {
+                "WordText": "POR",
+                "Left": 168,
+                "Top": 460,
+                "Height": 10,
+                "Width": 26
+              },
+              {
+                "WordText": "GRUPOS",
+                "Left": 198,
+                "Top": 460,
+                "Height": 10,
+                "Width": 53
+              },
+              {
+                "WordText": "(grupos)",
+                "Left": 255,
+                "Top": 458.5,
+                "Height": 15,
+                "Width": 54
+              }
+            ],
+            "MaxHeight": 15,
+            "MinTop": 458.5
+          },
+          {
+            "LineText": "Resultado de Laboratorio",
+            "Words": [
+              {
+                "WordText": "Resultado",
+                "Left": 381.5,
+                "Top": 22.5,
+                "Height": 8,
+                "Width": 47
+              },
+              {
+                "WordText": "de",
+                "Left": 432.5,
+                "Top": 22.5,
+                "Height": 8,
+                "Width": 11
+              },
+              {
+                "WordText": "Laboratorio",
+                "Left": 447.5,
+                "Top": 22.5,
+                "Height": 8,
+                "Width": 53
+              }
+            ],
+            "MaxHeight": 8,
+            "MinTop": 22.5
+          },
+          {
+            "LineText": "sexo: M",
+            "Words": [
+              {
+                "WordText": "sexo:",
+                "Left": 435.5,
+                "Top": 213,
+                "Height": 7,
+                "Width": 28
+              },
+              {
+                "WordText": "M",
+                "Left": 467.5,
+                "Top": 211.5,
+                "Height": 8,
+                "Width": 9
+              }
+            ],
+            "MaxHeight": 8,
+            "MinTop": 211.5
+          },
+          {
+            "LineText": "edad: 41",
+            "Words": [
+              {
+                "WordText": "edad:",
+                "Left": 435.5,
+                "Top": 227,
+                "Height": 9.5,
+                "Width": 29.5
+              },
+              {
+                "WordText": "41",
+                "Left": 468,
+                "Top": 229.5,
+                "Height": 8.5,
+                "Width": 10
+              }
+            ],
+            "MaxHeight": 9.5,
+            "MinTop": 227
+          },
+          {
+            "LineText": "Sangre",
+            "Words": [
+              {
+                "WordText": "Sangre",
+                "Left": 510.5,
+                "Top": 22,
+                "Height": 10,
+                "Width": 34
+              }
+            ],
+            "MaxHeight": 10,
+            "MinTop": 22
+          },
+          {
+            "LineText": "resultado id: RES-SANGRE-OOI",
+            "Words": [
+              {
+                "WordText": "resultado",
+                "Left": 614,
+                "Top": 86.5,
+                "Height": 9,
+                "Width": 50.5
+              },
+              {
+                "WordText": "id:",
+                "Left": 672,
+                "Top": 86.5,
+                "Height": 9,
+                "Width": 12
+              },
+              {
+                "WordText": "RES-SANGRE-OOI",
+                "Left": 688.5,
+                "Top": 87,
+                "Height": 8.5,
+                "Width": 87.5
+              }
+            ],
+            "MaxHeight": 9,
+            "MinTop": 86.5
+          },
+          {
+            "LineText": "fecha_registro:",
+            "Words": [
+              {
+                "WordText": "fecha_registro:",
+                "Left": 608,
+                "Top": 105,
+                "Height": 10.5,
+                "Width": 69.5
+              }
+            ],
+            "MaxHeight": 10.5,
+            "MinTop": 105
+          },
+          {
+            "LineText": "grupo: Hemograma completo",
+            "Words": [
+              {
+                "WordText": "grupo:",
+                "Left": 84.5,
+                "Top": 498.5,
+                "Height": 10.5,
+                "Width": 35.5
+              },
+              {
+                "WordText": "Hemograma",
+                "Left": 124,
+                "Top": 497.5,
+                "Height": 11.5,
+                "Width": 65.5
+              },
+              {
+                "WordText": "completo",
+                "Left": 193,
+                "Top": 496.5,
+                "Height": 12,
+                "Width": 51
+              }
+            ],
+            "MaxHeight": 12,
+            "MinTop": 496.5
+          },
+          {
+            "LineText": "nombre",
+            "Words": [
+              {
+                "WordText": "nombre",
+                "Left": 86,
+                "Top": 533.5,
+                "Height": 8.5,
+                "Width": 39
+              }
+            ],
+            "MaxHeight": 8.5,
+            "MinTop": 533.5
+          },
+          {
+            "LineText": "Hemoglobina",
+            "Words": [
+              {
+                "WordText": "Hemoglobina",
+                "Left": 86.5,
+                "Top": 559.5,
+                "Height": 11,
+                "Width": 64.5
+              }
+            ],
+            "MaxHeight": 11,
+            "MinTop": 559.5
+          },
+          {
+            "LineText": "Hematocrito",
+            "Words": [
+              {
+                "WordText": "Hematocrito",
+                "Left": 86.5,
+                "Top": 586,
+                "Height": 8,
+                "Width": 61
+              }
+            ],
+            "MaxHeight": 8,
+            "MinTop": 586
+          },
+          {
+            "LineText": "Eritrocitos (GR)",
+            "Words": [
+              {
+                "WordText": "Eritrocitos",
+                "Left": 86.5,
+                "Top": 612,
+                "Height": 8.5,
+                "Width": 49.5
+              },
+              {
+                "WordText": "(GR)",
+                "Left": 139.5,
+                "Top": 611.5,
+                "Height": 11.5,
+                "Width": 21.5
+              }
+            ],
+            "MaxHeight": 11.5,
+            "MinTop": 611.5
+          },
+          {
+            "LineText": "VCM",
+            "Words": [
+              {
+                "WordText": "VCM",
+                "Left": 85.5,
+                "Top": 638.5,
+                "Height": 8,
+                "Width": 22
+              }
+            ],
+            "MaxHeight": 8,
+            "MinTop": 638.5
+          },
+          {
+            "LineText": "HCM",
+            "Words": [
+              {
+                "WordText": "HCM",
+                "Left": 86.5,
+                "Top": 665,
+                "Height": 7.5,
+                "Width": 22
+              }
+            ],
+            "MaxHeight": 7.5,
+            "MinTop": 665
+          },
+          {
+            "LineText": "CHCM",
+            "Words": [
+              {
+                "WordText": "CHCM",
+                "Left": 86,
+                "Top": 691,
+                "Height": 8,
+                "Width": 29
+              }
+            ],
+            "MaxHeight": 8,
+            "MinTop": 691
+          },
+          {
+            "LineText": "Leucocitos (C B)",
+            "Words": [
+              {
+                "WordText": "Leucocitos",
+                "Left": 86.5,
+                "Top": 717,
+                "Height": 8,
+                "Width": 51.5
+              },
+              {
+                "WordText": "(C",
+                "Left": 141.5,
+                "Top": 716,
+                "Height": 11.5,
+                "Width": 10
+              },
+              {
+                "WordText": "B)",
+                "Left": 153.5,
+                "Top": 716,
+                "Height": 11.5,
+                "Width": 9.5
+              }
+            ],
+            "MaxHeight": 11.5,
+            "MinTop": 716
+          },
+          {
+            "LineText": "Neutr6filos",
+            "Words": [
+              {
+                "WordText": "Neutr6filos",
+                "Left": 86.5,
+                "Top": 742.5,
+                "Height": 9,
+                "Width": 54
+              }
+            ],
+            "MaxHeight": 9,
+            "MinTop": 742.5
+          },
+          {
+            "LineText": "Linfocitos",
+            "Words": [
+              {
+                "WordText": "Linfocitos",
+                "Left": 86.5,
+                "Top": 769,
+                "Height": 8.5,
+                "Width": 47
+              }
+            ],
+            "MaxHeight": 8.5,
+            "MinTop": 769
+          },
+          {
+            "LineText": "Monocitos",
+            "Words": [
+              {
+                "WordText": "Monocitos",
+                "Left": 86.5,
+                "Top": 795.5,
+                "Height": 8,
+                "Width": 51.5
+              }
+            ],
+            "MaxHeight": 8,
+            "MinTop": 795.5
+          },
+          {
+            "LineText": "Eosinöfilos",
+            "Words": [
+              {
+                "WordText": "Eosinöfilos",
+                "Left": 86.5,
+                "Top": 821.5,
+                "Height": 8.5,
+                "Width": 52
+              }
+            ],
+            "MaxHeight": 8.5,
+            "MinTop": 821.5
+          },
+          {
+            "LineText": "Basöfilos",
+            "Words": [
+              {
+                "WordText": "Basöfilos",
+                "Left": 86.5,
+                "Top": 847.5,
+                "Height": 8.5,
+                "Width": 43
+              }
+            ],
+            "MaxHeight": 8.5,
+            "MinTop": 847.5
+          },
+          {
+            "LineText": "Plaquetas",
+            "Words": [
+              {
+                "WordText": "Plaquetas",
+                "Left": 86.5,
+                "Top": 873.5,
+                "Height": 11,
+                "Width": 47
+              }
+            ],
+            "MaxHeight": 11,
+            "MinTop": 873.5
+          },
+          {
+            "LineText": "VPM (Vol. plaquetario)",
+            "Words": [
+              {
+                "WordText": "VPM",
+                "Left": 85.5,
+                "Top": 900.5,
+                "Height": 7.5,
+                "Width": 22
+              },
+              {
+                "WordText": "(Vol.",
+                "Left": 111,
+                "Top": 899.5,
+                "Height": 11.5,
+                "Width": 21.5
+              },
+              {
+                "WordText": "plaquetario)",
+                "Left": 136,
+                "Top": 899.5,
+                "Height": 11.5,
+                "Width": 60
+              }
+            ],
+            "MaxHeight": 11.5,
+            "MinTop": 899.5
+          },
+          {
+            "LineText": "grupo: Glucosa y metabolismo",
+            "Words": [
+              {
+                "WordText": "grupo:",
+                "Left": 84.5,
+                "Top": 943,
+                "Height": 10,
+                "Width": 35.5
+              },
+              {
+                "WordText": "Glucosa",
+                "Left": 123.5,
+                "Top": 941,
+                "Height": 9,
+                "Width": 41.5
+              },
+              {
+                "WordText": "y",
+                "Left": 168,
+                "Top": 944,
+                "Height": 8.5,
+                "Width": 6
+              },
+              {
+                "WordText": "metabolismo",
+                "Left": 177,
+                "Top": 941,
+                "Height": 9,
+                "Width": 70.5
+              }
+            ],
+            "MaxHeight": 10,
+            "MinTop": 941
+          },
+          {
+            "LineText": "file:///C:/Users/HP/Downloads/Anålisis - Sangre.htm",
+            "Words": [
+              {
+                "WordText": "file:///C:/Users/HP/Downloads/Anålisis",
+                "Left": 32,
+                "Top": 1027.5,
+                "Height": 8,
+                "Width": 180
+              },
+              {
+                "WordText": "-",
+                "Left": 215.5,
+                "Top": 1032,
+                "Height": 1,
+                "Width": 3
+              },
+              {
+                "WordText": "Sangre.htm",
+                "Left": 222.5,
+                "Top": 1027.5,
+                "Height": 10,
+                "Width": 54
+              }
+            ],
+            "MaxHeight": 10,
+            "MinTop": 1027.5
+          },
+          {
+            "LineText": "valor",
+            "Words": [
+              {
+                "WordText": "valor",
+                "Left": 301,
+                "Top": 533.5,
+                "Height": 8.5,
+                "Width": 25.5
+              }
+            ],
+            "MaxHeight": 8.5,
+            "MinTop": 533.5
+          },
+          {
+            "LineText": "14.2",
+            "Words": [
+              {
+                "WordText": "14.2",
+                "Left": 301.5,
+                "Top": 561.5,
+                "Height": 8,
+                "Width": 17.5
+              }
+            ],
+            "MaxHeight": 8,
+            "MinTop": 561.5
+          },
+          {
+            "LineText": "42.1",
+            "Words": [
+              {
+                "WordText": "42.1",
+                "Left": 301,
+                "Top": 587.5,
+                "Height": 8.5,
+                "Width": 18
+              }
+            ],
+            "MaxHeight": 8.5,
+            "MinTop": 587.5
+          },
+          {
+            "LineText": "4.8",
+            "Words": [
+              {
+                "WordText": "4.8",
+                "Left": 301,
+                "Top": 612,
+                "Height": 10,
+                "Width": 15
+              }
+            ],
+            "MaxHeight": 10,
+            "MinTop": 612
+          },
+          {
+            "LineText": "87-7",
+            "Words": [
+              {
+                "WordText": "87-7",
+                "Left": 301.5,
+                "Top": 638.5,
+                "Height": 9.5,
+                "Width": 19
+              }
+            ],
+            "MaxHeight": 9.5,
+            "MinTop": 638.5
+          },
+          {
+            "LineText": "29.6",
+            "Words": [
+              {
+                "WordText": "29.6",
+                "Left": 301.5,
+                "Top": 664.5,
+                "Height": 10.5,
+                "Width": 20
+              }
+            ],
+            "MaxHeight": 10.5,
+            "MinTop": 664.5
+          },
+          {
+            "LineText": "33-7",
+            "Words": [
+              {
+                "WordText": "33-7",
+                "Left": 301.5,
+                "Top": 692.5,
+                "Height": 8.5,
+                "Width": 18.5
+              }
+            ],
+            "MaxHeight": 8.5,
+            "MinTop": 692.5
+          },
+          {
+            "LineText": "9800",
+            "Words": [
+              {
+                "WordText": "9800",
+                "Left": 301.5,
+                "Top": 717,
+                "Height": 10,
+                "Width": 24
+              }
+            ],
+            "MaxHeight": 10,
+            "MinTop": 717
+          },
+          {
+            "LineText": "65.0",
+            "Words": [
+              {
+                "WordText": "65.0",
+                "Left": 301.5,
+                "Top": 743,
+                "Height": 10,
+                "Width": 20
+              }
+            ],
+            "MaxHeight": 10,
+            "MinTop": 743
+          },
+          {
+            "LineText": "28.0",
+            "Words": [
+              {
+                "WordText": "28.0",
+                "Left": 301.5,
+                "Top": 769,
+                "Height": 8.5,
+                "Width": 20
+              }
+            ],
+            "MaxHeight": 8.5,
+            "MinTop": 769
+          },
+          {
+            "LineText": "5.0",
+            "Words": [
+              {
+                "WordText": "5.0",
+                "Left": 301.5,
+                "Top": 797,
+                "Height": 8.5,
+                "Width": 14
+              }
+            ],
+            "MaxHeight": 8.5,
+            "MinTop": 797
+          },
+          {
+            "LineText": "2.0",
+            "Words": [
+              {
+                "WordText": "2.0",
+                "Left": 301.5,
+                "Top": 823,
+                "Height": 7,
+                "Width": 14
+              }
+            ],
+            "MaxHeight": 7,
+            "MinTop": 823
+          },
+          {
+            "LineText": "0.5",
+            "Words": [
+              {
+                "WordText": "0.5",
+                "Left": 301.5,
+                "Top": 849.5,
+                "Height": 8.5,
+                "Width": 14
+              }
+            ],
+            "MaxHeight": 8.5,
+            "MinTop": 849.5
+          },
+          {
+            "LineText": "245000",
+            "Words": [
+              {
+                "WordText": "245000",
+                "Left": 301.5,
+                "Top": 875.5,
+                "Height": 8.5,
+                "Width": 35
+              }
+            ],
+            "MaxHeight": 8.5,
+            "MinTop": 875.5
+          },
+          {
+            "LineText": "9.8",
+            "Words": [
+              {
+                "WordText": "9.8",
+                "Left": 301.5,
+                "Top": 900,
+                "Height": 10.5,
+                "Width": 14.5
+              }
+            ],
+            "MaxHeight": 10.5,
+            "MinTop": 900
+          },
+          {
+            "LineText": "unidad",
+            "Words": [
+              {
+                "WordText": "unidad",
+                "Left": 386,
+                "Top": 533,
+                "Height": 9,
+                "Width": 33.5
+              }
+            ],
+            "MaxHeight": 9,
+            "MinTop": 533
+          },
+          {
+            "LineText": "g/dL",
+            "Words": [
+              {
+                "WordText": "g/dL",
+                "Left": 386,
+                "Top": 559,
+                "Height": 11.5,
+                "Width": 21.5
+              }
+            ],
+            "MaxHeight": 11.5,
+            "MinTop": 559
+          },
+          {
+            "LineText": "mill/pL",
+            "Words": [
+              {
+                "WordText": "mill/pL",
+                "Left": 386.5,
+                "Top": 611.5,
+                "Height": 11.5,
+                "Width": 32
+              }
+            ],
+            "MaxHeight": 11.5,
+            "MinTop": 611.5
+          },
+          {
+            "LineText": "pg",
+            "Words": [
+              {
+                "WordText": "pg",
+                "Left": 386.5,
+                "Top": 666,
+                "Height": 9.5,
+                "Width": 12
+              }
+            ],
+            "MaxHeight": 9.5,
+            "MinTop": 666
+          },
+          {
+            "LineText": "g/dL",
+            "Words": [
+              {
+                "WordText": "g/dL",
+                "Left": 386,
+                "Top": 690,
+                "Height": 11.5,
+                "Width": 21.5
+              }
+            ],
+            "MaxHeight": 11.5,
+            "MinTop": 690
+          },
+          {
+            "LineText": "cel/pL",
+            "Words": [
+              {
+                "WordText": "cel/pL",
+                "Left": 386.5,
+                "Top": 716.5,
+                "Height": 11,
+                "Width": 28.5
+              }
+            ],
+            "MaxHeight": 11,
+            "MinTop": 716.5
+          },
+          {
+            "LineText": "cel/pL",
+            "Words": [
+              {
+                "WordText": "cel/pL",
+                "Left": 386.5,
+                "Top": 873.5,
+                "Height": 11,
+                "Width": 28.5
+              }
+            ],
+            "MaxHeight": 11,
+            "MinTop": 873.5
+          },
+          {
+            "LineText": "fL",
+            "Words": [
+              {
+                "WordText": "fL",
+                "Left": 386,
+                "Top": 900,
+                "Height": 8,
+                "Width": 9.5
+              }
+            ],
+            "MaxHeight": 8,
+            "MinTop": 900
+          },
+          {
+            "LineText": "fecha_toma: 2026-05-20",
+            "Words": [
+              {
+                "WordText": "fecha_toma:",
+                "Left": 435.5,
+                "Top": 343.5,
+                "Height": 12,
+                "Width": 67
+              },
+              {
+                "WordText": "2026-05-20",
+                "Left": 506.5,
+                "Top": 344,
+                "Height": 10.5,
+                "Width": 56.5
+              }
+            ],
+            "MaxHeight": 12,
+            "MinTop": 343.5
+          },
+          {
+            "LineText": "hora_toma: 07:30",
+            "Words": [
+              {
+                "WordText": "hora_toma:",
+                "Left": 436,
+                "Top": 360,
+                "Height": 12,
+                "Width": 62
+              },
+              {
+                "WordText": "07:30",
+                "Left": 501.5,
+                "Top": 362,
+                "Height": 9.5,
+                "Width": 28
+              }
+            ],
+            "MaxHeight": 12,
+            "MinTop": 360
+          },
+          {
+            "LineText": "fecha_resultado: 2026-05-21",
+            "Words": [
+              {
+                "WordText": "fecha_resultado:",
+                "Left": 435.5,
+                "Top": 376.5,
+                "Height": 12,
+                "Width": 90
+              },
+              {
+                "WordText": "2026-05-21",
+                "Left": 529.5,
+                "Top": 377,
+                "Height": 10.5,
+                "Width": 53.5
+              }
+            ],
+            "MaxHeight": 12,
+            "MinTop": 376.5
+          },
+          {
+            "LineText": "rango_min",
+            "Words": [
+              {
+                "WordText": "rango_min",
+                "Left": 468,
+                "Top": 533.5,
+                "Height": 11,
+                "Width": 53
+              }
+            ],
+            "MaxHeight": 11,
+            "MinTop": 533.5
+          },
+          {
+            "LineText": "13-5",
+            "Words": [
+              {
+                "WordText": "13-5",
+                "Left": 467.5,
+                "Top": 561.5,
+                "Height": 8.5,
+                "Width": 17.5
+              }
+            ],
+            "MaxHeight": 8.5,
+            "MinTop": 561.5
+          },
+          {
+            "LineText": "41.0",
+            "Words": [
+              {
+                "WordText": "41.0",
+                "Left": 467.5,
+                "Top": 587.5,
+                "Height": 8.5,
+                "Width": 19
+              }
+            ],
+            "MaxHeight": 8.5,
+            "MinTop": 587.5
+          },
+          {
+            "LineText": "4-5",
+            "Words": [
+              {
+                "WordText": "4-5",
+                "Left": 467.5,
+                "Top": 614,
+                "Height": 8,
+                "Width": 14
+              }
+            ],
+            "MaxHeight": 8,
+            "MinTop": 614
+          },
+          {
+            "LineText": "80.0",
+            "Words": [
+              {
+                "WordText": "80.0",
+                "Left": 468,
+                "Top": 638.5,
+                "Height": 8,
+                "Width": 21
+              }
+            ],
+            "MaxHeight": 8,
+            "MinTop": 638.5
+          },
+          {
+            "LineText": "27.0",
+            "Words": [
+              {
+                "WordText": "27.0",
+                "Left": 468,
+                "Top": 666,
+                "Height": 8.5,
+                "Width": 19
+              }
+            ],
+            "MaxHeight": 8.5,
+            "MinTop": 666
+          },
+          {
+            "LineText": "32.0",
+            "Words": [
+              {
+                "WordText": "32.0",
+                "Left": 467.5,
+                "Top": 692.5,
+                "Height": 8.5,
+                "Width": 19.5
+              }
+            ],
+            "MaxHeight": 8.5,
+            "MinTop": 692.5
+          },
+          {
+            "LineText": "4500",
+            "Words": [
+              {
+                "WordText": "4500",
+                "Left": 467.5,
+                "Top": 718.5,
+                "Height": 8.5,
+                "Width": 24
+              }
+            ],
+            "MaxHeight": 8.5,
+            "MinTop": 718.5
+          },
+          {
+            "LineText": "50.0",
+            "Words": [
+              {
+                "WordText": "50.0",
+                "Left": 468,
+                "Top": 744.5,
+                "Height": 8.5,
+                "Width": 20
+              }
+            ],
+            "MaxHeight": 8.5,
+            "MinTop": 744.5
+          },
+          {
+            "LineText": "20.0",
+            "Words": [
+              {
+                "WordText": "20.0",
+                "Left": 468,
+                "Top": 771,
+                "Height": 6.5,
+                "Width": 20
+              }
+            ],
+            "MaxHeight": 6.5,
+            "MinTop": 771
+          },
+          {
+            "LineText": "2.0",
+            "Words": [
+              {
+                "WordText": "2.0",
+                "Left": 468,
+                "Top": 797,
+                "Height": 6.5,
+                "Width": 13.5
+              }
+            ],
+            "MaxHeight": 6.5,
+            "MinTop": 797
+          },
+          {
+            "LineText": "1.0",
+            "Words": [
+              {
+                "WordText": "1.0",
+                "Left": 467.5,
+                "Top": 823.5,
+                "Height": 6,
+                "Width": 12.5
+              }
+            ],
+            "MaxHeight": 6,
+            "MinTop": 823.5
+          },
+          {
+            "LineText": "0.0",
+            "Words": [
+              {
+                "WordText": "0.0",
+                "Left": 468,
+                "Top": 849.5,
+                "Height": 6.5,
+                "Width": 14.5
+              }
+            ],
+            "MaxHeight": 6.5,
+            "MinTop": 849.5
+          },
+          {
+            "LineText": "150000",
+            "Words": [
+              {
+                "WordText": "150000",
+                "Left": 467.5,
+                "Top": 875.5,
+                "Height": 8.5,
+                "Width": 34.5
+              }
+            ],
+            "MaxHeight": 8.5,
+            "MinTop": 875.5
+          },
+          {
+            "LineText": "7-5",
+            "Words": [
+              {
+                "WordText": "7-5",
+                "Left": 467.5,
+                "Top": 902,
+                "Height": 8.5,
+                "Width": 13.5
+              }
+            ],
+            "MaxHeight": 8.5,
+            "MinTop": 902
+          },
+          {
+            "LineText": "rango_max",
+            "Words": [
+              {
+                "WordText": "rango_max",
+                "Left": 584.5,
+                "Top": 535,
+                "Height": 9.5,
+                "Width": 56.5
+              }
+            ],
+            "MaxHeight": 9.5,
+            "MinTop": 535
+          },
+          {
+            "LineText": "17-5",
+            "Words": [
+              {
+                "WordText": "17-5",
+                "Left": 584.5,
+                "Top": 561.5,
+                "Height": 8.5,
+                "Width": 17.5
+              }
+            ],
+            "MaxHeight": 8.5,
+            "MinTop": 561.5
+          },
+          {
+            "LineText": "53.0",
+            "Words": [
+              {
+                "WordText": "53.0",
+                "Left": 585,
+                "Top": 587.5,
+                "Height": 8.5,
+                "Width": 19.5
+              }
+            ],
+            "MaxHeight": 8.5,
+            "MinTop": 587.5
+          },
+          {
+            "LineText": "5-9",
+            "Words": [
+              {
+                "WordText": "5-9",
+                "Left": 585,
+                "Top": 614,
+                "Height": 8.5,
+                "Width": 14
+              }
+            ],
+            "MaxHeight": 8.5,
+            "MinTop": 614
+          },
+          {
+            "LineText": "100.0",
+            "Words": [
+              {
+                "WordText": "100.0",
+                "Left": 584.5,
+                "Top": 640,
+                "Height": 6.5,
+                "Width": 25.5
+              }
+            ],
+            "MaxHeight": 6.5,
+            "MinTop": 640
+          },
+          {
+            "LineText": "33.0",
+            "Words": [
+              {
+                "WordText": "33.0",
+                "Left": 584.5,
+                "Top": 666,
+                "Height": 9,
+                "Width": 20
+              }
+            ],
+            "MaxHeight": 9,
+            "MinTop": 666
+          },
+          {
+            "LineText": "36.0",
+            "Words": [
+              {
+                "WordText": "36.0",
+                "Left": 584.5,
+                "Top": 691,
+                "Height": 10,
+                "Width": 20.5
+              }
+            ],
+            "MaxHeight": 10,
+            "MinTop": 691
+          },
+          {
+            "LineText": "11000",
+            "Words": [
+              {
+                "WordText": "11000",
+                "Left": 584.5,
+                "Top": 718.5,
+                "Height": 6.5,
+                "Width": 26.5
+              }
+            ],
+            "MaxHeight": 6.5,
+            "MinTop": 718.5
+          },
+          {
+            "LineText": "70.0",
+            "Words": [
+              {
+                "WordText": "70.0",
+                "Left": 584.5,
+                "Top": 744.5,
+                "Height": 8.5,
+                "Width": 20.5
+              }
+            ],
+            "MaxHeight": 8.5,
+            "MinTop": 744.5
+          },
+          {
+            "LineText": "40.0",
+            "Words": [
+              {
+                "WordText": "40.0",
+                "Left": 584.5,
+                "Top": 771,
+                "Height": 8,
+                "Width": 21
+              }
+            ],
+            "MaxHeight": 8,
+            "MinTop": 771
+          },
+          {
+            "LineText": "8.0",
+            "Words": [
+              {
+                "WordText": "8.0",
+                "Left": 584.5,
+                "Top": 795.5,
+                "Height": 8,
+                "Width": 15
+              }
+            ],
+            "MaxHeight": 8,
+            "MinTop": 795.5
+          },
+          {
+            "LineText": "4.0",
+            "Words": [
+              {
+                "WordText": "4.0",
+                "Left": 584.5,
+                "Top": 823.5,
+                "Height": 8,
+                "Width": 15
+              }
+            ],
+            "MaxHeight": 8,
+            "MinTop": 823.5
+          },
+          {
+            "LineText": "1.0",
+            "Words": [
+              {
+                "WordText": "1.0",
+                "Left": 584.5,
+                "Top": 849.5,
+                "Height": 6.5,
+                "Width": 12.5
+              }
+            ],
+            "MaxHeight": 6.5,
+            "MinTop": 849.5
+          },
+          {
+            "LineText": "400000",
+            "Words": [
+              {
+                "WordText": "400000",
+                "Left": 584.5,
+                "Top": 875.5,
+                "Height": 8.5,
+                "Width": 37.5
+              }
+            ],
+            "MaxHeight": 8.5,
+            "MinTop": 875.5
+          },
+          {
+            "LineText": "12.5",
+            "Words": [
+              {
+                "WordText": "12.5",
+                "Left": 584.5,
+                "Top": 902,
+                "Height": 8.5,
+                "Width": 17.5
+              }
+            ],
+            "MaxHeight": 8.5,
+            "MinTop": 902
+          },
+          {
+            "LineText": "estado",
+            "Words": [
+              {
+                "WordText": "estado",
+                "Left": 705.5,
+                "Top": 533.5,
+                "Height": 8.5,
+                "Width": 33
+              }
+            ],
+            "MaxHeight": 8.5,
+            "MinTop": 533.5
+          },
+          {
+            "LineText": "normal",
+            "Words": [
+              {
+                "WordText": "normal",
+                "Left": 706,
+                "Top": 559.5,
+                "Height": 8.5,
+                "Width": 33.5
+              }
+            ],
+            "MaxHeight": 8.5,
+            "MinTop": 559.5
+          },
+          {
+            "LineText": "normal",
+            "Words": [
+              {
+                "WordText": "normal",
+                "Left": 706,
+                "Top": 585.5,
+                "Height": 8.5,
+                "Width": 33.5
+              }
+            ],
+            "MaxHeight": 8.5,
+            "MinTop": 585.5
+          },
+          {
+            "LineText": "normal",
+            "Words": [
+              {
+                "WordText": "normal",
+                "Left": 706,
+                "Top": 612,
+                "Height": 8.5,
+                "Width": 33.5
+              }
+            ],
+            "MaxHeight": 8.5,
+            "MinTop": 612
+          },
+          {
+            "LineText": "normal",
+            "Words": [
+              {
+                "WordText": "normal",
+                "Left": 706,
+                "Top": 638,
+                "Height": 8.5,
+                "Width": 33.5
+              }
+            ],
+            "MaxHeight": 8.5,
+            "MinTop": 638
+          },
+          {
+            "LineText": "normal",
+            "Words": [
+              {
+                "WordText": "normal",
+                "Left": 706,
+                "Top": 664,
+                "Height": 8.5,
+                "Width": 33.5
+              }
+            ],
+            "MaxHeight": 8.5,
+            "MinTop": 664
+          },
+          {
+            "LineText": "normal",
+            "Words": [
+              {
+                "WordText": "normal",
+                "Left": 706,
+                "Top": 690.5,
+                "Height": 8.5,
+                "Width": 33.5
+              }
+            ],
+            "MaxHeight": 8.5,
+            "MinTop": 690.5
+          },
+          {
+            "LineText": "normal",
+            "Words": [
+              {
+                "WordText": "normal",
+                "Left": 706,
+                "Top": 716.5,
+                "Height": 8.5,
+                "Width": 33.5
+              }
+            ],
+            "MaxHeight": 8.5,
+            "MinTop": 716.5
+          },
+          {
+            "LineText": "normal",
+            "Words": [
+              {
+                "WordText": "normal",
+                "Left": 706,
+                "Top": 742.5,
+                "Height": 9,
+                "Width": 33.5
+              }
+            ],
+            "MaxHeight": 9,
+            "MinTop": 742.5
+          },
+          {
+            "LineText": "normal",
+            "Words": [
+              {
+                "WordText": "normal",
+                "Left": 706,
+                "Top": 769,
+                "Height": 8.5,
+                "Width": 33.5
+              }
+            ],
+            "MaxHeight": 8.5,
+            "MinTop": 769
+          },
+          {
+            "LineText": "normal",
+            "Words": [
+              {
+                "WordText": "normal",
+                "Left": 706,
+                "Top": 795,
+                "Height": 8.5,
+                "Width": 33.5
+              }
+            ],
+            "MaxHeight": 8.5,
+            "MinTop": 795
+          },
+          {
+            "LineText": "normal",
+            "Words": [
+              {
+                "WordText": "normal",
+                "Left": 706,
+                "Top": 821.5,
+                "Height": 8.5,
+                "Width": 33.5
+              }
+            ],
+            "MaxHeight": 8.5,
+            "MinTop": 821.5
+          },
+          {
+            "LineText": "normal",
+            "Words": [
+              {
+                "WordText": "normal",
+                "Left": 706,
+                "Top": 847.5,
+                "Height": 8.5,
+                "Width": 33.5
+              }
+            ],
+            "MaxHeight": 8.5,
+            "MinTop": 847.5
+          },
+          {
+            "LineText": "normal",
+            "Words": [
+              {
+                "WordText": "normal",
+                "Left": 706,
+                "Top": 873.5,
+                "Height": 9,
+                "Width": 33.5
+              }
+            ],
+            "MaxHeight": 9,
+            "MinTop": 873.5
+          },
+          {
+            "LineText": "normal",
+            "Words": [
+              {
+                "WordText": "normal",
+                "Left": 706,
+                "Top": 900,
+                "Height": 8.5,
+                "Width": 33.5
+              }
+            ],
+            "MaxHeight": 8.5,
+            "MinTop": 900
+          },
+          {
+            "LineText": "1/3",
+            "Words": [
+              {
+                "WordText": "1/3",
+                "Left": 771.5,
+                "Top": 1027.5,
+                "Height": 8,
+                "Width": 13.5
+              }
+            ],
+            "MaxHeight": 8,
+            "MinTop": 1027.5
+          }
+        ],
+        "HasOverlay": true,
+        "Message": "Total lines: 109"
+      },
+      "FileParseExitCode": 1,
+      "TextOrientation": "0",
+      "ParsedText": "21/5/26, 19:54\r\nCLINICA X\r\nlaboratorio: Lab Central SAC\r\nPACIENTE (paciente)\r\nid: PAC-00123\r\nnombre: Juan Pérez\r\nfecha_nacimiento: 1985-03-14\r\nMUESTRA (muestra)\r\ntipo: sangre\r\nsubtipo: venosa\r\ncondicion: ayunas 12h\r\nmedico solicitante: Dr. Garcia Ramos\r\nRESULTADOS POR GRUPOS (grupos)\r\nResultado de Laboratorio\r\nsexo: M\r\nedad: 41\r\nSangre\r\nresultado id: RES-SANGRE-OOI\r\nfecha_registro:\r\ngrupo: Hemograma completo\r\nnombre\r\nHemoglobina\r\nHematocrito\r\nEritrocitos (GR)\r\nVCM\r\nHCM\r\nCHCM\r\nLeucocitos (C B)\r\nNeutr6filos\r\nLinfocitos\r\nMonocitos\r\nEosinöfilos\r\nBasöfilos\r\nPlaquetas\r\nVPM (Vol. plaquetario)\r\ngrupo: Glucosa y metabolismo\r\nfile:///C:/Users/HP/Downloads/Anålisis - Sangre.htm\r\nvalor\r\n14.2\r\n42.1\r\n4.8\r\n87-7\r\n29.6\r\n33-7\r\n9800\r\n65.0\r\n28.0\r\n5.0\r\n2.0\r\n0.5\r\n245000\r\n9.8\r\nunidad\r\ng/dL\r\nmill/pL\r\npg\r\ng/dL\r\ncel/pL\r\ncel/pL\r\nfL\r\nfecha_toma: 2026-05-20\r\nhora_toma: 07:30\r\nfecha_resultado: 2026-05-21\r\nrango_min\r\n13-5\r\n41.0\r\n4-5\r\n80.0\r\n27.0\r\n32.0\r\n4500\r\n50.0\r\n20.0\r\n2.0\r\n1.0\r\n0.0\r\n150000\r\n7-5\r\nrango_max\r\n17-5\r\n53.0\r\n5-9\r\n100.0\r\n33.0\r\n36.0\r\n11000\r\n70.0\r\n40.0\r\n8.0\r\n4.0\r\n1.0\r\n400000\r\n12.5\r\nestado\r\nnormal\r\nnormal\r\nnormal\r\nnormal\r\nnormal\r\nnormal\r\nnormal\r\nnormal\r\nnormal\r\nnormal\r\nnormal\r\nnormal\r\nnormal\r\nnormal\r\n1/3\r\n",
+      "ErrorMessage": "",
+      "ErrorDetails": ""
+    },
+    {
+      "Overlay": {
+        "Lines": [
+          {
+            "LineText": "21/5/26, 19:54",
+            "Words": [
+              {
+                "WordText": "21/5/26,",
+                "Left": 32,
+                "Top": 22,
+                "Height": 9.5,
+                "Width": 38
+              },
+              {
+                "WordText": "19:54",
+                "Left": 74.5,
+                "Top": 22.5,
+                "Height": 8,
+                "Width": 25.5
+              }
+            ],
+            "MaxHeight": 9.5,
+            "MinTop": 22
+          },
+          {
+            "LineText": "Resultado de Laboratorio - Sangre",
+            "Words": [
+              {
+                "WordText": "Resultado",
+                "Left": 381.5,
+                "Top": 22.5,
+                "Height": 8,
+                "Width": 47
+              },
+              {
+                "WordText": "de",
+                "Left": 432.5,
+                "Top": 22.5,
+                "Height": 8,
+                "Width": 11
+              },
+              {
+                "WordText": "Laboratorio",
+                "Left": 447.5,
+                "Top": 22.5,
+                "Height": 8,
+                "Width": 53
+              },
+              {
+                "WordText": "-",
+                "Left": 504,
+                "Top": 26.5,
+                "Height": 1,
+                "Width": 3
+              },
+              {
+                "WordText": "Sangre",
+                "Left": 510.5,
+                "Top": 22,
+                "Height": 10,
+                "Width": 34
+              }
+            ],
+            "MaxHeight": 10,
+            "MinTop": 22
+          },
+          {
+            "LineText": "nombre",
+            "Words": [
+              {
+                "WordText": "nombre",
+                "Left": 86,
+                "Top": 47.5,
+                "Height": 8.5,
+                "Width": 39
+              }
+            ],
+            "MaxHeight": 8.5,
+            "MinTop": 47.5
+          },
+          {
+            "LineText": "Glucosa en ayunas",
+            "Words": [
+              {
+                "WordText": "Glucosa",
+                "Left": 86,
+                "Top": 80.5,
+                "Height": 8.5,
+                "Width": 37.5
+              },
+              {
+                "WordText": "en",
+                "Left": 127,
+                "Top": 82.5,
+                "Height": 6,
+                "Width": 11.5
+              },
+              {
+                "WordText": "ayunas",
+                "Left": 141.5,
+                "Top": 82.5,
+                "Height": 8.5,
+                "Width": 33.5
+              }
+            ],
+            "MaxHeight": 8.5,
+            "MinTop": 80.5
+          },
+          {
+            "LineText": "Hemoglobina glicosilada",
+            "Words": [
+              {
+                "WordText": "Hemoglobina",
+                "Left": 86.5,
+                "Top": 113.5,
+                "Height": 11,
+                "Width": 64.5
+              },
+              {
+                "WordText": "glicosilada",
+                "Left": 154.5,
+                "Top": 113.5,
+                "Height": 11,
+                "Width": 50
+              }
+            ],
+            "MaxHeight": 11,
+            "MinTop": 113.5
+          },
+          {
+            "LineText": "(HbA1c)",
+            "Words": [
+              {
+                "WordText": "(HbA1c)",
+                "Left": 86,
+                "Top": 126.5,
+                "Height": 11.5,
+                "Width": 38
+              }
+            ],
+            "MaxHeight": 11.5,
+            "MinTop": 126.5
+          },
+          {
+            "LineText": "Insulina basal",
+            "Words": [
+              {
+                "WordText": "Insulina",
+                "Left": 86.5,
+                "Top": 153,
+                "Height": 8.5,
+                "Width": 36.5
+              },
+              {
+                "WordText": "basal",
+                "Left": 126.5,
+                "Top": 153,
+                "Height": 8.5,
+                "Width": 24
+              }
+            ],
+            "MaxHeight": 8.5,
+            "MinTop": 153
+          },
+          {
+            "LineText": "grupo: Perfil lipidico",
+            "Words": [
+              {
+                "WordText": "grupo:",
+                "Left": 84.5,
+                "Top": 196,
+                "Height": 10.5,
+                "Width": 35.5
+              },
+              {
+                "WordText": "Perfil",
+                "Left": 124,
+                "Top": 194,
+                "Height": 9,
+                "Width": 27.5
+              },
+              {
+                "WordText": "lipidico",
+                "Left": 155.5,
+                "Top": 194,
+                "Height": 12,
+                "Width": 38.5
+              }
+            ],
+            "MaxHeight": 12,
+            "MinTop": 194
+          },
+          {
+            "LineText": "nombre",
+            "Words": [
+              {
+                "WordText": "nombre",
+                "Left": 86,
+                "Top": 230.5,
+                "Height": 8.5,
+                "Width": 39
+              }
+            ],
+            "MaxHeight": 8.5,
+            "MinTop": 230.5
+          },
+          {
+            "LineText": "Colesterol total",
+            "Words": [
+              {
+                "WordText": "Colesterol",
+                "Left": 86,
+                "Top": 257,
+                "Height": 8.5,
+                "Width": 49
+              },
+              {
+                "WordText": "total",
+                "Left": 138,
+                "Top": 257,
+                "Height": 8.5,
+                "Width": 22.5
+              }
+            ],
+            "MaxHeight": 8.5,
+            "MinTop": 257
+          },
+          {
+            "LineText": "HDL colesterol",
+            "Words": [
+              {
+                "WordText": "HDL",
+                "Left": 86.5,
+                "Top": 283.5,
+                "Height": 8,
+                "Width": 20
+              },
+              {
+                "WordText": "colesterol",
+                "Left": 109.5,
+                "Top": 283,
+                "Height": 8.5,
+                "Width": 47.5
+              }
+            ],
+            "MaxHeight": 8.5,
+            "MinTop": 283
+          },
+          {
+            "LineText": "LDL colesterol",
+            "Words": [
+              {
+                "WordText": "LDL",
+                "Left": 86.5,
+                "Top": 310,
+                "Height": 7.5,
+                "Width": 18
+              },
+              {
+                "WordText": "colesterol",
+                "Left": 107.5,
+                "Top": 309,
+                "Height": 8.5,
+                "Width": 47.5
+              }
+            ],
+            "MaxHeight": 8.5,
+            "MinTop": 309
+          },
+          {
+            "LineText": "VLDL colesterol",
+            "Words": [
+              {
+                "WordText": "VLDL",
+                "Left": 85.5,
+                "Top": 336,
+                "Height": 8,
+                "Width": 25.5
+              },
+              {
+                "WordText": "colesterol",
+                "Left": 114,
+                "Top": 335.5,
+                "Height": 8.5,
+                "Width": 47.5
+              }
+            ],
+            "MaxHeight": 8.5,
+            "MinTop": 335.5
+          },
+          {
+            "LineText": "Triglicéridos",
+            "Words": [
+              {
+                "WordText": "Triglicéridos",
+                "Left": 85.5,
+                "Top": 361.5,
+                "Height": 11.5,
+                "Width": 59
+              }
+            ],
+            "MaxHeight": 11.5,
+            "MinTop": 361.5
+          },
+          {
+            "LineText": "indice aterogénico",
+            "Words": [
+              {
+                "WordText": "indice",
+                "Left": 86.5,
+                "Top": 386,
+                "Height": 10,
+                "Width": 28.5
+              },
+              {
+                "WordText": "aterogénico",
+                "Left": 118,
+                "Top": 387.5,
+                "Height": 11.5,
+                "Width": 58.5
+              }
+            ],
+            "MaxHeight": 11.5,
+            "MinTop": 386
+          },
+          {
+            "LineText": "grupo: Funci6n renal",
+            "Words": [
+              {
+                "WordText": "grupo:",
+                "Left": 84.5,
+                "Top": 430.5,
+                "Height": 10.5,
+                "Width": 35.5
+              },
+              {
+                "WordText": "Funci6n",
+                "Left": 124,
+                "Top": 429,
+                "Height": 9,
+                "Width": 41.5
+              },
+              {
+                "WordText": "renal",
+                "Left": 169,
+                "Top": 429,
+                "Height": 9,
+                "Width": 26.5
+              }
+            ],
+            "MaxHeight": 10.5,
+            "MinTop": 429
+          },
+          {
+            "LineText": "nombre",
+            "Words": [
+              {
+                "WordText": "nombre",
+                "Left": 86,
+                "Top": 465.5,
+                "Height": 8.5,
+                "Width": 39
+              }
+            ],
+            "MaxHeight": 8.5,
+            "MinTop": 465.5
+          },
+          {
+            "LineText": "Creatinina",
+            "Words": [
+              {
+                "WordText": "Creatinina",
+                "Left": 86,
+                "Top": 492,
+                "Height": 8,
+                "Width": 48.5
+              }
+            ],
+            "MaxHeight": 8,
+            "MinTop": 492
+          },
+          {
+            "LineText": "Urea",
+            "Words": [
+              {
+                "WordText": "Urea",
+                "Left": 86.5,
+                "Top": 518.5,
+                "Height": 8,
+                "Width": 22.5
+              }
+            ],
+            "MaxHeight": 8,
+            "MinTop": 518.5
+          },
+          {
+            "LineText": "Acido Urico",
+            "Words": [
+              {
+                "WordText": "Acido",
+                "Left": 85.5,
+                "Top": 542.5,
+                "Height": 10,
+                "Width": 27.5
+              },
+              {
+                "WordText": "Urico",
+                "Left": 116.5,
+                "Top": 544,
+                "Height": 8.5,
+                "Width": 23.5
+              }
+            ],
+            "MaxHeight": 10,
+            "MinTop": 542.5
+          },
+          {
+            "LineText": "TFG estimada (CKD-EPI)",
+            "Words": [
+              {
+                "WordText": "TFG",
+                "Left": 85.5,
+                "Top": 570.5,
+                "Height": 8,
+                "Width": 18.5
+              },
+              {
+                "WordText": "estimada",
+                "Left": 107.5,
+                "Top": 570,
+                "Height": 8.5,
+                "Width": 43.5
+              },
+              {
+                "WordText": "(CKD-EPI)",
+                "Left": 154.5,
+                "Top": 569.5,
+                "Height": 11.5,
+                "Width": 47
+              }
+            ],
+            "MaxHeight": 11.5,
+            "MinTop": 569.5
+          },
+          {
+            "LineText": "grupo: Funciön hepåtica",
+            "Words": [
+              {
+                "WordText": "grupo:",
+                "Left": 84.5,
+                "Top": 613,
+                "Height": 10.5,
+                "Width": 35.5
+              },
+              {
+                "WordText": "Funciön",
+                "Left": 124,
+                "Top": 611.5,
+                "Height": 9,
+                "Width": 41.5
+              },
+              {
+                "WordText": "hepåtica",
+                "Left": 169,
+                "Top": 611,
+                "Height": 12,
+                "Width": 45.5
+              }
+            ],
+            "MaxHeight": 12,
+            "MinTop": 611
+          },
+          {
+            "LineText": "nombre",
+            "Words": [
+              {
+                "WordText": "nombre",
+                "Left": 86,
+                "Top": 647.5,
+                "Height": 8.5,
+                "Width": 39
+              }
+            ],
+            "MaxHeight": 8.5,
+            "MinTop": 647.5
+          },
+          {
+            "LineText": "TGO (AST)",
+            "Words": [
+              {
+                "WordText": "TGO",
+                "Left": 85.5,
+                "Top": 674.5,
+                "Height": 8,
+                "Width": 21
+              },
+              {
+                "WordText": "(AST)",
+                "Left": 109.5,
+                "Top": 673.5,
+                "Height": 11.5,
+                "Width": 27
+              }
+            ],
+            "MaxHeight": 11.5,
+            "MinTop": 673.5
+          },
+          {
+            "LineText": "TGP (ALT)",
+            "Words": [
+              {
+                "WordText": "TGP",
+                "Left": 85.5,
+                "Top": 700.5,
+                "Height": 8,
+                "Width": 19.5
+              },
+              {
+                "WordText": "(ALT)",
+                "Left": 108,
+                "Top": 699.5,
+                "Height": 11.5,
+                "Width": 26
+              }
+            ],
+            "MaxHeight": 11.5,
+            "MinTop": 699.5
+          },
+          {
+            "LineText": "Fosfatasa alcalina",
+            "Words": [
+              {
+                "WordText": "Fosfatasa",
+                "Left": 86.5,
+                "Top": 726,
+                "Height": 9,
+                "Width": 45.5
+              },
+              {
+                "WordText": "alcalina",
+                "Left": 135.5,
+                "Top": 726,
+                "Height": 8.5,
+                "Width": 36
+              }
+            ],
+            "MaxHeight": 9,
+            "MinTop": 726
+          },
+          {
+            "LineText": "GCT",
+            "Words": [
+              {
+                "WordText": "GCT",
+                "Left": 86,
+                "Top": 753,
+                "Height": 8,
+                "Width": 20
+              }
+            ],
+            "MaxHeight": 8,
+            "MinTop": 753
+          },
+          {
+            "LineText": "Bilirrubina total",
+            "Words": [
+              {
+                "WordText": "Bilirrubina",
+                "Left": 86.5,
+                "Top": 778.5,
+                "Height": 8.5,
+                "Width": 48.5
+              },
+              {
+                "WordText": "total",
+                "Left": 138,
+                "Top": 778.5,
+                "Height": 9,
+                "Width": 22.5
+              }
+            ],
+            "MaxHeight": 9,
+            "MinTop": 778.5
+          },
+          {
+            "LineText": "0.2",
+            "Words": [
+              {
+                "WordText": "0.2",
+                "Left": 446,
+                "Top": 780.5,
+                "Height": 6.5,
+                "Width": 13.5
+              }
+            ],
+            "MaxHeight": 6.5,
+            "MinTop": 780.5
+          },
+          {
+            "LineText": "Bilirrubina directa",
+            "Words": [
+              {
+                "WordText": "Bilirrubina",
+                "Left": 86.5,
+                "Top": 805,
+                "Height": 8.5,
+                "Width": 48.5
+              },
+              {
+                "WordText": "directa",
+                "Left": 138.5,
+                "Top": 805,
+                "Height": 8.5,
+                "Width": 33
+              }
+            ],
+            "MaxHeight": 8.5,
+            "MinTop": 805
+          },
+          {
+            "LineText": "0.0",
+            "Words": [
+              {
+                "WordText": "0.0",
+                "Left": 446,
+                "Top": 807,
+                "Height": 6,
+                "Width": 14.5
+              }
+            ],
+            "MaxHeight": 6,
+            "MinTop": 807
+          },
+          {
+            "LineText": "Bilirrubina indirecta",
+            "Words": [
+              {
+                "WordText": "Bilirrubina",
+                "Left": 86.5,
+                "Top": 831,
+                "Height": 8.5,
+                "Width": 48.5
+              },
+              {
+                "WordText": "indirecta",
+                "Left": 138.5,
+                "Top": 831,
+                "Height": 8.5,
+                "Width": 42
+              }
+            ],
+            "MaxHeight": 8.5,
+            "MinTop": 831
+          },
+          {
+            "LineText": "0.1",
+            "Words": [
+              {
+                "WordText": "0.1",
+                "Left": 446,
+                "Top": 833,
+                "Height": 6.5,
+                "Width": 11.5
+              }
+            ],
+            "MaxHeight": 6.5,
+            "MinTop": 833
+          },
+          {
+            "LineText": "Proteinas totales",
+            "Words": [
+              {
+                "WordText": "Proteinas",
+                "Left": 86.5,
+                "Top": 857,
+                "Height": 9,
+                "Width": 45.5
+              },
+              {
+                "WordText": "totales",
+                "Left": 135,
+                "Top": 857,
+                "Height": 9,
+                "Width": 33.5
+              }
+            ],
+            "MaxHeight": 9,
+            "MinTop": 857
+          },
+          {
+            "LineText": "Albümina",
+            "Words": [
+              {
+                "WordText": "Albümina",
+                "Left": 85.5,
+                "Top": 883.5,
+                "Height": 8.5,
+                "Width": 46
+              }
+            ],
+            "MaxHeight": 8.5,
+            "MinTop": 883.5
+          },
+          {
+            "LineText": "grupo: Tiroides",
+            "Words": [
+              {
+                "WordText": "grupo:",
+                "Left": 84.5,
+                "Top": 926.5,
+                "Height": 10,
+                "Width": 35.5
+              },
+              {
+                "WordText": "Tiroides",
+                "Left": 123,
+                "Top": 924.5,
+                "Height": 9,
+                "Width": 43.5
+              }
+            ],
+            "MaxHeight": 10,
+            "MinTop": 924.5
+          },
+          {
+            "LineText": "nombre",
+            "Words": [
+              {
+                "WordText": "nombre",
+                "Left": 86,
+                "Top": 961,
+                "Height": 8.5,
+                "Width": 39
+              }
+            ],
+            "MaxHeight": 8.5,
+            "MinTop": 961
+          },
+          {
+            "LineText": "TSH",
+            "Words": [
+              {
+                "WordText": "TSH",
+                "Left": 85.5,
+                "Top": 987.5,
+                "Height": 8,
+                "Width": 18.5
+              }
+            ],
+            "MaxHeight": 8,
+            "MinTop": 987.5
+          },
+          {
+            "LineText": "file:///C:/Users/HP/Downloads/Anålisis - Sangre.htm",
+            "Words": [
+              {
+                "WordText": "file:///C:/Users/HP/Downloads/Anålisis",
+                "Left": 32,
+                "Top": 1027.5,
+                "Height": 8,
+                "Width": 180
+              },
+              {
+                "WordText": "-",
+                "Left": 215.5,
+                "Top": 1032,
+                "Height": 1,
+                "Width": 3
+              },
+              {
+                "WordText": "Sangre.htm",
+                "Left": 222.5,
+                "Top": 1027.5,
+                "Height": 10,
+                "Width": 54
+              }
+            ],
+            "MaxHeight": 10,
+            "MinTop": 1027.5
+          },
+          {
+            "LineText": "valor",
+            "Words": [
+              {
+                "WordText": "valor",
+                "Left": 258,
+                "Top": 47.5,
+                "Height": 8.5,
+                "Width": 25.5
+              }
+            ],
+            "MaxHeight": 8.5,
+            "MinTop": 47.5
+          },
+          {
+            "LineText": "126",
+            "Words": [
+              {
+                "WordText": "126",
+                "Left": 258,
+                "Top": 81,
+                "Height": 8,
+                "Width": 15
+              }
+            ],
+            "MaxHeight": 8,
+            "MinTop": 81
+          },
+          {
+            "LineText": "6.8",
+            "Words": [
+              {
+                "WordText": "6.8",
+                "Left": 258,
+                "Top": 120.5,
+                "Height": 8,
+                "Width": 15
+              }
+            ],
+            "MaxHeight": 8,
+            "MinTop": 120.5
+          },
+          {
+            "LineText": "14.2",
+            "Words": [
+              {
+                "WordText": "14.2",
+                "Left": 258,
+                "Top": 155,
+                "Height": 8,
+                "Width": 18
+              }
+            ],
+            "MaxHeight": 8,
+            "MinTop": 155
+          },
+          {
+            "LineText": "unidad",
+            "Words": [
+              {
+                "WordText": "unidad",
+                "Left": 296,
+                "Top": 47.5,
+                "Height": 8,
+                "Width": 33.5
+              }
+            ],
+            "MaxHeight": 8,
+            "MinTop": 47.5
+          },
+          {
+            "LineText": "mg/dL",
+            "Words": [
+              {
+                "WordText": "mg/dL",
+                "Left": 296.5,
+                "Top": 80,
+                "Height": 11.5,
+                "Width": 30.5
+              }
+            ],
+            "MaxHeight": 11.5,
+            "MinTop": 80
+          },
+          {
+            "LineText": "pUI/mL",
+            "Words": [
+              {
+                "WordText": "pUI/mL",
+                "Left": 296.5,
+                "Top": 153,
+                "Height": 11,
+                "Width": 35.5
+              }
+            ],
+            "MaxHeight": 11,
+            "MinTop": 153
+          },
+          {
+            "LineText": "unidad",
+            "Words": [
+              {
+                "WordText": "unidad",
+                "Left": 290,
+                "Top": 230.5,
+                "Height": 8.5,
+                "Width": 33
+              }
+            ],
+            "MaxHeight": 8.5,
+            "MinTop": 230.5
+          },
+          {
+            "LineText": "mg/dL",
+            "Words": [
+              {
+                "WordText": "mg/dL",
+                "Left": 290,
+                "Top": 256.5,
+                "Height": 11.5,
+                "Width": 30.5
+              }
+            ],
+            "MaxHeight": 11.5,
+            "MinTop": 256.5
+          },
+          {
+            "LineText": "mg/dL",
+            "Words": [
+              {
+                "WordText": "mg/dL",
+                "Left": 290,
+                "Top": 283,
+                "Height": 11.5,
+                "Width": 30.5
+              }
+            ],
+            "MaxHeight": 11.5,
+            "MinTop": 283
+          },
+          {
+            "LineText": "mg/dL",
+            "Words": [
+              {
+                "WordText": "mg/dL",
+                "Left": 290,
+                "Top": 309,
+                "Height": 11.5,
+                "Width": 30.5
+              }
+            ],
+            "MaxHeight": 11.5,
+            "MinTop": 309
+          },
+          {
+            "LineText": "mg/dL",
+            "Words": [
+              {
+                "WordText": "mg/dL",
+                "Left": 290,
+                "Top": 335,
+                "Height": 11.5,
+                "Width": 30.5
+              }
+            ],
+            "MaxHeight": 11.5,
+            "MinTop": 335
+          },
+          {
+            "LineText": "mg/dL",
+            "Words": [
+              {
+                "WordText": "mg/dL",
+                "Left": 290,
+                "Top": 361.5,
+                "Height": 11.5,
+                "Width": 30.5
+              }
+            ],
+            "MaxHeight": 11.5,
+            "MinTop": 361.5
+          },
+          {
+            "LineText": "ratio",
+            "Words": [
+              {
+                "WordText": "ratio",
+                "Left": 290,
+                "Top": 388,
+                "Height": 8.5,
+                "Width": 22
+              }
+            ],
+            "MaxHeight": 8.5,
+            "MinTop": 388
+          },
+          {
+            "LineText": "rango min rango max estado",
+            "Words": [
+              {
+                "WordText": "rango",
+                "Left": 345,
+                "Top": 49,
+                "Height": 9.5,
+                "Width": 28.5
+              },
+              {
+                "WordText": "min",
+                "Left": 380,
+                "Top": 47.5,
+                "Height": 8,
+                "Width": 18.5
+              },
+              {
+                "WordText": "rango",
+                "Left": 412,
+                "Top": 49,
+                "Height": 9.5,
+                "Width": 29
+              },
+              {
+                "WordText": "max",
+                "Left": 447,
+                "Top": 50,
+                "Height": 5.5,
+                "Width": 21
+              },
+              {
+                "WordText": "estado",
+                "Left": 481,
+                "Top": 47.5,
+                "Height": 8.5,
+                "Width": 33.5
+              }
+            ],
+            "MaxHeight": 9.5,
+            "MinTop": 47.5
+          },
+          {
+            "LineText": "70",
+            "Words": [
+              {
+                "WordText": "70",
+                "Left": 344.5,
+                "Top": 82.5,
+                "Height": 8,
+                "Width": 11.5
+              }
+            ],
+            "MaxHeight": 8,
+            "MinTop": 82.5
+          },
+          {
+            "LineText": "null",
+            "Words": [
+              {
+                "WordText": "null",
+                "Left": 345,
+                "Top": 120,
+                "Height": 8.5,
+                "Width": 16.5
+              }
+            ],
+            "MaxHeight": 8.5,
+            "MinTop": 120
+          },
+          {
+            "LineText": "2.0",
+            "Words": [
+              {
+                "WordText": "2.0",
+                "Left": 345,
+                "Top": 155,
+                "Height": 6.5,
+                "Width": 13.5
+              }
+            ],
+            "MaxHeight": 6.5,
+            "MinTop": 155
+          },
+          {
+            "LineText": "rango",
+            "Words": [
+              {
+                "WordText": "rango",
+                "Left": 356.5,
+                "Top": 232.5,
+                "Height": 9.5,
+                "Width": 29
+              }
+            ],
+            "MaxHeight": 9.5,
+            "MinTop": 232.5
+          },
+          {
+            "LineText": "null",
+            "Words": [
+              {
+                "WordText": "null",
+                "Left": 357,
+                "Top": 257,
+                "Height": 8.5,
+                "Width": 16.5
+              }
+            ],
+            "MaxHeight": 8.5,
+            "MinTop": 257
+          },
+          {
+            "LineText": "40",
+            "Words": [
+              {
+                "WordText": "40",
+                "Left": 356.5,
+                "Top": 285,
+                "Height": 8,
+                "Width": 12
+              }
+            ],
+            "MaxHeight": 8,
+            "MinTop": 285
+          },
+          {
+            "LineText": "null",
+            "Words": [
+              {
+                "WordText": "null",
+                "Left": 357,
+                "Top": 309,
+                "Height": 8.5,
+                "Width": 16.5
+              }
+            ],
+            "MaxHeight": 8.5,
+            "MinTop": 309
+          },
+          {
+            "LineText": "null",
+            "Words": [
+              {
+                "WordText": "null",
+                "Left": 357,
+                "Top": 335.5,
+                "Height": 8.5,
+                "Width": 16.5
+              }
+            ],
+            "MaxHeight": 8.5,
+            "MinTop": 335.5
+          },
+          {
+            "LineText": "null",
+            "Words": [
+              {
+                "WordText": "null",
+                "Left": 357,
+                "Top": 361.5,
+                "Height": 8.5,
+                "Width": 16.5
+              }
+            ],
+            "MaxHeight": 8.5,
+            "MinTop": 361.5
+          },
+          {
+            "LineText": "null",
+            "Words": [
+              {
+                "WordText": "null",
+                "Left": 357,
+                "Top": 387.5,
+                "Height": 8.5,
+                "Width": 16.5
+              }
+            ],
+            "MaxHeight": 8.5,
+            "MinTop": 387.5
+          },
+          {
+            "LineText": "100",
+            "Words": [
+              {
+                "WordText": "100",
+                "Left": 412,
+                "Top": 82.5,
+                "Height": 6,
+                "Width": 16
+              }
+            ],
+            "MaxHeight": 6,
+            "MinTop": 82.5
+          },
+          {
+            "LineText": "5-7",
+            "Words": [
+              {
+                "WordText": "5-7",
+                "Left": 412,
+                "Top": 122,
+                "Height": 8.5,
+                "Width": 13
+              }
+            ],
+            "MaxHeight": 8.5,
+            "MinTop": 122
+          },
+          {
+            "LineText": "25.0",
+            "Words": [
+              {
+                "WordText": "25.0",
+                "Left": 412,
+                "Top": 155,
+                "Height": 8.5,
+                "Width": 19.5
+              }
+            ],
+            "MaxHeight": 8.5,
+            "MinTop": 155
+          },
+          {
+            "LineText": "[ALTO]",
+            "Words": [
+              {
+                "WordText": "[ALTO]",
+                "Left": 481.5,
+                "Top": 79.5,
+                "Height": 12,
+                "Width": 34
+              }
+            ],
+            "MaxHeight": 12,
+            "MinTop": 79.5
+          },
+          {
+            "LineText": "[ALTO]",
+            "Words": [
+              {
+                "WordText": "[ALTO]",
+                "Left": 481.5,
+                "Top": 119.5,
+                "Height": 11.5,
+                "Width": 34
+              }
+            ],
+            "MaxHeight": 11.5,
+            "MinTop": 119.5
+          },
+          {
+            "LineText": "normal",
+            "Words": [
+              {
+                "WordText": "normal",
+                "Left": 481.5,
+                "Top": 153,
+                "Height": 8.5,
+                "Width": 33.5
+              }
+            ],
+            "MaxHeight": 8.5,
+            "MinTop": 153
+          },
+          {
+            "LineText": "rango",
+            "Words": [
+              {
+                "WordText": "rango",
+                "Left": 452.5,
+                "Top": 232.5,
+                "Height": 9.5,
+                "Width": 29
+              }
+            ],
+            "MaxHeight": 9.5,
+            "MinTop": 232.5
+          },
+          {
+            "LineText": "max",
+            "Words": [
+              {
+                "WordText": "max",
+                "Left": 488,
+                "Top": 233,
+                "Height": 6,
+                "Width": 21
+              }
+            ],
+            "MaxHeight": 6,
+            "MinTop": 233
+          },
+          {
+            "LineText": "200",
+            "Words": [
+              {
+                "WordText": "200",
+                "Left": 453,
+                "Top": 259,
+                "Height": 6.5,
+                "Width": 17
+              }
+            ],
+            "MaxHeight": 6.5,
+            "MinTop": 259
+          },
+          {
+            "LineText": "null",
+            "Words": [
+              {
+                "WordText": "null",
+                "Left": 453,
+                "Top": 283,
+                "Height": 8.5,
+                "Width": 16.5
+              }
+            ],
+            "MaxHeight": 8.5,
+            "MinTop": 283
+          },
+          {
+            "LineText": "130",
+            "Words": [
+              {
+                "WordText": "130",
+                "Left": 453,
+                "Top": 311,
+                "Height": 8.5,
+                "Width": 15
+              }
+            ],
+            "MaxHeight": 8.5,
+            "MinTop": 311
+          },
+          {
+            "LineText": "30",
+            "Words": [
+              {
+                "WordText": "30",
+                "Left": 452.5,
+                "Top": 337.5,
+                "Height": 8.5,
+                "Width": 11.5
+              }
+            ],
+            "MaxHeight": 8.5,
+            "MinTop": 337.5
+          },
+          {
+            "LineText": "150",
+            "Words": [
+              {
+                "WordText": "150",
+                "Left": 452.5,
+                "Top": 363.5,
+                "Height": 8.5,
+                "Width": 15.5
+              }
+            ],
+            "MaxHeight": 8.5,
+            "MinTop": 363.5
+          },
+          {
+            "LineText": "5.0",
+            "Words": [
+              {
+                "WordText": "5.0",
+                "Left": 453,
+                "Top": 390,
+                "Height": 8,
+                "Width": 14
+              }
+            ],
+            "MaxHeight": 8,
+            "MinTop": 390
+          },
+          {
+            "LineText": "rango_",
+            "Words": [
+              {
+                "WordText": "rango_",
+                "Left": 454.5,
+                "Top": 467,
+                "Height": 9.5,
+                "Width": 35
+              }
+            ],
+            "MaxHeight": 9.5,
+            "MinTop": 467
+          },
+          {
+            "LineText": "max",
+            "Words": [
+              {
+                "WordText": "max",
+                "Left": 490,
+                "Top": 468,
+                "Height": 6,
+                "Width": 21
+              }
+            ],
+            "MaxHeight": 6,
+            "MinTop": 468
+          },
+          {
+            "LineText": "1.2",
+            "Words": [
+              {
+                "WordText": "1.2",
+                "Left": 454.5,
+                "Top": 493.5,
+                "Height": 6.5,
+                "Width": 11.5
+              }
+            ],
+            "MaxHeight": 6.5,
+            "MinTop": 493.5
+          },
+          {
+            "LineText": "45",
+            "Words": [
+              {
+                "WordText": "45",
+                "Left": 454.5,
+                "Top": 519.5,
+                "Height": 8.5,
+                "Width": 11.5
+              }
+            ],
+            "MaxHeight": 8.5,
+            "MinTop": 519.5
+          },
+          {
+            "LineText": "7.0",
+            "Words": [
+              {
+                "WordText": "7.0",
+                "Left": 454.5,
+                "Top": 546,
+                "Height": 8,
+                "Width": 14
+              }
+            ],
+            "MaxHeight": 8,
+            "MinTop": 546
+          },
+          {
+            "LineText": "null",
+            "Words": [
+              {
+                "WordText": "null",
+                "Left": 455,
+                "Top": 570,
+                "Height": 8.5,
+                "Width": 16.5
+              }
+            ],
+            "MaxHeight": 8.5,
+            "MinTop": 570
+          },
+          {
+            "LineText": "rango_min",
+            "Words": [
+              {
+                "WordText": "rango_min",
+                "Left": 445.5,
+                "Top": 648,
+                "Height": 11,
+                "Width": 54
+              }
+            ],
+            "MaxHeight": 11,
+            "MinTop": 648
+          },
+          {
+            "LineText": "10",
+            "Words": [
+              {
+                "WordText": "10",
+                "Left": 445.5,
+                "Top": 676,
+                "Height": 6.5,
+                "Width": 10
+              }
+            ],
+            "MaxHeight": 6.5,
+            "MinTop": 676
+          },
+          {
+            "LineText": "7",
+            "Words": [
+              {
+                "WordText": "7",
+                "Left": 445.5,
+                "Top": 702,
+                "Height": 8,
+                "Width": 5
+              }
+            ],
+            "MaxHeight": 8,
+            "MinTop": 702
+          },
+          {
+            "LineText": "44",
+            "Words": [
+              {
+                "WordText": "44",
+                "Left": 445.5,
+                "Top": 728.5,
+                "Height": 8,
+                "Width": 12
+              }
+            ],
+            "MaxHeight": 8,
+            "MinTop": 728.5
+          },
+          {
+            "LineText": "8",
+            "Words": [
+              {
+                "WordText": "8",
+                "Left": 446,
+                "Top": 752.5,
+                "Height": 8.5,
+                "Width": 5
+              }
+            ],
+            "MaxHeight": 8.5,
+            "MinTop": 752.5
+          },
+          {
+            "LineText": "6.4",
+            "Words": [
+              {
+                "WordText": "6.4",
+                "Left": 446,
+                "Top": 857.5,
+                "Height": 10,
+                "Width": 14.5
+              }
+            ],
+            "MaxHeight": 10,
+            "MinTop": 857.5
+          },
+          {
+            "LineText": "3-5",
+            "Words": [
+              {
+                "WordText": "3-5",
+                "Left": 445.5,
+                "Top": 885.5,
+                "Height": 8.5,
+                "Width": 13.5
+              }
+            ],
+            "MaxHeight": 8.5,
+            "MinTop": 885.5
+          },
+          {
+            "LineText": "nota",
+            "Words": [
+              {
+                "WordText": "nota",
+                "Left": 529,
+                "Top": 48.5,
+                "Height": 7.5,
+                "Width": 22
+              }
+            ],
+            "MaxHeight": 7.5,
+            "MinTop": 48.5
+          },
+          {
+            "LineText": "Rango prediabetes: 100—125.>126 sugiere",
+            "Words": [
+              {
+                "WordText": "Rango",
+                "Left": 529.5,
+                "Top": 74,
+                "Height": 10.5,
+                "Width": 30.5
+              },
+              {
+                "WordText": "prediabetes:",
+                "Left": 563.5,
+                "Top": 73.5,
+                "Height": 11,
+                "Width": 60.5
+              },
+              {
+                "WordText": "100—125.>126",
+                "Left": 627.5,
+                "Top": 74,
+                "Height": 10,
+                "Width": 64
+              },
+              {
+                "WordText": "sugiere",
+                "Left": 695,
+                "Top": 74,
+                "Height": 10.5,
+                "Width": 35
+              }
+            ],
+            "MaxHeight": 11,
+            "MinTop": 73.5
+          },
+          {
+            "LineText": "diabetes.",
+            "Words": [
+              {
+                "WordText": "diabetes.",
+                "Left": 529,
+                "Top": 87,
+                "Height": 8.5,
+                "Width": 44
+              }
+            ],
+            "MaxHeight": 8.5,
+            "MinTop": 87
+          },
+          {
+            "LineText": "prediabetes. diabetes.",
+            "Words": [
+              {
+                "WordText": "prediabetes.",
+                "Left": 573,
+                "Top": 120,
+                "Height": 11,
+                "Width": 60.5
+              },
+              {
+                "WordText": "diabetes.",
+                "Left": 666.5,
+                "Top": 120,
+                "Height": 8.5,
+                "Width": 44
+              }
+            ],
+            "MaxHeight": 11,
+            "MinTop": 120
+          },
+          {
+            "LineText": "valor",
+            "Words": [
+              {
+                "WordText": "valor",
+                "Left": 235,
+                "Top": 230.5,
+                "Height": 8.5,
+                "Width": 25
+              }
+            ],
+            "MaxHeight": 8.5,
+            "MinTop": 230.5
+          },
+          {
+            "LineText": "218",
+            "Words": [
+              {
+                "WordText": "218",
+                "Left": 235.5,
+                "Top": 257,
+                "Height": 8.5,
+                "Width": 15
+              }
+            ],
+            "MaxHeight": 8.5,
+            "MinTop": 257
+          },
+          {
+            "LineText": "45",
+            "Words": [
+              {
+                "WordText": "45",
+                "Left": 235,
+                "Top": 285,
+                "Height": 8.5,
+                "Width": 11.5
+              }
+            ],
+            "MaxHeight": 8.5,
+            "MinTop": 285
+          },
+          {
+            "LineText": "142",
+            "Words": [
+              {
+                "WordText": "142",
+                "Left": 235,
+                "Top": 311,
+                "Height": 8.5,
+                "Width": 15
+              }
+            ],
+            "MaxHeight": 8.5,
+            "MinTop": 311
+          },
+          {
+            "LineText": "31",
+            "Words": [
+              {
+                "WordText": "31",
+                "Left": 235,
+                "Top": 337.5,
+                "Height": 8.5,
+                "Width": 8.5
+              }
+            ],
+            "MaxHeight": 8.5,
+            "MinTop": 337.5
+          },
+          {
+            "LineText": "155",
+            "Words": [
+              {
+                "WordText": "155",
+                "Left": 235,
+                "Top": 363.5,
+                "Height": 8.5,
+                "Width": 14.5
+              }
+            ],
+            "MaxHeight": 8.5,
+            "MinTop": 363.5
+          },
+          {
+            "LineText": "4.84",
+            "Words": [
+              {
+                "WordText": "4.84",
+                "Left": 235,
+                "Top": 388,
+                "Height": 10,
+                "Width": 21.5
+              }
+            ],
+            "MaxHeight": 10,
+            "MinTop": 388
+          },
+          {
+            "LineText": "valor",
+            "Words": [
+              {
+                "WordText": "valor",
+                "Left": 235.5,
+                "Top": 465.5,
+                "Height": 8.5,
+                "Width": 25.5
+              }
+            ],
+            "MaxHeight": 8.5,
+            "MinTop": 465.5
+          },
+          {
+            "LineText": "0.95",
+            "Words": [
+              {
+                "WordText": "0.95",
+                "Left": 236,
+                "Top": 493.5,
+                "Height": 8.5,
+                "Width": 20
+              }
+            ],
+            "MaxHeight": 8.5,
+            "MinTop": 493.5
+          },
+          {
+            "LineText": "28",
+            "Words": [
+              {
+                "WordText": "28",
+                "Left": 236,
+                "Top": 518,
+                "Height": 8,
+                "Width": 11
+              }
+            ],
+            "MaxHeight": 8,
+            "MinTop": 518
+          },
+          {
+            "LineText": "6.8",
+            "Words": [
+              {
+                "WordText": "6.8",
+                "Left": 236,
+                "Top": 544.5,
+                "Height": 8,
+                "Width": 14.5
+              }
+            ],
+            "MaxHeight": 8,
+            "MinTop": 544.5
+          },
+          {
+            "LineText": "88",
+            "Words": [
+              {
+                "WordText": "88",
+                "Left": 236,
+                "Top": 570.5,
+                "Height": 8,
+                "Width": 12
+              }
+            ],
+            "MaxHeight": 8,
+            "MinTop": 570.5
+          },
+          {
+            "LineText": "valor",
+            "Words": [
+              {
+                "WordText": "valor",
+                "Left": 242.5,
+                "Top": 961,
+                "Height": 8.5,
+                "Width": 25
+              }
+            ],
+            "MaxHeight": 8.5,
+            "MinTop": 961
+          },
+          {
+            "LineText": "2.4",
+            "Words": [
+              {
+                "WordText": "2.4",
+                "Left": 242.5,
+                "Top": 989,
+                "Height": 8.5,
+                "Width": 14
+              }
+            ],
+            "MaxHeight": 8.5,
+            "MinTop": 989
+          },
+          {
+            "LineText": "min",
+            "Words": [
+              {
+                "WordText": "min",
+                "Left": 392,
+                "Top": 231,
+                "Height": 8,
+                "Width": 18.5
+              }
+            ],
+            "MaxHeight": 8,
+            "MinTop": 231
+          },
+          {
+            "LineText": "null",
+            "Words": [
+              {
+                "WordText": "null",
+                "Left": 529,
+                "Top": 153,
+                "Height": 8.5,
+                "Width": 16.5
+              }
+            ],
+            "MaxHeight": 8.5,
+            "MinTop": 153
+          },
+          {
+            "LineText": "estado",
+            "Words": [
+              {
+                "WordText": "estado",
+                "Left": 552,
+                "Top": 230.5,
+                "Height": 8.5,
+                "Width": 33.5
+              }
+            ],
+            "MaxHeight": 8.5,
+            "MinTop": 230.5
+          },
+          {
+            "LineText": "[ALTO]",
+            "Words": [
+              {
+                "WordText": "[ALTO]",
+                "Left": 552.5,
+                "Top": 256,
+                "Height": 12,
+                "Width": 34
+              }
+            ],
+            "MaxHeight": 12,
+            "MinTop": 256
+          },
+          {
+            "LineText": "normal",
+            "Words": [
+              {
+                "WordText": "normal",
+                "Left": 552.5,
+                "Top": 283,
+                "Height": 8.5,
+                "Width": 33.5
+              }
+            ],
+            "MaxHeight": 8.5,
+            "MinTop": 283
+          },
+          {
+            "LineText": "[ALTO]",
+            "Words": [
+              {
+                "WordText": "[ALTO]",
+                "Left": 552.5,
+                "Top": 308.5,
+                "Height": 11.5,
+                "Width": 34
+              }
+            ],
+            "MaxHeight": 11.5,
+            "MinTop": 308.5
+          },
+          {
+            "LineText": "[ALTO]",
+            "Words": [
+              {
+                "WordText": "[ALTO]",
+                "Left": 552.5,
+                "Top": 334.5,
+                "Height": 12,
+                "Width": 34
+              }
+            ],
+            "MaxHeight": 12,
+            "MinTop": 334.5
+          },
+          {
+            "LineText": "[ALTO]",
+            "Words": [
+              {
+                "WordText": "[ALTO]",
+                "Left": 552.5,
+                "Top": 361,
+                "Height": 11.5,
+                "Width": 34
+              }
+            ],
+            "MaxHeight": 11.5,
+            "MinTop": 361
+          },
+          {
+            "LineText": "normal",
+            "Words": [
+              {
+                "WordText": "normal",
+                "Left": 552.5,
+                "Top": 387.5,
+                "Height": 9,
+                "Width": 33.5
+              }
+            ],
+            "MaxHeight": 9,
+            "MinTop": 387.5
+          },
+          {
+            "LineText": "estado",
+            "Words": [
+              {
+                "WordText": "estado",
+                "Left": 535,
+                "Top": 465.5,
+                "Height": 8.5,
+                "Width": 33.5
+              }
+            ],
+            "MaxHeight": 8.5,
+            "MinTop": 465.5
+          },
+          {
+            "LineText": "normal",
+            "Words": [
+              {
+                "WordText": "normal",
+                "Left": 535.5,
+                "Top": 491.5,
+                "Height": 8.5,
+                "Width": 33.5
+              }
+            ],
+            "MaxHeight": 8.5,
+            "MinTop": 491.5
+          },
+          {
+            "LineText": "normal",
+            "Words": [
+              {
+                "WordText": "normal",
+                "Left": 535.5,
+                "Top": 517.5,
+                "Height": 9,
+                "Width": 33.5
+              }
+            ],
+            "MaxHeight": 9,
+            "MinTop": 517.5
+          },
+          {
+            "LineText": "normal",
+            "Words": [
+              {
+                "WordText": "normal",
+                "Left": 535.5,
+                "Top": 544,
+                "Height": 8.5,
+                "Width": 33.5
+              }
+            ],
+            "MaxHeight": 8.5,
+            "MinTop": 544
+          },
+          {
+            "LineText": "[BAJO]",
+            "Words": [
+              {
+                "WordText": "[BAJO]",
+                "Left": 535.5,
+                "Top": 569.5,
+                "Height": 11.5,
+                "Width": 34
+              }
+            ],
+            "MaxHeight": 11.5,
+            "MinTop": 569.5
+          },
+          {
+            "LineText": "nota",
+            "Words": [
+              {
+                "WordText": "nota",
+                "Left": 620.5,
+                "Top": 231.5,
+                "Height": 7.5,
+                "Width": 22
+              }
+            ],
+            "MaxHeight": 7.5,
+            "MinTop": 231.5
+          },
+          {
+            "LineText": "null",
+            "Words": [
+              {
+                "WordText": "null",
+                "Left": 620.5,
+                "Top": 257,
+                "Height": 8.5,
+                "Width": 17
+              }
+            ],
+            "MaxHeight": 8.5,
+            "MinTop": 257
+          },
+          {
+            "LineText": "null",
+            "Words": [
+              {
+                "WordText": "null",
+                "Left": 620.5,
+                "Top": 283,
+                "Height": 8.5,
+                "Width": 17
+              }
+            ],
+            "MaxHeight": 8.5,
+            "MinTop": 283
+          },
+          {
+            "LineText": "null",
+            "Words": [
+              {
+                "WordText": "null",
+                "Left": 620.5,
+                "Top": 309,
+                "Height": 8.5,
+                "Width": 17
+              }
+            ],
+            "MaxHeight": 8.5,
+            "MinTop": 309
+          },
+          {
+            "LineText": "null",
+            "Words": [
+              {
+                "WordText": "null",
+                "Left": 620.5,
+                "Top": 335.5,
+                "Height": 8.5,
+                "Width": 17
+              }
+            ],
+            "MaxHeight": 8.5,
+            "MinTop": 335.5
+          },
+          {
+            "LineText": "null",
+            "Words": [
+              {
+                "WordText": "null",
+                "Left": 620.5,
+                "Top": 361.5,
+                "Height": 8.5,
+                "Width": 17
+              }
+            ],
+            "MaxHeight": 8.5,
+            "MinTop": 361.5
+          },
+          {
+            "LineText": "Colesterol total / HDL",
+            "Words": [
+              {
+                "WordText": "Colesterol",
+                "Left": 620.5,
+                "Top": 387.5,
+                "Height": 9,
+                "Width": 49
+              },
+              {
+                "WordText": "total",
+                "Left": 672.5,
+                "Top": 387.5,
+                "Height": 9,
+                "Width": 22.5
+              },
+              {
+                "WordText": "/",
+                "Left": 698.5,
+                "Top": 387.5,
+                "Height": 10.5,
+                "Width": 3
+              },
+              {
+                "WordText": "HDL",
+                "Left": 705,
+                "Top": 388.5,
+                "Height": 7.5,
+                "Width": 19.5
+              }
+            ],
+            "MaxHeight": 10.5,
+            "MinTop": 387.5
+          },
+          {
+            "LineText": "nota",
+            "Words": [
+              {
+                "WordText": "nota",
+                "Left": 591,
+                "Top": 466.5,
+                "Height": 7.5,
+                "Width": 22
+              }
+            ],
+            "MaxHeight": 7.5,
+            "MinTop": 466.5
+          },
+          {
+            "LineText": "null",
+            "Words": [
+              {
+                "WordText": "null",
+                "Left": 591,
+                "Top": 491.5,
+                "Height": 8.5,
+                "Width": 17
+              }
+            ],
+            "MaxHeight": 8.5,
+            "MinTop": 491.5
+          },
+          {
+            "LineText": "null",
+            "Words": [
+              {
+                "WordText": "null",
+                "Left": 591,
+                "Top": 517.5,
+                "Height": 8.5,
+                "Width": 17
+              }
+            ],
+            "MaxHeight": 8.5,
+            "MinTop": 517.5
+          },
+          {
+            "LineText": "null",
+            "Words": [
+              {
+                "WordText": "null",
+                "Left": 591,
+                "Top": 544,
+                "Height": 8.5,
+                "Width": 17
+              }
+            ],
+            "MaxHeight": 8.5,
+            "MinTop": 544
+          },
+          {
+            "LineText": "60—89: leve disminuciön. Vigilar.",
+            "Words": [
+              {
+                "WordText": "60—89:",
+                "Left": 591,
+                "Top": 570.5,
+                "Height": 10,
+                "Width": 33.5
+              },
+              {
+                "WordText": "leve",
+                "Left": 628,
+                "Top": 570,
+                "Height": 8.5,
+                "Width": 19
+              },
+              {
+                "WordText": "disminuciön.",
+                "Left": 650.5,
+                "Top": 570,
+                "Height": 8.5,
+                "Width": 61
+              },
+              {
+                "WordText": "Vigilar.",
+                "Left": 714.5,
+                "Top": 570,
+                "Height": 11.5,
+                "Width": 32.5
+              }
+            ],
+            "MaxHeight": 11.5,
+            "MinTop": 570
+          },
+          {
+            "LineText": "unidad",
+            "Words": [
+              {
+                "WordText": "unidad",
+                "Left": 280,
+                "Top": 465.5,
+                "Height": 8.5,
+                "Width": 33.5
+              }
+            ],
+            "MaxHeight": 8.5,
+            "MinTop": 465.5
+          },
+          {
+            "LineText": "mg/dL",
+            "Words": [
+              {
+                "WordText": "mg/dL",
+                "Left": 280,
+                "Top": 491.5,
+                "Height": 11.5,
+                "Width": 31
+              }
+            ],
+            "MaxHeight": 11.5,
+            "MinTop": 491.5
+          },
+          {
+            "LineText": "mg/dL",
+            "Words": [
+              {
+                "WordText": "mg/dL",
+                "Left": 280,
+                "Top": 517.5,
+                "Height": 11.5,
+                "Width": 31
+              }
+            ],
+            "MaxHeight": 11.5,
+            "MinTop": 517.5
+          },
+          {
+            "LineText": "mg/dL",
+            "Words": [
+              {
+                "WordText": "mg/dL",
+                "Left": 280,
+                "Top": 543.5,
+                "Height": 11.5,
+                "Width": 31
+              }
+            ],
+            "MaxHeight": 11.5,
+            "MinTop": 543.5
+          },
+          {
+            "LineText": "mL/min/1.73m2",
+            "Words": [
+              {
+                "WordText": "mL/min/1.73m2",
+                "Left": 280,
+                "Top": 570,
+                "Height": 10.5,
+                "Width": 70
+              }
+            ],
+            "MaxHeight": 10.5,
+            "MinTop": 570
+          },
+          {
+            "LineText": "valor",
+            "Words": [
+              {
+                "WordText": "valor",
+                "Left": 287.5,
+                "Top": 647.5,
+                "Height": 8.5,
+                "Width": 25.5
+              }
+            ],
+            "MaxHeight": 8.5,
+            "MinTop": 647.5
+          },
+          {
+            "LineText": "28",
+            "Words": [
+              {
+                "WordText": "28",
+                "Left": 288,
+                "Top": 674,
+                "Height": 8.5,
+                "Width": 11
+              }
+            ],
+            "MaxHeight": 8.5,
+            "MinTop": 674
+          },
+          {
+            "LineText": "35",
+            "Words": [
+              {
+                "WordText": "35",
+                "Left": 287.5,
+                "Top": 702,
+                "Height": 8.5,
+                "Width": 10.5
+              }
+            ],
+            "MaxHeight": 8.5,
+            "MinTop": 702
+          },
+          {
+            "LineText": "82",
+            "Words": [
+              {
+                "WordText": "82",
+                "Left": 288,
+                "Top": 726.5,
+                "Height": 8,
+                "Width": 10.5
+              }
+            ],
+            "MaxHeight": 8,
+            "MinTop": 726.5
+          },
+          {
+            "LineText": "30",
+            "Words": [
+              {
+                "WordText": "30",
+                "Left": 287.5,
+                "Top": 754.5,
+                "Height": 8.5,
+                "Width": 11
+              }
+            ],
+            "MaxHeight": 8.5,
+            "MinTop": 754.5
+          },
+          {
+            "LineText": "0.9",
+            "Words": [
+              {
+                "WordText": "0.9",
+                "Left": 287.5,
+                "Top": 780.5,
+                "Height": 9,
+                "Width": 15
+              }
+            ],
+            "MaxHeight": 9,
+            "MinTop": 780.5
+          },
+          {
+            "LineText": "0.3",
+            "Words": [
+              {
+                "WordText": "0.3",
+                "Left": 287.5,
+                "Top": 806.5,
+                "Height": 9,
+                "Width": 14
+              }
+            ],
+            "MaxHeight": 9,
+            "MinTop": 806.5
+          },
+          {
+            "LineText": "0.6",
+            "Words": [
+              {
+                "WordText": "0.6",
+                "Left": 287.5,
+                "Top": 831.5,
+                "Height": 8,
+                "Width": 15
+              }
+            ],
+            "MaxHeight": 8,
+            "MinTop": 831.5
+          },
+          {
+            "LineText": "7.2",
+            "Words": [
+              {
+                "WordText": "7.2",
+                "Left": 287.5,
+                "Top": 859,
+                "Height": 8.5,
+                "Width": 13.5
+              }
+            ],
+            "MaxHeight": 8.5,
+            "MinTop": 859
+          },
+          {
+            "LineText": "4.1",
+            "Words": [
+              {
+                "WordText": "4.1",
+                "Left": 287.5,
+                "Top": 885.5,
+                "Height": 8,
+                "Width": 12
+              }
+            ],
+            "MaxHeight": 8,
+            "MinTop": 885.5
+          },
+          {
+            "LineText": "unidad",
+            "Words": [
+              {
+                "WordText": "unidad",
+                "Left": 319.5,
+                "Top": 961,
+                "Height": 8.5,
+                "Width": 33.5
+              }
+            ],
+            "MaxHeight": 8.5,
+            "MinTop": 961
+          },
+          {
+            "LineText": "pUl/mL",
+            "Words": [
+              {
+                "WordText": "pUl/mL",
+                "Left": 319.5,
+                "Top": 987,
+                "Height": 11,
+                "Width": 35.5
+              }
+            ],
+            "MaxHeight": 11,
+            "MinTop": 987
+          },
+          {
+            "LineText": "rango_min",
+            "Words": [
+              {
+                "WordText": "rango_min",
+                "Left": 377,
+                "Top": 465.5,
+                "Height": 11,
+                "Width": 53.5
+              }
+            ],
+            "MaxHeight": 11,
+            "MinTop": 465.5
+          },
+          {
+            "LineText": "0.7",
+            "Words": [
+              {
+                "WordText": "0.7",
+                "Left": 377,
+                "Top": 493.5,
+                "Height": 8.5,
+                "Width": 14
+              }
+            ],
+            "MaxHeight": 8.5,
+            "MinTop": 493.5
+          },
+          {
+            "LineText": "15",
+            "Words": [
+              {
+                "WordText": "15",
+                "Left": 377,
+                "Top": 519.5,
+                "Height": 8.5,
+                "Width": 9
+              }
+            ],
+            "MaxHeight": 8.5,
+            "MinTop": 519.5
+          },
+          {
+            "LineText": "3-4",
+            "Words": [
+              {
+                "WordText": "3-4",
+                "Left": 376.5,
+                "Top": 546,
+                "Height": 8.5,
+                "Width": 14.5
+              }
+            ],
+            "MaxHeight": 8.5,
+            "MinTop": 546
+          },
+          {
+            "LineText": "90",
+            "Words": [
+              {
+                "WordText": "90",
+                "Left": 377,
+                "Top": 572,
+                "Height": 8.5,
+                "Width": 11.5
+              }
+            ],
+            "MaxHeight": 8.5,
+            "MinTop": 572
+          },
+          {
+            "LineText": "unidad",
+            "Words": [
+              {
+                "WordText": "unidad",
+                "Left": 358.5,
+                "Top": 647.5,
+                "Height": 8.5,
+                "Width": 33.5
+              }
+            ],
+            "MaxHeight": 8.5,
+            "MinTop": 647.5
+          },
+          {
+            "LineText": "UIL",
+            "Words": [
+              {
+                "WordText": "UIL",
+                "Left": 359,
+                "Top": 673.5,
+                "Height": 10.5,
+                "Width": 16
+              }
+            ],
+            "MaxHeight": 10.5,
+            "MinTop": 673.5
+          },
+          {
+            "LineText": "UIL",
+            "Words": [
+              {
+                "WordText": "UIL",
+                "Left": 359,
+                "Top": 700,
+                "Height": 10,
+                "Width": 16
+              }
+            ],
+            "MaxHeight": 10,
+            "MinTop": 700
+          },
+          {
+            "LineText": "UIL",
+            "Words": [
+              {
+                "WordText": "UIL",
+                "Left": 359,
+                "Top": 726,
+                "Height": 10.5,
+                "Width": 16
+              }
+            ],
+            "MaxHeight": 10.5,
+            "MinTop": 726
+          },
+          {
+            "LineText": "UIL",
+            "Words": [
+              {
+                "WordText": "UIL",
+                "Left": 359,
+                "Top": 752,
+                "Height": 10.5,
+                "Width": 16
+              }
+            ],
+            "MaxHeight": 10.5,
+            "MinTop": 752
+          },
+          {
+            "LineText": "mg/dL",
+            "Words": [
+              {
+                "WordText": "mg/dL",
+                "Left": 358.5,
+                "Top": 778.5,
+                "Height": 11.5,
+                "Width": 31
+              }
+            ],
+            "MaxHeight": 11.5,
+            "MinTop": 778.5
+          },
+          {
+            "LineText": "mg/dL",
+            "Words": [
+              {
+                "WordText": "mg/dL",
+                "Left": 359,
+                "Top": 804.5,
+                "Height": 11.5,
+                "Width": 30.5
+              }
+            ],
+            "MaxHeight": 11.5,
+            "MinTop": 804.5
+          },
+          {
+            "LineText": "mg/dL",
+            "Words": [
+              {
+                "WordText": "mg/dL",
+                "Left": 359,
+                "Top": 830.5,
+                "Height": 11.5,
+                "Width": 30.5
+              }
+            ],
+            "MaxHeight": 11.5,
+            "MinTop": 830.5
+          },
+          {
+            "LineText": "g/dL",
+            "Words": [
+              {
+                "WordText": "g/dL",
+                "Left": 358.5,
+                "Top": 857,
+                "Height": 11.5,
+                "Width": 21
+              }
+            ],
+            "MaxHeight": 11.5,
+            "MinTop": 857
+          },
+          {
+            "LineText": "g/dL",
+            "Words": [
+              {
+                "WordText": "g/dL",
+                "Left": 358.5,
+                "Top": 883,
+                "Height": 11.5,
+                "Width": 21
+              }
+            ],
+            "MaxHeight": 11.5,
+            "MinTop": 883
+          },
+          {
+            "LineText": "rango_",
+            "Words": [
+              {
+                "WordText": "rango_",
+                "Left": 417.5,
+                "Top": 963,
+                "Height": 9.5,
+                "Width": 35
+              }
+            ],
+            "MaxHeight": 9.5,
+            "MinTop": 963
+          },
+          {
+            "LineText": "0.4",
+            "Words": [
+              {
+                "WordText": "0.4",
+                "Left": 417.5,
+                "Top": 989,
+                "Height": 8.5,
+                "Width": 14.5
+              }
+            ],
+            "MaxHeight": 8.5,
+            "MinTop": 989
+          },
+          {
+            "LineText": "min",
+            "Words": [
+              {
+                "WordText": "min",
+                "Left": 452.5,
+                "Top": 961,
+                "Height": 8.5,
+                "Width": 18.5
+              }
+            ],
+            "MaxHeight": 8.5,
+            "MinTop": 961
+          },
+          {
+            "LineText": "rango_max",
+            "Words": [
+              {
+                "WordText": "rango_max",
+                "Left": 570.5,
+                "Top": 649.5,
+                "Height": 9.5,
+                "Width": 56.5
+              }
+            ],
+            "MaxHeight": 9.5,
+            "MinTop": 649.5
+          },
+          {
+            "LineText": "40",
+            "Words": [
+              {
+                "WordText": "40",
+                "Left": 570.5,
+                "Top": 676,
+                "Height": 8,
+                "Width": 12
+              }
+            ],
+            "MaxHeight": 8,
+            "MinTop": 676
+          },
+          {
+            "LineText": "45",
+            "Words": [
+              {
+                "WordText": "45",
+                "Left": 570.5,
+                "Top": 702,
+                "Height": 8.5,
+                "Width": 11
+              }
+            ],
+            "MaxHeight": 8.5,
+            "MinTop": 702
+          },
+          {
+            "LineText": "147",
+            "Words": [
+              {
+                "WordText": "147",
+                "Left": 570.5,
+                "Top": 728,
+                "Height": 8.5,
+                "Width": 15
+              }
+            ],
+            "MaxHeight": 8.5,
+            "MinTop": 728
+          },
+          {
+            "LineText": "55",
+            "Words": [
+              {
+                "WordText": "55",
+                "Left": 571,
+                "Top": 754.5,
+                "Height": 8.5,
+                "Width": 10
+              }
+            ],
+            "MaxHeight": 8.5,
+            "MinTop": 754.5
+          },
+          {
+            "LineText": "1.2",
+            "Words": [
+              {
+                "WordText": "1.2",
+                "Left": 570.5,
+                "Top": 780.5,
+                "Height": 6.5,
+                "Width": 11.5
+              }
+            ],
+            "MaxHeight": 6.5,
+            "MinTop": 780.5
+          },
+          {
+            "LineText": "0.4",
+            "Words": [
+              {
+                "WordText": "0.4",
+                "Left": 571,
+                "Top": 807,
+                "Height": 8,
+                "Width": 14.5
+              }
+            ],
+            "MaxHeight": 8,
+            "MinTop": 807
+          },
+          {
+            "LineText": "0.9",
+            "Words": [
+              {
+                "WordText": "0.9",
+                "Left": 571,
+                "Top": 833,
+                "Height": 8.5,
+                "Width": 14.5
+              }
+            ],
+            "MaxHeight": 8.5,
+            "MinTop": 833
+          },
+          {
+            "LineText": "8.3",
+            "Words": [
+              {
+                "WordText": "8.3",
+                "Left": 571,
+                "Top": 857.5,
+                "Height": 10.5,
+                "Width": 13.5
+              }
+            ],
+            "MaxHeight": 10.5,
+            "MinTop": 857.5
+          },
+          {
+            "LineText": "5.0",
+            "Words": [
+              {
+                "WordText": "5.0",
+                "Left": 571,
+                "Top": 885.5,
+                "Height": 8.5,
+                "Width": 13.5
+              }
+            ],
+            "MaxHeight": 8.5,
+            "MinTop": 885.5
+          },
+          {
+            "LineText": "rango_max",
+            "Words": [
+              {
+                "WordText": "rango_max",
+                "Left": 552.5,
+                "Top": 963,
+                "Height": 9.5,
+                "Width": 56
+              }
+            ],
+            "MaxHeight": 9.5,
+            "MinTop": 963
+          },
+          {
+            "LineText": "4.0",
+            "Words": [
+              {
+                "WordText": "4.0",
+                "Left": 552.5,
+                "Top": 989,
+                "Height": 8.5,
+                "Width": 14.5
+              }
+            ],
+            "MaxHeight": 8.5,
+            "MinTop": 989
+          },
+          {
+            "LineText": "estado",
+            "Words": [
+              {
+                "WordText": "estado",
+                "Left": 700,
+                "Top": 647.5,
+                "Height": 8.5,
+                "Width": 33
+              }
+            ],
+            "MaxHeight": 8.5,
+            "MinTop": 647.5
+          },
+          {
+            "LineText": "normal",
+            "Words": [
+              {
+                "WordText": "normal",
+                "Left": 700,
+                "Top": 674,
+                "Height": 8.5,
+                "Width": 34
+              }
+            ],
+            "MaxHeight": 8.5,
+            "MinTop": 674
+          },
+          {
+            "LineText": "normal",
+            "Words": [
+              {
+                "WordText": "normal",
+                "Left": 700,
+                "Top": 700,
+                "Height": 8.5,
+                "Width": 34
+              }
+            ],
+            "MaxHeight": 8.5,
+            "MinTop": 700
+          },
+          {
+            "LineText": "normal",
+            "Words": [
+              {
+                "WordText": "normal",
+                "Left": 700,
+                "Top": 726,
+                "Height": 9,
+                "Width": 34
+              }
+            ],
+            "MaxHeight": 9,
+            "MinTop": 726
+          },
+          {
+            "LineText": "normal",
+            "Words": [
+              {
+                "WordText": "normal",
+                "Left": 700,
+                "Top": 752.5,
+                "Height": 8.5,
+                "Width": 34
+              }
+            ],
+            "MaxHeight": 8.5,
+            "MinTop": 752.5
+          },
+          {
+            "LineText": "normal",
+            "Words": [
+              {
+                "WordText": "normal",
+                "Left": 700,
+                "Top": 778.5,
+                "Height": 8.5,
+                "Width": 34
+              }
+            ],
+            "MaxHeight": 8.5,
+            "MinTop": 778.5
+          },
+          {
+            "LineText": "normal",
+            "Words": [
+              {
+                "WordText": "normal",
+                "Left": 700,
+                "Top": 805,
+                "Height": 8.5,
+                "Width": 34
+              }
+            ],
+            "MaxHeight": 8.5,
+            "MinTop": 805
+          },
+          {
+            "LineText": "normal",
+            "Words": [
+              {
+                "WordText": "normal",
+                "Left": 700,
+                "Top": 831,
+                "Height": 8.5,
+                "Width": 34
+              }
+            ],
+            "MaxHeight": 8.5,
+            "MinTop": 831
+          },
+          {
+            "LineText": "normal",
+            "Words": [
+              {
+                "WordText": "normal",
+                "Left": 700,
+                "Top": 857,
+                "Height": 9,
+                "Width": 34
+              }
+            ],
+            "MaxHeight": 9,
+            "MinTop": 857
+          },
+          {
+            "LineText": "normal",
+            "Words": [
+              {
+                "WordText": "normal",
+                "Left": 700,
+                "Top": 883.5,
+                "Height": 8.5,
+                "Width": 34
+              }
+            ],
+            "MaxHeight": 8.5,
+            "MinTop": 883.5
+          },
+          {
+            "LineText": "estado",
+            "Words": [
+              {
+                "WordText": "estado",
+                "Left": 692.5,
+                "Top": 961,
+                "Height": 8.5,
+                "Width": 33.5
+              }
+            ],
+            "MaxHeight": 8.5,
+            "MinTop": 961
+          },
+          {
+            "LineText": "normal",
+            "Words": [
+              {
+                "WordText": "normal",
+                "Left": 693,
+                "Top": 987,
+                "Height": 8.5,
+                "Width": 33.5
+              }
+            ],
+            "MaxHeight": 8.5,
+            "MinTop": 987
+          },
+          {
+            "LineText": "2/3",
+            "Words": [
+              {
+                "WordText": "2/3",
+                "Left": 770.5,
+                "Top": 1027.5,
+                "Height": 8,
+                "Width": 14.5
+              }
+            ],
+            "MaxHeight": 8,
+            "MinTop": 1027.5
+          }
+        ],
+        "HasOverlay": true,
+        "Message": "Total lines: 195"
+      },
+      "FileParseExitCode": 1,
+      "TextOrientation": "0",
+      "ParsedText": "21/5/26, 19:54\r\nResultado de Laboratorio - Sangre\r\nnombre\r\nGlucosa en ayunas\r\nHemoglobina glicosilada\r\n(HbA1c)\r\nInsulina basal\r\ngrupo: Perfil lipidico\r\nnombre\r\nColesterol total\r\nHDL colesterol\r\nLDL colesterol\r\nVLDL colesterol\r\nTriglicéridos\r\nindice aterogénico\r\ngrupo: Funci6n renal\r\nnombre\r\nCreatinina\r\nUrea\r\nAcido Urico\r\nTFG estimada (CKD-EPI)\r\ngrupo: Funciön hepåtica\r\nnombre\r\nTGO (AST)\r\nTGP (ALT)\r\nFosfatasa alcalina\r\nGCT\r\nBilirrubina total\r\n0.2\r\nBilirrubina directa\r\n0.0\r\nBilirrubina indirecta\r\n0.1\r\nProteinas totales\r\nAlbümina\r\ngrupo: Tiroides\r\nnombre\r\nTSH\r\nfile:///C:/Users/HP/Downloads/Anålisis - Sangre.htm\r\nvalor\r\n126\r\n6.8\r\n14.2\r\nunidad\r\nmg/dL\r\npUI/mL\r\nunidad\r\nmg/dL\r\nmg/dL\r\nmg/dL\r\nmg/dL\r\nmg/dL\r\nratio\r\nrango min rango max estado\r\n70\r\nnull\r\n2.0\r\nrango\r\nnull\r\n40\r\nnull\r\nnull\r\nnull\r\nnull\r\n100\r\n5-7\r\n25.0\r\n[ALTO]\r\n[ALTO]\r\nnormal\r\nrango\r\nmax\r\n200\r\nnull\r\n130\r\n30\r\n150\r\n5.0\r\nrango_\r\nmax\r\n1.2\r\n45\r\n7.0\r\nnull\r\nrango_min\r\n10\r\n7\r\n44\r\n8\r\n6.4\r\n3-5\r\nnota\r\nRango prediabetes: 100—125.>126 sugiere\r\ndiabetes.\r\nprediabetes. diabetes.\r\nvalor\r\n218\r\n45\r\n142\r\n31\r\n155\r\n4.84\r\nvalor\r\n0.95\r\n28\r\n6.8\r\n88\r\nvalor\r\n2.4\r\nmin\r\nnull\r\nestado\r\n[ALTO]\r\nnormal\r\n[ALTO]\r\n[ALTO]\r\n[ALTO]\r\nnormal\r\nestado\r\nnormal\r\nnormal\r\nnormal\r\n[BAJO]\r\nnota\r\nnull\r\nnull\r\nnull\r\nnull\r\nnull\r\nColesterol total / HDL\r\nnota\r\nnull\r\nnull\r\nnull\r\n60—89: leve disminuciön. Vigilar.\r\nunidad\r\nmg/dL\r\nmg/dL\r\nmg/dL\r\nmL/min/1.73m2\r\nvalor\r\n28\r\n35\r\n82\r\n30\r\n0.9\r\n0.3\r\n0.6\r\n7.2\r\n4.1\r\nunidad\r\npUl/mL\r\nrango_min\r\n0.7\r\n15\r\n3-4\r\n90\r\nunidad\r\nUIL\r\nUIL\r\nUIL\r\nUIL\r\nmg/dL\r\nmg/dL\r\nmg/dL\r\ng/dL\r\ng/dL\r\nrango_\r\n0.4\r\nmin\r\nrango_max\r\n40\r\n45\r\n147\r\n55\r\n1.2\r\n0.4\r\n0.9\r\n8.3\r\n5.0\r\nrango_max\r\n4.0\r\nestado\r\nnormal\r\nnormal\r\nnormal\r\nnormal\r\nnormal\r\nnormal\r\nnormal\r\nnormal\r\nnormal\r\nestado\r\nnormal\r\n2/3\r\n",
+      "ErrorMessage": "",
+      "ErrorDetails": ""
+    },
+    {
+      "Overlay": {
+        "Lines": [
+          {
+            "LineText": "21/5/26, 19:54",
+            "Words": [
+              {
+                "WordText": "21/5/26,",
+                "Left": 32,
+                "Top": 22,
+                "Height": 9.5,
+                "Width": 38
+              },
+              {
+                "WordText": "19:54",
+                "Left": 74.5,
+                "Top": 22.5,
+                "Height": 8,
+                "Width": 25.5
+              }
+            ],
+            "MaxHeight": 9.5,
+            "MinTop": 22
+          },
+          {
+            "LineText": "nombre",
+            "Words": [
+              {
+                "WordText": "nombre",
+                "Left": 86,
+                "Top": 47.5,
+                "Height": 8.5,
+                "Width": 39
+              }
+            ],
+            "MaxHeight": 8.5,
+            "MinTop": 47.5
+          },
+          {
+            "LineText": "T4 libre (T4L)",
+            "Words": [
+              {
+                "WordText": "T4",
+                "Left": 85.5,
+                "Top": 74,
+                "Height": 10,
+                "Width": 12
+              },
+              {
+                "WordText": "libre",
+                "Left": 101,
+                "Top": 73.5,
+                "Height": 8.5,
+                "Width": 20.5
+              },
+              {
+                "WordText": "(T4L)",
+                "Left": 125,
+                "Top": 73,
+                "Height": 11.5,
+                "Width": 25.5
+              }
+            ],
+            "MaxHeight": 11.5,
+            "MinTop": 73
+          },
+          {
+            "LineText": "grupo: Electrolitos",
+            "Words": [
+              {
+                "WordText": "grupo:",
+                "Left": 84.5,
+                "Top": 116.5,
+                "Height": 10,
+                "Width": 35.5
+              },
+              {
+                "WordText": "Electrolitos",
+                "Left": 124,
+                "Top": 114.5,
+                "Height": 9.5,
+                "Width": 60.5
+              }
+            ],
+            "MaxHeight": 10,
+            "MinTop": 114.5
+          },
+          {
+            "LineText": "nombre",
+            "Words": [
+              {
+                "WordText": "nombre",
+                "Left": 86,
+                "Top": 151,
+                "Height": 8.5,
+                "Width": 39
+              }
+            ],
+            "MaxHeight": 8.5,
+            "MinTop": 151
+          },
+          {
+            "LineText": "Sodio",
+            "Words": [
+              {
+                "WordText": "Sodio",
+                "Left": 86,
+                "Top": 177.5,
+                "Height": 8.5,
+                "Width": 27
+              }
+            ],
+            "MaxHeight": 8.5,
+            "MinTop": 177.5
+          },
+          {
+            "LineText": "Potasio",
+            "Words": [
+              {
+                "WordText": "Potasio",
+                "Left": 86.5,
+                "Top": 204,
+                "Height": 8,
+                "Width": 35.5
+              }
+            ],
+            "MaxHeight": 8,
+            "MinTop": 204
+          },
+          {
+            "LineText": "Cloro",
+            "Words": [
+              {
+                "WordText": "Cloro",
+                "Left": 86,
+                "Top": 229.5,
+                "Height": 8.5,
+                "Width": 25.5
+              }
+            ],
+            "MaxHeight": 8.5,
+            "MinTop": 229.5
+          },
+          {
+            "LineText": "Calcio total",
+            "Words": [
+              {
+                "WordText": "Calcio",
+                "Left": 86,
+                "Top": 256,
+                "Height": 8.5,
+                "Width": 28
+              },
+              {
+                "WordText": "total",
+                "Left": 117.5,
+                "Top": 256,
+                "Height": 8.5,
+                "Width": 22
+              }
+            ],
+            "MaxHeight": 8.5,
+            "MinTop": 256
+          },
+          {
+            "LineText": "F6sforo",
+            "Words": [
+              {
+                "WordText": "F6sforo",
+                "Left": 86.5,
+                "Top": 282,
+                "Height": 8.5,
+                "Width": 36.5
+              }
+            ],
+            "MaxHeight": 8.5,
+            "MinTop": 282
+          },
+          {
+            "LineText": "grupo: Hierro y vitaminas",
+            "Words": [
+              {
+                "WordText": "grupo:",
+                "Left": 84.5,
+                "Top": 325,
+                "Height": 10.5,
+                "Width": 35.5
+              },
+              {
+                "WordText": "Hierro",
+                "Left": 124,
+                "Top": 323,
+                "Height": 9.5,
+                "Width": 33.5
+              },
+              {
+                "WordText": "y",
+                "Left": 160.5,
+                "Top": 326,
+                "Height": 9,
+                "Width": 6
+              },
+              {
+                "WordText": "vitaminas",
+                "Left": 169.5,
+                "Top": 323,
+                "Height": 9.5,
+                "Width": 52
+              }
+            ],
+            "MaxHeight": 10.5,
+            "MinTop": 323
+          },
+          {
+            "LineText": "valor",
+            "Words": [
+              {
+                "WordText": "valor",
+                "Left": 242.5,
+                "Top": 47.5,
+                "Height": 8.5,
+                "Width": 25
+              }
+            ],
+            "MaxHeight": 8.5,
+            "MinTop": 47.5
+          },
+          {
+            "LineText": "1.1",
+            "Words": [
+              {
+                "WordText": "1.1",
+                "Left": 242.5,
+                "Top": 75.5,
+                "Height": 6.5,
+                "Width": 9.5
+              }
+            ],
+            "MaxHeight": 6.5,
+            "MinTop": 75.5
+          },
+          {
+            "LineText": "valor",
+            "Words": [
+              {
+                "WordText": "valor",
+                "Left": 226.5,
+                "Top": 151,
+                "Height": 8.5,
+                "Width": 25.5
+              }
+            ],
+            "MaxHeight": 8.5,
+            "MinTop": 151
+          },
+          {
+            "LineText": "140",
+            "Words": [
+              {
+                "WordText": "140",
+                "Left": 227,
+                "Top": 179,
+                "Height": 8.5,
+                "Width": 15.5
+              }
+            ],
+            "MaxHeight": 8.5,
+            "MinTop": 179
+          },
+          {
+            "LineText": "4.1",
+            "Words": [
+              {
+                "WordText": "4.1",
+                "Left": 227,
+                "Top": 205.5,
+                "Height": 8,
+                "Width": 12
+              }
+            ],
+            "MaxHeight": 8,
+            "MinTop": 205.5
+          },
+          {
+            "LineText": "102",
+            "Words": [
+              {
+                "WordText": "102",
+                "Left": 227,
+                "Top": 231.5,
+                "Height": 6.5,
+                "Width": 15
+              }
+            ],
+            "MaxHeight": 6.5,
+            "MinTop": 231.5
+          },
+          {
+            "LineText": "9-5",
+            "Words": [
+              {
+                "WordText": "9-5",
+                "Left": 227,
+                "Top": 258,
+                "Height": 8.5,
+                "Width": 13.5
+              }
+            ],
+            "MaxHeight": 8.5,
+            "MinTop": 258
+          },
+          {
+            "LineText": "3-4",
+            "Words": [
+              {
+                "WordText": "3-4",
+                "Left": 226.5,
+                "Top": 284,
+                "Height": 8.5,
+                "Width": 14.5
+              }
+            ],
+            "MaxHeight": 8.5,
+            "MinTop": 284
+          },
+          {
+            "LineText": "unidad",
+            "Words": [
+              {
+                "WordText": "unidad",
+                "Left": 319.5,
+                "Top": 47.5,
+                "Height": 8,
+                "Width": 33.5
+              }
+            ],
+            "MaxHeight": 8,
+            "MinTop": 47.5
+          },
+          {
+            "LineText": "ng/dL",
+            "Words": [
+              {
+                "WordText": "ng/dL",
+                "Left": 319.5,
+                "Top": 73,
+                "Height": 11.5,
+                "Width": 27.5
+              }
+            ],
+            "MaxHeight": 11.5,
+            "MinTop": 73
+          },
+          {
+            "LineText": "unidad",
+            "Words": [
+              {
+                "WordText": "unidad",
+                "Left": 306.5,
+                "Top": 151,
+                "Height": 8.5,
+                "Width": 33.5
+              }
+            ],
+            "MaxHeight": 8.5,
+            "MinTop": 151
+          },
+          {
+            "LineText": "mEq/L",
+            "Words": [
+              {
+                "WordText": "mEq/L",
+                "Left": 306.5,
+                "Top": 177,
+                "Height": 11,
+                "Width": 30.5
+              }
+            ],
+            "MaxHeight": 11,
+            "MinTop": 177
+          },
+          {
+            "LineText": "mEq/L",
+            "Words": [
+              {
+                "WordText": "mEq/L",
+                "Left": 306.5,
+                "Top": 203.5,
+                "Height": 11,
+                "Width": 30.5
+              }
+            ],
+            "MaxHeight": 11,
+            "MinTop": 203.5
+          },
+          {
+            "LineText": "mEq/L",
+            "Words": [
+              {
+                "WordText": "mEq/L",
+                "Left": 306.5,
+                "Top": 229.5,
+                "Height": 11,
+                "Width": 30.5
+              }
+            ],
+            "MaxHeight": 11,
+            "MinTop": 229.5
+          },
+          {
+            "LineText": "mg/dL",
+            "Words": [
+              {
+                "WordText": "mg/dL",
+                "Left": 306.5,
+                "Top": 255.5,
+                "Height": 11.5,
+                "Width": 30.5
+              }
+            ],
+            "MaxHeight": 11.5,
+            "MinTop": 255.5
+          },
+          {
+            "LineText": "mg/dL",
+            "Words": [
+              {
+                "WordText": "mg/dL",
+                "Left": 306.5,
+                "Top": 282,
+                "Height": 11.5,
+                "Width": 30.5
+              }
+            ],
+            "MaxHeight": 11.5,
+            "MinTop": 282
+          },
+          {
+            "LineText": "rango_",
+            "Words": [
+              {
+                "WordText": "rango_",
+                "Left": 322,
+                "Top": 361.5,
+                "Height": 9.5,
+                "Width": 35
+              }
+            ],
+            "MaxHeight": 9.5,
+            "MinTop": 361.5
+          },
+          {
+            "LineText": "60",
+            "Words": [
+              {
+                "WordText": "60",
+                "Left": 322,
+                "Top": 386.5,
+                "Height": 8,
+                "Width": 12
+              }
+            ],
+            "MaxHeight": 8,
+            "MinTop": 386.5
+          },
+          {
+            "LineText": "30",
+            "Words": [
+              {
+                "WordText": "30",
+                "Left": 322,
+                "Top": 414,
+                "Height": 8.5,
+                "Width": 11
+              }
+            ],
+            "MaxHeight": 8.5,
+            "MinTop": 414
+          },
+          {
+            "LineText": "30",
+            "Words": [
+              {
+                "WordText": "30",
+                "Left": 322,
+                "Top": 440,
+                "Height": 8.5,
+                "Width": 11
+              }
+            ],
+            "MaxHeight": 8.5,
+            "MinTop": 440
+          },
+          {
+            "LineText": "200",
+            "Words": [
+              {
+                "WordText": "200",
+                "Left": 322,
+                "Top": 466.5,
+                "Height": 6.5,
+                "Width": 17.5
+              }
+            ],
+            "MaxHeight": 6.5,
+            "MinTop": 466.5
+          },
+          {
+            "LineText": "Resultado de Laboratorio",
+            "Words": [
+              {
+                "WordText": "Resultado",
+                "Left": 381.5,
+                "Top": 22.5,
+                "Height": 8,
+                "Width": 47
+              },
+              {
+                "WordText": "de",
+                "Left": 432.5,
+                "Top": 22.5,
+                "Height": 8,
+                "Width": 11
+              },
+              {
+                "WordText": "Laboratorio",
+                "Left": 447.5,
+                "Top": 22.5,
+                "Height": 8,
+                "Width": 53
+              }
+            ],
+            "MaxHeight": 8,
+            "MinTop": 22.5
+          },
+          {
+            "LineText": "rango min",
+            "Words": [
+              {
+                "WordText": "rango",
+                "Left": 417.5,
+                "Top": 49,
+                "Height": 9.5,
+                "Width": 28.5
+              },
+              {
+                "WordText": "min",
+                "Left": 452.5,
+                "Top": 47.5,
+                "Height": 8,
+                "Width": 18.5
+              }
+            ],
+            "MaxHeight": 9.5,
+            "MinTop": 47.5
+          },
+          {
+            "LineText": "0.8",
+            "Words": [
+              {
+                "WordText": "0.8",
+                "Left": 417.5,
+                "Top": 73.5,
+                "Height": 8.5,
+                "Width": 14.5
+              }
+            ],
+            "MaxHeight": 8.5,
+            "MinTop": 73.5
+          },
+          {
+            "LineText": "rango_min",
+            "Words": [
+              {
+                "WordText": "rango_min",
+                "Left": 404,
+                "Top": 151.5,
+                "Height": 11,
+                "Width": 53.5
+              }
+            ],
+            "MaxHeight": 11,
+            "MinTop": 151.5
+          },
+          {
+            "LineText": "136",
+            "Words": [
+              {
+                "WordText": "136",
+                "Left": 404,
+                "Top": 178,
+                "Height": 10,
+                "Width": 15.5
+              }
+            ],
+            "MaxHeight": 10,
+            "MinTop": 178
+          },
+          {
+            "LineText": "3-5",
+            "Words": [
+              {
+                "WordText": "3-5",
+                "Left": 404,
+                "Top": 205.5,
+                "Height": 8.5,
+                "Width": 13.5
+              }
+            ],
+            "MaxHeight": 8.5,
+            "MinTop": 205.5
+          },
+          {
+            "LineText": "98",
+            "Words": [
+              {
+                "WordText": "98",
+                "Left": 404,
+                "Top": 230,
+                "Height": 10,
+                "Width": 12
+              }
+            ],
+            "MaxHeight": 10,
+            "MinTop": 230
+          },
+          {
+            "LineText": "8.5",
+            "Words": [
+              {
+                "WordText": "8.5",
+                "Left": 404,
+                "Top": 256,
+                "Height": 10,
+                "Width": 14.5
+              }
+            ],
+            "MaxHeight": 10,
+            "MinTop": 256
+          },
+          {
+            "LineText": "2.5",
+            "Words": [
+              {
+                "WordText": "2.5",
+                "Left": 404,
+                "Top": 284,
+                "Height": 8.5,
+                "Width": 13
+              }
+            ],
+            "MaxHeight": 8.5,
+            "MinTop": 284
+          },
+          {
+            "LineText": "Sangre",
+            "Words": [
+              {
+                "WordText": "Sangre",
+                "Left": 510.5,
+                "Top": 22,
+                "Height": 10,
+                "Width": 34
+              }
+            ],
+            "MaxHeight": 10,
+            "MinTop": 22
+          },
+          {
+            "LineText": "estado",
+            "Words": [
+              {
+                "WordText": "estado",
+                "Left": 692.5,
+                "Top": 47.5,
+                "Height": 8.5,
+                "Width": 33.5
+              }
+            ],
+            "MaxHeight": 8.5,
+            "MinTop": 47.5
+          },
+          {
+            "LineText": "normal",
+            "Words": [
+              {
+                "WordText": "normal",
+                "Left": 693,
+                "Top": 73.5,
+                "Height": 8.5,
+                "Width": 33.5
+              }
+            ],
+            "MaxHeight": 8.5,
+            "MinTop": 73.5
+          },
+          {
+            "LineText": "estado",
+            "Words": [
+              {
+                "WordText": "estado",
+                "Left": 689,
+                "Top": 151,
+                "Height": 8.5,
+                "Width": 33.5
+              }
+            ],
+            "MaxHeight": 8.5,
+            "MinTop": 151
+          },
+          {
+            "LineText": "normal",
+            "Words": [
+              {
+                "WordText": "normal",
+                "Left": 689.5,
+                "Top": 177,
+                "Height": 9,
+                "Width": 33.5
+              }
+            ],
+            "MaxHeight": 9,
+            "MinTop": 177
+          },
+          {
+            "LineText": "normal",
+            "Words": [
+              {
+                "WordText": "normal",
+                "Left": 689.5,
+                "Top": 203.5,
+                "Height": 8.5,
+                "Width": 33.5
+              }
+            ],
+            "MaxHeight": 8.5,
+            "MinTop": 203.5
+          },
+          {
+            "LineText": "normal",
+            "Words": [
+              {
+                "WordText": "normal",
+                "Left": 689.5,
+                "Top": 229.5,
+                "Height": 8.5,
+                "Width": 33.5
+              }
+            ],
+            "MaxHeight": 8.5,
+            "MinTop": 229.5
+          },
+          {
+            "LineText": "normal",
+            "Words": [
+              {
+                "WordText": "normal",
+                "Left": 689.5,
+                "Top": 256,
+                "Height": 8.5,
+                "Width": 33.5
+              }
+            ],
+            "MaxHeight": 8.5,
+            "MinTop": 256
+          },
+          {
+            "LineText": "normal",
+            "Words": [
+              {
+                "WordText": "normal",
+                "Left": 689.5,
+                "Top": 282,
+                "Height": 8.5,
+                "Width": 33.5
+              }
+            ],
+            "MaxHeight": 8.5,
+            "MinTop": 282
+          },
+          {
+            "LineText": "unidad",
+            "Words": [
+              {
+                "WordText": "unidad",
+                "Left": 264,
+                "Top": 359.5,
+                "Height": 8.5,
+                "Width": 33.5
+              }
+            ],
+            "MaxHeight": 8.5,
+            "MinTop": 359.5
+          },
+          {
+            "LineText": "pg/dL",
+            "Words": [
+              {
+                "WordText": "pg/dL",
+                "Left": 264.5,
+                "Top": 385.5,
+                "Height": 11.5,
+                "Width": 27
+              }
+            ],
+            "MaxHeight": 11.5,
+            "MinTop": 385.5
+          },
+          {
+            "LineText": "ng/mL",
+            "Words": [
+              {
+                "WordText": "ng/mL",
+                "Left": 264.5,
+                "Top": 411.5,
+                "Height": 11.5,
+                "Width": 30
+              }
+            ],
+            "MaxHeight": 11.5,
+            "MinTop": 411.5
+          },
+          {
+            "LineText": "ng/mL",
+            "Words": [
+              {
+                "WordText": "ng/mL",
+                "Left": 264.5,
+                "Top": 438,
+                "Height": 11.5,
+                "Width": 30
+              }
+            ],
+            "MaxHeight": 11.5,
+            "MinTop": 438
+          },
+          {
+            "LineText": "pg/mL",
+            "Words": [
+              {
+                "WordText": "pg/mL",
+                "Left": 264.5,
+                "Top": 464,
+                "Height": 11.5,
+                "Width": 30.5
+              }
+            ],
+            "MaxHeight": 11.5,
+            "MinTop": 464
+          },
+          {
+            "LineText": "min",
+            "Words": [
+              {
+                "WordText": "min",
+                "Left": 357.5,
+                "Top": 359.5,
+                "Height": 8.5,
+                "Width": 18
+              }
+            ],
+            "MaxHeight": 8.5,
+            "MinTop": 359.5
+          },
+          {
+            "LineText": "rango max",
+            "Words": [
+              {
+                "WordText": "rango",
+                "Left": 552.5,
+                "Top": 49,
+                "Height": 9.5,
+                "Width": 29
+              },
+              {
+                "WordText": "max",
+                "Left": 588,
+                "Top": 50,
+                "Height": 5.5,
+                "Width": 21
+              }
+            ],
+            "MaxHeight": 9.5,
+            "MinTop": 49
+          },
+          {
+            "LineText": "1.8",
+            "Words": [
+              {
+                "WordText": "1.8",
+                "Left": 552.5,
+                "Top": 73.5,
+                "Height": 8.5,
+                "Width": 12.5
+              }
+            ],
+            "MaxHeight": 8.5,
+            "MinTop": 73.5
+          },
+          {
+            "LineText": "rango_max",
+            "Words": [
+              {
+                "WordText": "rango_max",
+                "Left": 544,
+                "Top": 153,
+                "Height": 9.5,
+                "Width": 56.5
+              }
+            ],
+            "MaxHeight": 9.5,
+            "MinTop": 153
+          },
+          {
+            "LineText": "145",
+            "Words": [
+              {
+                "WordText": "145",
+                "Left": 544.5,
+                "Top": 179.5,
+                "Height": 8,
+                "Width": 14.5
+              }
+            ],
+            "MaxHeight": 8,
+            "MinTop": 179.5
+          },
+          {
+            "LineText": "5.0",
+            "Words": [
+              {
+                "WordText": "5.0",
+                "Left": 544.5,
+                "Top": 205.5,
+                "Height": 8.5,
+                "Width": 13.5
+              }
+            ],
+            "MaxHeight": 8.5,
+            "MinTop": 205.5
+          },
+          {
+            "LineText": "107",
+            "Words": [
+              {
+                "WordText": "107",
+                "Left": 544,
+                "Top": 231.5,
+                "Height": 8.5,
+                "Width": 15.5
+              }
+            ],
+            "MaxHeight": 8.5,
+            "MinTop": 231.5
+          },
+          {
+            "LineText": "10.5",
+            "Words": [
+              {
+                "WordText": "10.5",
+                "Left": 544,
+                "Top": 258,
+                "Height": 8,
+                "Width": 18.5
+              }
+            ],
+            "MaxHeight": 8,
+            "MinTop": 258
+          },
+          {
+            "LineText": "4-5",
+            "Words": [
+              {
+                "WordText": "4-5",
+                "Left": 544,
+                "Top": 284,
+                "Height": 8.5,
+                "Width": 14
+              }
+            ],
+            "MaxHeight": 8.5,
+            "MinTop": 284
+          },
+          {
+            "LineText": "nota",
+            "Words": [
+              {
+                "WordText": "nota",
+                "Left": 550,
+                "Top": 360.5,
+                "Height": 7.5,
+                "Width": 22
+              }
+            ],
+            "MaxHeight": 7.5,
+            "MinTop": 360.5
+          },
+          {
+            "LineText": "null",
+            "Words": [
+              {
+                "WordText": "null",
+                "Left": 550,
+                "Top": 386,
+                "Height": 8,
+                "Width": 16.5
+              }
+            ],
+            "MaxHeight": 8,
+            "MinTop": 386
+          },
+          {
+            "LineText": "null",
+            "Words": [
+              {
+                "WordText": "null",
+                "Left": 550,
+                "Top": 412,
+                "Height": 8.5,
+                "Width": 16.5
+              }
+            ],
+            "MaxHeight": 8.5,
+            "MinTop": 412
+          },
+          {
+            "LineText": "nombre",
+            "Words": [
+              {
+                "WordText": "nombre",
+                "Left": 86,
+                "Top": 359.5,
+                "Height": 8.5,
+                "Width": 39
+              }
+            ],
+            "MaxHeight": 8.5,
+            "MinTop": 359.5
+          },
+          {
+            "LineText": "Hierro sérico",
+            "Words": [
+              {
+                "WordText": "Hierro",
+                "Left": 86.5,
+                "Top": 386,
+                "Height": 8.5,
+                "Width": 29.5
+              },
+              {
+                "WordText": "sérico",
+                "Left": 119,
+                "Top": 386,
+                "Height": 8.5,
+                "Width": 28.5
+              }
+            ],
+            "MaxHeight": 8.5,
+            "MinTop": 386
+          },
+          {
+            "LineText": "Ferritina",
+            "Words": [
+              {
+                "WordText": "Ferritina",
+                "Left": 86.5,
+                "Top": 412.5,
+                "Height": 8,
+                "Width": 39.5
+              }
+            ],
+            "MaxHeight": 8,
+            "MinTop": 412.5
+          },
+          {
+            "LineText": "Vitamina D (25-OH)",
+            "Words": [
+              {
+                "WordText": "Vitamina",
+                "Left": 85.5,
+                "Top": 438.5,
+                "Height": 8,
+                "Width": 42.5
+              },
+              {
+                "WordText": "D",
+                "Left": 132,
+                "Top": 439,
+                "Height": 7.5,
+                "Width": 6
+              },
+              {
+                "WordText": "(25-OH)",
+                "Left": 141.5,
+                "Top": 437.5,
+                "Height": 11.5,
+                "Width": 37
+              }
+            ],
+            "MaxHeight": 11.5,
+            "MinTop": 437.5
+          },
+          {
+            "LineText": "Vitamina B12",
+            "Words": [
+              {
+                "WordText": "Vitamina",
+                "Left": 85.5,
+                "Top": 464.5,
+                "Height": 8.5,
+                "Width": 42.5
+              },
+              {
+                "WordText": "B12",
+                "Left": 132,
+                "Top": 465,
+                "Height": 8,
+                "Width": 15
+              }
+            ],
+            "MaxHeight": 8.5,
+            "MinTop": 464.5
+          },
+          {
+            "LineText": "observaciones medico:",
+            "Words": [
+              {
+                "WordText": "observaciones",
+                "Left": 89.5,
+                "Top": 529.5,
+                "Height": 9.5,
+                "Width": 77
+              },
+              {
+                "WordText": "medico:",
+                "Left": 173.5,
+                "Top": 529.5,
+                "Height": 9.5,
+                "Width": 42
+              }
+            ],
+            "MaxHeight": 9.5,
+            "MinTop": 529.5
+          },
+          {
+            "LineText": "valor",
+            "Words": [
+              {
+                "WordText": "valor",
+                "Left": 217,
+                "Top": 359.5,
+                "Height": 8.5,
+                "Width": 25
+              }
+            ],
+            "MaxHeight": 8.5,
+            "MinTop": 359.5
+          },
+          {
+            "LineText": "88",
+            "Words": [
+              {
+                "WordText": "88",
+                "Left": 217,
+                "Top": 386,
+                "Height": 8.5,
+                "Width": 12
+              }
+            ],
+            "MaxHeight": 8.5,
+            "MinTop": 386
+          },
+          {
+            "LineText": "42",
+            "Words": [
+              {
+                "WordText": "42",
+                "Left": 217,
+                "Top": 414,
+                "Height": 8,
+                "Width": 11
+              }
+            ],
+            "MaxHeight": 8,
+            "MinTop": 414
+          },
+          {
+            "LineText": "18",
+            "Words": [
+              {
+                "WordText": "18",
+                "Left": 217,
+                "Top": 438.5,
+                "Height": 8,
+                "Width": 9.5
+              }
+            ],
+            "MaxHeight": 8,
+            "MinTop": 438.5
+          },
+          {
+            "LineText": "310",
+            "Words": [
+              {
+                "WordText": "310",
+                "Left": 217,
+                "Top": 466,
+                "Height": 9,
+                "Width": 15
+              }
+            ],
+            "MaxHeight": 9,
+            "MinTop": 466
+          },
+          {
+            "LineText": "rango_",
+            "Words": [
+              {
+                "WordText": "rango_",
+                "Left": 405,
+                "Top": 361.5,
+                "Height": 9.5,
+                "Width": 35
+              }
+            ],
+            "MaxHeight": 9.5,
+            "MinTop": 361.5
+          },
+          {
+            "LineText": "170",
+            "Words": [
+              {
+                "WordText": "170",
+                "Left": 405,
+                "Top": 388,
+                "Height": 8,
+                "Width": 15
+              }
+            ],
+            "MaxHeight": 8,
+            "MinTop": 388
+          },
+          {
+            "LineText": "400",
+            "Words": [
+              {
+                "WordText": "400",
+                "Left": 404.5,
+                "Top": 414,
+                "Height": 8,
+                "Width": 18.5
+              }
+            ],
+            "MaxHeight": 8,
+            "MinTop": 414
+          },
+          {
+            "LineText": "100",
+            "Words": [
+              {
+                "WordText": "100",
+                "Left": 405,
+                "Top": 440,
+                "Height": 6.5,
+                "Width": 16
+              }
+            ],
+            "MaxHeight": 6.5,
+            "MinTop": 440
+          },
+          {
+            "LineText": "900",
+            "Words": [
+              {
+                "WordText": "900",
+                "Left": 405,
+                "Top": 466.5,
+                "Height": 8.5,
+                "Width": 18
+              }
+            ],
+            "MaxHeight": 8.5,
+            "MinTop": 466.5
+          },
+          {
+            "LineText": "max",
+            "Words": [
+              {
+                "WordText": "max",
+                "Left": 440,
+                "Top": 362,
+                "Height": 6,
+                "Width": 21
+              }
+            ],
+            "MaxHeight": 6,
+            "MinTop": 362
+          },
+          {
+            "LineText": "estado",
+            "Words": [
+              {
+                "WordText": "estado",
+                "Left": 490.5,
+                "Top": 359.5,
+                "Height": 8.5,
+                "Width": 33.5
+              }
+            ],
+            "MaxHeight": 8.5,
+            "MinTop": 359.5
+          },
+          {
+            "LineText": "normal",
+            "Words": [
+              {
+                "WordText": "normal",
+                "Left": 491,
+                "Top": 386,
+                "Height": 8.5,
+                "Width": 33.5
+              }
+            ],
+            "MaxHeight": 8.5,
+            "MinTop": 386
+          },
+          {
+            "LineText": "normal",
+            "Words": [
+              {
+                "WordText": "normal",
+                "Left": 491,
+                "Top": 412,
+                "Height": 8.5,
+                "Width": 33.5
+              }
+            ],
+            "MaxHeight": 8.5,
+            "MinTop": 412
+          },
+          {
+            "LineText": "[BAJO]",
+            "Words": [
+              {
+                "WordText": "[BAJO]",
+                "Left": 491,
+                "Top": 437.5,
+                "Height": 11.5,
+                "Width": 34
+              }
+            ],
+            "MaxHeight": 11.5,
+            "MinTop": 437.5
+          },
+          {
+            "LineText": "normal",
+            "Words": [
+              {
+                "WordText": "normal",
+                "Left": 491,
+                "Top": 464.5,
+                "Height": 8.5,
+                "Width": 33.5
+              }
+            ],
+            "MaxHeight": 8.5,
+            "MinTop": 464.5
+          },
+          {
+            "LineText": "Deficiencia: <20. Insuficiencia: 20-29.",
+            "Words": [
+              {
+                "WordText": "Deficiencia:",
+                "Left": 550.5,
+                "Top": 438,
+                "Height": 8.5,
+                "Width": 54.5
+              },
+              {
+                "WordText": "<20.",
+                "Left": 609,
+                "Top": 440,
+                "Height": 6.5,
+                "Width": 19.5
+              },
+              {
+                "WordText": "Insuficiencia:",
+                "Left": 632.5,
+                "Top": 438,
+                "Height": 8.5,
+                "Width": 61.5
+              },
+              {
+                "WordText": "20-29.",
+                "Left": 698,
+                "Top": 440,
+                "Height": 9,
+                "Width": 31
+              }
+            ],
+            "MaxHeight": 9,
+            "MinTop": 438
+          },
+          {
+            "LineText": "null",
+            "Words": [
+              {
+                "WordText": "null",
+                "Left": 550,
+                "Top": 464.5,
+                "Height": 8.5,
+                "Width": 16.5
+              }
+            ],
+            "MaxHeight": 8.5,
+            "MinTop": 464.5
+          },
+          {
+            "LineText": "\"Paciente con antecedentes de diabetes tipo 2 familiar. Glucosa y HbA1c elevadas. LDL alto. Vitamina D deficiente. Se recomienda control",
+            "Words": [
+              {
+                "WordText": "\"Paciente",
+                "Left": 90.5,
+                "Top": 549,
+                "Height": 8,
+                "Width": 44.5
+              },
+              {
+                "WordText": "con",
+                "Left": 138,
+                "Top": 551,
+                "Height": 6.5,
+                "Width": 16
+              },
+              {
+                "WordText": "antecedentes",
+                "Left": 157,
+                "Top": 548.5,
+                "Height": 8.5,
+                "Width": 64
+              },
+              {
+                "WordText": "de",
+                "Left": 224,
+                "Top": 548.5,
+                "Height": 8.5,
+                "Width": 11.5
+              },
+              {
+                "WordText": "diabetes",
+                "Left": 238.5,
+                "Top": 548.5,
+                "Height": 8.5,
+                "Width": 40
+              },
+              {
+                "WordText": "tipo",
+                "Left": 281.5,
+                "Top": 549,
+                "Height": 10.5,
+                "Width": 18.5
+              },
+              {
+                "WordText": "2",
+                "Left": 303,
+                "Top": 551,
+                "Height": 6,
+                "Width": 4.5
+              },
+              {
+                "WordText": "familiar.",
+                "Left": 310,
+                "Top": 548.5,
+                "Height": 11,
+                "Width": 38
+              },
+              {
+                "WordText": "Glucosa",
+                "Left": 351.5,
+                "Top": 548.5,
+                "Height": 9,
+                "Width": 36
+              },
+              {
+                "WordText": "y",
+                "Left": 390,
+                "Top": 551.5,
+                "Height": 8,
+                "Width": 5.5
+              },
+              {
+                "WordText": "HbA1c",
+                "Left": 398.5,
+                "Top": 548.5,
+                "Height": 8.5,
+                "Width": 28.5
+              },
+              {
+                "WordText": "elevadas.",
+                "Left": 430,
+                "Top": 548.5,
+                "Height": 8.5,
+                "Width": 42.5
+              },
+              {
+                "WordText": "LDL",
+                "Left": 476.5,
+                "Top": 549.5,
+                "Height": 7.5,
+                "Width": 16.5
+              },
+              {
+                "WordText": "alto.",
+                "Left": 496,
+                "Top": 548.5,
+                "Height": 9,
+                "Width": 20.5
+              },
+              {
+                "WordText": "Vitamina",
+                "Left": 520,
+                "Top": 549,
+                "Height": 8,
+                "Width": 42
+              },
+              {
+                "WordText": "D",
+                "Left": 565.5,
+                "Top": 549.5,
+                "Height": 7.5,
+                "Width": 6
+              },
+              {
+                "WordText": "deficiente.",
+                "Left": 574.5,
+                "Top": 548.5,
+                "Height": 11,
+                "Width": 48.5
+              },
+              {
+                "WordText": "Se",
+                "Left": 626.5,
+                "Top": 549.5,
+                "Height": 8,
+                "Width": 11
+              },
+              {
+                "WordText": "recomienda",
+                "Left": 640.5,
+                "Top": 548.5,
+                "Height": 9,
+                "Width": 55.5
+              },
+              {
+                "WordText": "control",
+                "Left": 699,
+                "Top": 548.5,
+                "Height": 9,
+                "Width": 34
+              }
+            ],
+            "MaxHeight": 11,
+            "MinTop": 548.5
+          },
+          {
+            "LineText": "nutricional y repetir en 3 meses.\"",
+            "Words": [
+              {
+                "WordText": "nutricional",
+                "Left": 90,
+                "Top": 562.5,
+                "Height": 8.5,
+                "Width": 50.5
+              },
+              {
+                "WordText": "y",
+                "Left": 143,
+                "Top": 565,
+                "Height": 8,
+                "Width": 5.5
+              },
+              {
+                "WordText": "repetir",
+                "Left": 151.5,
+                "Top": 562.5,
+                "Height": 10.5,
+                "Width": 32
+              },
+              {
+                "WordText": "en",
+                "Left": 186.5,
+                "Top": 565,
+                "Height": 6,
+                "Width": 10.5
+              },
+              {
+                "WordText": "3",
+                "Left": 200,
+                "Top": 564.5,
+                "Height": 8.5,
+                "Width": 5
+              },
+              {
+                "WordText": "meses.\"",
+                "Left": 208,
+                "Top": 562.5,
+                "Height": 8.5,
+                "Width": 37
+              }
+            ],
+            "MaxHeight": 10.5,
+            "MinTop": 562.5
+          },
+          {
+            "LineText": "file:///C:/Users/HP/Downloads/Anålisis - Sangre.htm",
+            "Words": [
+              {
+                "WordText": "file:///C:/Users/HP/Downloads/Anålisis",
+                "Left": 32,
+                "Top": 1027.5,
+                "Height": 8,
+                "Width": 180
+              },
+              {
+                "WordText": "-",
+                "Left": 215.5,
+                "Top": 1032,
+                "Height": 1,
+                "Width": 3
+              },
+              {
+                "WordText": "Sangre.htm",
+                "Left": 222.5,
+                "Top": 1027.5,
+                "Height": 10,
+                "Width": 54
+              }
+            ],
+            "MaxHeight": 10,
+            "MinTop": 1027.5
+          },
+          {
+            "LineText": "archivo_pdf url: https://storage.clinica.com/resultados/SANCRE-001.pd•",
+            "Words": [
+              {
+                "WordText": "archivo_pdf",
+                "Left": 518.5,
+                "Top": 601,
+                "Height": 8.5,
+                "Width": 44
+              },
+              {
+                "WordText": "url:",
+                "Left": 567,
+                "Top": 601,
+                "Height": 6.5,
+                "Width": 11.5
+              },
+              {
+                "WordText": "https://storage.clinica.com/resultados/SANCRE-001.pd•",
+                "Left": 581,
+                "Top": 601,
+                "Height": 9,
+                "Width": 199
+              }
+            ],
+            "MaxHeight": 9,
+            "MinTop": 601
+          },
+          {
+            "LineText": "3/3",
+            "Words": [
+              {
+                "WordText": "3/3",
+                "Left": 771,
+                "Top": 1027.5,
+                "Height": 8,
+                "Width": 14
+              }
+            ],
+            "MaxHeight": 8,
+            "MinTop": 1027.5
+          }
+        ],
+        "HasOverlay": true,
+        "Message": "Total lines: 96"
+      },
+      "FileParseExitCode": 1,
+      "TextOrientation": "0",
+      "ParsedText": "21/5/26, 19:54\r\nnombre\r\nT4 libre (T4L)\r\ngrupo: Electrolitos\r\nnombre\r\nSodio\r\nPotasio\r\nCloro\r\nCalcio total\r\nF6sforo\r\ngrupo: Hierro y vitaminas\r\nvalor\r\n1.1\r\nvalor\r\n140\r\n4.1\r\n102\r\n9-5\r\n3-4\r\nunidad\r\nng/dL\r\nunidad\r\nmEq/L\r\nmEq/L\r\nmEq/L\r\nmg/dL\r\nmg/dL\r\nrango_\r\n60\r\n30\r\n30\r\n200\r\nResultado de Laboratorio\r\nrango min\r\n0.8\r\nrango_min\r\n136\r\n3-5\r\n98\r\n8.5\r\n2.5\r\nSangre\r\nestado\r\nnormal\r\nestado\r\nnormal\r\nnormal\r\nnormal\r\nnormal\r\nnormal\r\nunidad\r\npg/dL\r\nng/mL\r\nng/mL\r\npg/mL\r\nmin\r\nrango max\r\n1.8\r\nrango_max\r\n145\r\n5.0\r\n107\r\n10.5\r\n4-5\r\nnota\r\nnull\r\nnull\r\nnombre\r\nHierro sérico\r\nFerritina\r\nVitamina D (25-OH)\r\nVitamina B12\r\nobservaciones medico:\r\nvalor\r\n88\r\n42\r\n18\r\n310\r\nrango_\r\n170\r\n400\r\n100\r\n900\r\nmax\r\nestado\r\nnormal\r\nnormal\r\n[BAJO]\r\nnormal\r\nDeficiencia: <20. Insuficiencia: 20-29.\r\nnull\r\n\"Paciente con antecedentes de diabetes tipo 2 familiar. Glucosa y HbA1c elevadas. LDL alto. Vitamina D deficiente. Se recomienda control\r\nnutricional y repetir en 3 meses.\"\r\nfile:///C:/Users/HP/Downloads/Anålisis - Sangre.htm\r\narchivo_pdf url: https://storage.clinica.com/resultados/SANCRE-001.pd•\r\n3/3\r\n",
+      "ErrorMessage": "",
+      "ErrorDetails": ""
+    }
+  ],
+  "OCRExitCode": 1,
+  "IsErroredOnProcessing": false,
+  "ProcessingTimeInMilliseconds": 0.64,
+  "SearchablePDFURL": "Searchable PDF not generated as it was not requested."
+}

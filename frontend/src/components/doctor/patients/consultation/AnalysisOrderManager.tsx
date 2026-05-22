@@ -12,13 +12,13 @@ interface AnalysisOrderManagerProps {
 
 export default function AnalysisOrderManager({ orders, onAdd, onRemove }: AnalysisOrderManagerProps) {
   const [showForm, setShowForm] = useState(false);
-  const [examName, setExamName] = useState('');
+  const [examName, setExamName] = useState('SANGRE');
   const [specialty, setSpecialty] = useState('');
 
   const handleAdd = () => {
     if (!examName.trim()) return;
     onAdd({ examName: examName.trim(), specialty: specialty.trim() || undefined });
-    setExamName('');
+    setExamName('SANGRE');
     setSpecialty('');
     setShowForm(false);
   };
@@ -47,13 +47,15 @@ export default function AnalysisOrderManager({ orders, onAdd, onRemove }: Analys
           <div className="flex items-end gap-3">
             <div className="flex-1">
               <label className="mb-1 block text-xs font-medium text-gray-700">Nombre del análisis</label>
-              <input
-                type="text"
+              <select
                 value={examName}
                 onChange={(e) => setExamName(e.target.value)}
-                placeholder="Ej. Hemograma completo"
-                className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-brand-500 focus:outline-none focus:ring-1 focus:ring-brand-500"
-              />
+                className="w-full bg-white rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-brand-500 focus:outline-none focus:ring-1 focus:ring-brand-500"
+              >
+                <option value="SANGRE">Sangre</option>
+                <option value="ORINA">Orina</option>
+                <option value="HECES">Heces</option>
+              </select>
             </div>
             <div className="flex-1">
               <label className="mb-1 block text-xs font-medium text-gray-700">Especialidad (opcional)</label>

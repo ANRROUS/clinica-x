@@ -1,0 +1,44 @@
+{
+  "name": "ocr-service",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Servicio OCR de Clínica X — procesamiento y extracción de datos de PDFs de análisis",
+  "main": "dist/server.js",
+  "scripts": {
+    "build": "tsc -p tsconfig.json && tsc-alias -p tsconfig.json",
+    "dev": "tsx watch src/server.ts",
+    "start": "node dist/server.js",
+    "lint": "eslint src --ext .ts",
+    "clean": "rimraf dist",
+    "prisma:generate": "prisma generate",
+    "prisma:migrate": "echo 'Migrations managed by clinical-service. Run: cd ../clinical-service && pnpm prisma:migrate:dev'"
+  },
+  "dependencies": {
+    "@clinica-x/date-utils": "workspace:*",
+    "@clinica-x/shared-kernel": "workspace:*",
+    "@clinica-x/shared-middleware": "workspace:*",
+    "@clinica-x/shared-types": "workspace:*",
+    "@prisma/client": "^5.18.0",
+    "axios": "^1.7.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "form-data": "^4.0.0",
+    "helmet": "^7.1.0",
+    "jsonwebtoken": "^9.0.2",
+    "pino": "^9.0.0",
+    "pino-pretty": "^11.0.0",
+    "zod": "^3.23.0"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.17",
+    "@types/express": "^4.17.21",
+    "@types/jsonwebtoken": "^9.0.6",
+    "@types/node": "^20.11.0",
+    "prisma": "^5.18.0",
+    "rimraf": "^5.0.0",
+    "tsc-alias": "^1.8.17",
+    "tsx": "^4.7.0",
+    "typescript": "^5.4.0"
+  }
+}

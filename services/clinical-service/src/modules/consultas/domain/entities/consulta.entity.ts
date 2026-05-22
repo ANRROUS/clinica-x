@@ -13,6 +13,9 @@ export interface OrdenAnalisisValue {
   tipoAnalisis: string;
   especialidad?: string;
   descripcion?: string;
+  estado?: string;
+  archivoId?: string | null;
+  analisisResultadoId?: string | null;
 }
 
 export interface MedicamentoValue {

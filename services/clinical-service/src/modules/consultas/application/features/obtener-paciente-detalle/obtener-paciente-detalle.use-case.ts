@@ -44,13 +44,27 @@ export class ObtenerPacienteDetalleUseCase implements IObtenerPacienteDetallePor
       return Err(new Error('PACIENTE_NO_ENCONTRADO'));
     }
 
+    const medicoIds = Array.from(new Set(consultasFinalizadas.map((c) => c.medicoId)));
+    let medicosMap = new Map<string, { nombre: string; apellido: string }>();
+    try {
+      if (medicoIds.length > 0) {
+        const medicos = await this.authServiceClient.obtenerUsuariosPorIds(medicoIds);
+        medicos.forEach((m) => medicosMap.set(m.id, m));
+      }
+    } catch {
+      // Continuar si falla
+    }
+
     const consultaDtos: ConsultaDto[] = consultasFinalizadas.map((consulta) => {
+      const medico = medicosMap.get(consulta.medicoId);
       return toConsultaDto(consulta, {
         pacienteNombre: pacienteData!.nombre,
         pacienteApellido: pacienteData!.apellido,
         pacienteDni: pacienteData!.dni,
         pacienteEmail: pacienteData!.email,
         pacienteTelefono: pacienteData!.telefono,
+        medicoNombre: medico?.nombre,
+        medicoApellido: medico?.apellido,
       });
     });
 

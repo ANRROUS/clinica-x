@@ -22,6 +22,11 @@ export async function changeAppointmentStatus(
   return res.data;
 }
 
+export async function getDoctorSlotDuration(): Promise<ApiResponse<{ duracionSlot: number }>> {
+  const res = await api.get('/api/appointments/doctor/slot-duration');
+  return res.data;
+}
+
 export async function startConsultation(data: {
   pacienteId: string;
   citaId?: string;
