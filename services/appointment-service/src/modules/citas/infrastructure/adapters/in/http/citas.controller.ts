@@ -16,6 +16,7 @@ import type {
   IObtenerDisponibilidadPort,
   IObtenerDisponibilidadPorEspecialidadPort,
   ICambiarEstadoCitaPort,
+  IObtenerSlotMasProximoPort,
 } from '@/modules/citas/domain/ports/in/citas.port';
 import type { IMedicoConsultaPort } from '@/modules/citas/domain/ports/out/medico-consulta.port';
 import { nowLima, parseLimaDate, formatLima } from '@clinica-x/date-utils';
@@ -48,6 +49,7 @@ export class CitasController {
     private readonly obtenerDisponibilidad: IObtenerDisponibilidadPort,
     private readonly obtenerDisponibilidadPorEspecialidad: IObtenerDisponibilidadPorEspecialidadPort,
     private readonly cambiarEstadoCita: ICambiarEstadoCitaPort,
+    private readonly obtenerSlotMasProximo: IObtenerSlotMasProximoPort,
     private readonly medicoReader: IMedicoConsultaPort,
   ) {}
 
@@ -123,6 +125,17 @@ export class CitasController {
         especialidadId,
         fechaDesde: nowLima(),
       });
+      this.manejarResultado(res, resultado as any);
+    } catch (err) {
+      next(err);
+    }
+  };
+
+  // ─── GET /api/appointments/availability/specialty/:especialidadId/earliest ──
+  slotMasProximo = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    try {
+      const especialidadId = req.params.especialidadId;
+      const resultado = await this.obtenerSlotMasProximo.execute({ especialidadId });
       this.manejarResultado(res, resultado as any);
     } catch (err) {
       next(err);

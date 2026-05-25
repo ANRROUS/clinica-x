@@ -19,6 +19,7 @@ export function createCitasRouter(controller: CitasController): Router {
   // ─── Paciente ─────────────────────────────────────────────────────────────
   router.get('/availability', requireRole(['PACIENTE']), controller.disponibilidad);
   router.get('/availability/specialty/:especialidadId', requireRole(['PACIENTE']), controller.disponibilidadPorEspecialidad);
+  router.get('/availability/specialty/:especialidadId/earliest', requireRole(['PACIENTE']), controller.slotMasProximo);
   router.post('/book/manual', requireRole(['PACIENTE']), controller.reservarManual);
   router.post('/book/automatic', requireRole(['PACIENTE']), controller.reservarAutomatica);
   router.get('/patient/me', requireRole(['PACIENTE']), controller.listarPaciente);

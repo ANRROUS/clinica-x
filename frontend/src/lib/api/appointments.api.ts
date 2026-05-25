@@ -5,6 +5,7 @@ import type {
   DisponibilidadDoctorDTO,
   SlotDTO,
   CitaDTO,
+  SlotMasProximoDTO,
 } from './types';
 
 export async function getSpecialties(): Promise<ApiResponse<EspecialidadDTO[]>> {
@@ -17,6 +18,15 @@ export async function getAvailabilityBySpecialty(
 ): Promise<ApiResponse<DisponibilidadDoctorDTO[]>> {
   const res = await api.get(
     `/api/appointments/availability/specialty/${especialidadId}`,
+  );
+  return res.data;
+}
+
+export async function getEarliestSlot(
+  especialidadId: string,
+): Promise<ApiResponse<SlotMasProximoDTO>> {
+  const res = await api.get(
+    `/api/appointments/availability/specialty/${especialidadId}/earliest`,
   );
   return res.data;
 }
