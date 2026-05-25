@@ -4,10 +4,10 @@ import { useQuery } from '@tanstack/react-query';
 import MetricCards from '@/components/admin/dashboard/MetricCards';
 import DoctorsTable from '@/components/admin/dashboard/DoctorsTable';
 import { getAdminDashboard } from '@/lib/api/admin.api';
-import { useAdminAuthStore } from '@/store/useAdminAuthStore';
+import { useAuthStore } from '@/store/useAuthStore';
 
 export default function AdminDashboardPage() {
-  const { isAuthenticated } = useAdminAuthStore();
+  const { isAuthenticated } = useAuthStore();
 
   const { data, isLoading, error } = useQuery({
     queryKey: ['admin-dashboard'],

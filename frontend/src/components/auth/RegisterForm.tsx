@@ -30,7 +30,7 @@ type RegisterForm = z.infer<typeof registerSchema>;
 
 export default function RegisterForm() {
   const router = useRouter();
-  const { setAuth } = useAuthStore();
+  const { setUser } = useAuthStore();
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [focusedField, setFocusedField] = useState<string | null>(null);
@@ -55,7 +55,7 @@ export default function RegisterForm() {
         password: data.password,
       });
       if (res.success && res.data) {
-        setAuth(res.data.usuario, res.data.token);
+        setUser(res.data.usuario);
         toast.success('Cuenta creada correctamente');
         const returnUrl = sessionStorage.getItem('returnUrl') || '/perfil';
         sessionStorage.removeItem('returnUrl');

@@ -100,6 +100,17 @@ export class UsuariosController {
         return;
       }
 
+      const { token } = resultado.value;
+
+      // httpOnly cookie para API calls
+      res.cookie('auth_token', token, {
+        httpOnly: true,
+        secure: env.NODE_ENV === 'production',
+        sameSite: 'lax',
+        path: '/',
+        maxAge: 7 * 24 * 60 * 60 * 1000, // 7 días
+      });
+
       log.info('controller', 'Usuario registrado exitosamente', { output: { userId: resultado.value.usuario.id } });
       res.status(201).json({ success: true, data: resultado.value });
     } catch (err) {
@@ -139,6 +150,17 @@ export class UsuariosController {
         });
         return;
       }
+
+      const { token } = resultado.value;
+
+      // httpOnly cookie para API calls
+      res.cookie('auth_token', token, {
+        httpOnly: true,
+        secure: env.NODE_ENV === 'production',
+        sameSite: 'lax',
+        path: '/',
+        maxAge: 7 * 24 * 60 * 60 * 1000, // 7 días
+      });
 
       log.info('controller', 'Login exitoso', { output: { userId: resultado.value.usuario.id, tokenGenerated: true } });
       res.status(200).json({ success: true, data: resultado.value });
@@ -192,6 +214,17 @@ export class UsuariosController {
       log.error('controller', 'Error inesperado al obtener perfil', err as Error);
       next(err);
     }
+  };
+
+  // ─── POST /api/auth/logout ────────────────────────────────────────────────
+  logout = async (_req: Request, res: Response): Promise<void> => {
+    res.clearCookie('auth_token', {
+      httpOnly: true,
+      secure: env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      path: '/',
+    });
+    res.status(200).json({ success: true, data: { message: 'Sesión cerrada' } });
   };
 
   // ─── PUT /api/auth/me ─────────────────────────────────────────────────────

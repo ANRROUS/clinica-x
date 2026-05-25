@@ -8,7 +8,7 @@ import { updateMe } from '@/lib/api/auth.api';
 import { useAuthStore } from '@/store/useAuthStore';
 
 export default function ProfileHeader() {
-  const { user, updateUser } = useAuthStore();
+  const { user, setUser } = useAuthStore();
   const [editing, setEditing] = useState<'email' | 'telefono' | null>(null);
   const [editValue, setEditValue] = useState('');
   const [saving, setSaving] = useState(false);
@@ -36,7 +36,7 @@ export default function ProfileHeader() {
       data[editing] = editValue;
       const res = await updateMe(data);
       if (res.success && res.data) {
-        updateUser(res.data);
+        setUser(res.data);
         toast.success('Información actualizada');
         setEditing(null);
       } else {

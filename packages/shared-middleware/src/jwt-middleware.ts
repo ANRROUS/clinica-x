@@ -1,9 +1,12 @@
 /**
  * ============================================================================
- * jwtMiddleware — Verifica el JWT del header Authorization
+ * jwtMiddleware — Verifica el JWT del header Authorization o cookie httpOnly
  * ============================================================================
  *
- * Espera: `Authorization: Bearer <token>`
+ * Prioridad:
+ *  1. Header `Authorization: Bearer <token>`
+ *  2. Cookie `auth_token` (httpOnly, seteada por auth-service en login)
+ *
  * Si el token es válido: setea `req.user` con el payload.
  * Si falta o es inválido: responde 401.
  *
@@ -24,6 +27,32 @@ export interface JwtMiddlewareOptions {
   skipPaths?: string[];
 }
 
+/**
+ * Extrae el token desde el header Authorization o desde la cookie httpOnly.
+ */
+function extractToken(req: Request): string | null {
+  // 1. Header Authorization
+  const authHeader = req.header('authorization') || req.header('Authorization');
+  if (authHeader && authHeader.startsWith('Bearer ')) {
+    return authHeader.substring(7).trim();
+  }
+
+  // 2. Cookie auth_token (httpOnly seteada por auth-service)
+  const cookieHeader = req.headers.cookie;
+  if (cookieHeader) {
+    const cookies = Object.fromEntries(
+      cookieHeader.split(';').map((c) => {
+        const [key, ...rest] = c.trim().split('=');
+        return [key, decodeURIComponent(rest.join('='))];
+      }),
+    );
+    const cookieToken = cookies['auth_token'];
+    if (cookieToken) return cookieToken;
+  }
+
+  return null;
+}
+
 export function jwtMiddleware(options: JwtMiddlewareOptions): RequestHandler {
   const { secret, skipPaths = [] } = options;
 
@@ -33,9 +62,9 @@ export function jwtMiddleware(options: JwtMiddlewareOptions): RequestHandler {
       return next();
     }
 
-    const authHeader = req.header('authorization') || req.header('Authorization');
+    const token = extractToken(req);
 
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    if (!token) {
       res.status(401).json({
         success: false,
         error: {
@@ -45,8 +74,6 @@ export function jwtMiddleware(options: JwtMiddlewareOptions): RequestHandler {
       });
       return;
     }
-
-    const token = authHeader.substring(7).trim();
 
     try {
       const payload = jwt.verify(token, secret) as JwtPayloadUsuario;

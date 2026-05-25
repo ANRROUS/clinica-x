@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { useDoctorAuthStore } from '@/store/useDoctorAuthStore';
+import { useAuthStore } from '@/store/useAuthStore';
 import { getDoctorPatients, getActivePatient, getDoctorSlotDuration } from '@/lib/api/doctor.api';
 import ConsultationList from './ConsultationList';
 import ConsultationDetail from './ConsultationDetail';
@@ -16,7 +16,7 @@ interface ConsultationHistoryProps {
 }
 
 export default function ConsultationHistory({ patientId }: ConsultationHistoryProps) {
-  const { isAuthenticated } = useDoctorAuthStore();
+  const { isAuthenticated } = useAuthStore();
   const [selectedConsultationId, setSelectedConsultationId] = useState<string | null>(null);
   const [filterDate, setFilterDate] = useState<string>('');
 
