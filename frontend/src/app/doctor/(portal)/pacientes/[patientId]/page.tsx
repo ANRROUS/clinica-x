@@ -3,7 +3,7 @@
 import { useState, useEffect, useMemo } from 'react';
 import { useRouter, useParams, useSearchParams } from 'next/navigation';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { useDoctorAuthStore } from '@/store/useDoctorAuthStore';
+import { useAuthStore } from '@/store/useAuthStore';
 import { getActivePatient, getDoctorPatients, getDoctorSlotDuration } from '@/lib/api/doctor.api';
 import PatientSidebar from '@/components/doctor/patients/PatientSidebar';
 import PatientHeader from '@/components/doctor/patients/PatientHeader';
@@ -15,7 +15,7 @@ import { nowLima, addMonthsLima, formatLima } from '@clinica-x/date-utils';
 import { parseApiDate } from '@/lib/date-utils';
 
 export default function DoctorPatientDetailPage() {
-  const { isAuthenticated } = useDoctorAuthStore();
+  const { isAuthenticated } = useAuthStore();
   const router = useRouter();
   const params = useParams();
   const patientId = params.patientId as string;

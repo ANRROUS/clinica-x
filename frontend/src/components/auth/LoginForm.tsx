@@ -22,7 +22,7 @@ type LoginForm = z.infer<typeof loginSchema>;
 
 export default function LoginForm() {
   const router = useRouter();
-  const { setAuth } = useAuthStore();
+  const { setUser } = useAuthStore();
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [focusedField, setFocusedField] = useState<string | null>(null);
@@ -40,7 +40,7 @@ const onSubmit = async (data: LoginForm) => {
   try {
     const res = await login(data);
     if (res.success && res.data) {
-      setAuth(res.data.usuario, res.data.token);
+      setUser(res.data.usuario);
       toast.success('Sesión iniciada correctamente');
       const returnUrl = sessionStorage.getItem('returnUrl') || '/perfil';
       sessionStorage.removeItem('returnUrl');

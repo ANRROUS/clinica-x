@@ -1,13 +1,13 @@
 'use client';
 
-import { useDoctorAuthStore } from '@/store/useDoctorAuthStore';
+import { useAuthStore } from '@/store/useAuthStore';
 import { useRouter } from 'next/navigation';
 import { useCallback } from 'react';
 import { login } from '@/lib/api/auth.api';
 import { toast } from 'sonner';
 
 export function useDoctorAuth() {
-  const { user, token, isAuthenticated, setAuth, clearAuth } = useDoctorAuthStore();
+  const { user, isAuthenticated, setUser, clearAuth } = useAuthStore();
   const router = useRouter();
 
   const handleLogin = useCallback(
@@ -19,7 +19,7 @@ export function useDoctorAuth() {
             toast.error('Credenciales inválidas');
             return false;
           }
-          setAuth(res.data.usuario, res.data.token);
+          setUser(res.data.usuario);
           router.push('/doctor/calendario');
           return true;
         }
@@ -30,17 +30,16 @@ export function useDoctorAuth() {
         return false;
       }
     },
-    [setAuth, router]
+    [setUser, router]
   );
 
-  const handleLogout = useCallback(() => {
-    clearAuth();
+  const handleLogout = useCallback(async () => {
+    await clearAuth();
     router.push('/doctor/login');
   }, [clearAuth, router]);
 
   return {
     user,
-    token,
     isAuthenticated,
     login: handleLogin,
     logout: handleLogout,

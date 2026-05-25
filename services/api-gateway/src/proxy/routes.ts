@@ -60,6 +60,7 @@ export const rutasProxy: RutaProxy[] = [
 export const rutasPublicas: string[] = [
   '/api/auth/login',
   '/api/auth/register',
+  '/api/auth/logout',
   '/api/auth/forgot-password',
   '/api/auth/reset-password',
   '/health',

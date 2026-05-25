@@ -25,7 +25,7 @@ interface LoginFormContentProps {
 
 export default function LoginFormContent({ onSuccess }: LoginFormContentProps) {
   const router = useRouter();
-  const { setAuth } = useAuthStore();
+  const { setUser } = useAuthStore();
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [focusedField, setFocusedField] = useState<string | null>(null);
@@ -43,7 +43,7 @@ export default function LoginFormContent({ onSuccess }: LoginFormContentProps) {
     try {
       const res = await login(data);
       if (res.success && res.data) {
-        setAuth(res.data.usuario, res.data.token);
+        setUser(res.data.usuario);
         toast.success('Sesión iniciada correctamente');
         if (onSuccess) {
           onSuccess();

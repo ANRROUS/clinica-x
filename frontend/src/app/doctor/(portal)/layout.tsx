@@ -2,11 +2,11 @@
 
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { useDoctorAuthStore } from '@/store/useDoctorAuthStore';
+import { useAuthStore } from '@/store/useAuthStore';
 import DoctorHeader from '@/components/doctor/DoctorHeader';
 
 export default function DoctorPortalLayout({ children }: { children: React.ReactNode }) {
-  const { isAuthenticated, _hasHydrated, hydrate } = useDoctorAuthStore();
+  const { isAuthenticated, _hasHydrated, hydrate, user } = useAuthStore();
   const router = useRouter();
 
   useEffect(() => {
@@ -14,10 +14,10 @@ export default function DoctorPortalLayout({ children }: { children: React.React
   }, [hydrate]);
 
   useEffect(() => {
-    if (_hasHydrated && !isAuthenticated) {
+    if (_hasHydrated && (!isAuthenticated || user?.rol !== 'MEDICO')) {
       router.push('/doctor/login');
     }
-  }, [isAuthenticated, router, _hasHydrated]);
+  }, [isAuthenticated, router, _hasHydrated, user]);
 
   if (!_hasHydrated || !isAuthenticated) {
     return (
