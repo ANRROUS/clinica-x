@@ -53,6 +53,20 @@ export interface CambiarEstadoCitaDto {
   estado: EstadoCita;
 }
 
+export interface ObtenerSlotMasProximoDto {
+  especialidadId: string;
+}
+
+export interface SlotMasProximoDto {
+  doctorId: string;
+  doctorName: string;
+  specialty: string;
+  fecha: string;
+  horaInicio: string;
+  horaFin: string;
+  slotDateTime: string;
+}
+
 // ─── DTOs de salida ─────────────────────────────────────────────────────────
 export interface CitaResponseDto {
   id: string;
@@ -119,4 +133,8 @@ export interface IObtenerDisponibilidadPorEspecialidadPort {
 
 export interface ICambiarEstadoCitaPort {
   execute(citaId: string, dto: CambiarEstadoCitaDto): Promise<Result<CitaResponseDto, Error>>;
+}
+
+export interface IObtenerSlotMasProximoPort {
+  execute(dto: ObtenerSlotMasProximoDto): Promise<Result<SlotMasProximoDto, Error>>;
 }

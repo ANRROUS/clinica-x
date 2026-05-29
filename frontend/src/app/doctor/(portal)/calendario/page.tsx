@@ -4,13 +4,13 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useQuery } from '@tanstack/react-query';
 import DoctorCalendar from '@/components/doctor/DoctorCalendar';
-import { useDoctorAuthStore } from '@/store/useDoctorAuthStore';
+import { useAuthStore } from '@/store/useAuthStore';
 import { getDoctorCalendar } from '@/lib/api/doctor.api';
 import type { CitaCalendarioDTO } from '@/lib/api/types';
 import { nowLima, addDaysLima, formatLima } from '@clinica-x/date-utils';
 
 export default function DoctorCalendarioPage() {
-  const { isAuthenticated } = useDoctorAuthStore();
+  const { isAuthenticated } = useAuthStore();
   const router = useRouter();
   const [dateRange, setDateRange] = useState(() => {
     const desde = addDaysLima(nowLima(), -7);

@@ -2,7 +2,7 @@
 
 import { useQuery } from '@tanstack/react-query';
 import { Mail, Phone } from 'lucide-react';
-import { useDoctorAuthStore } from '@/store/useDoctorAuthStore';
+import { useAuthStore } from '@/store/useAuthStore';
 import { getDoctorPatientDetail } from '@/lib/api/doctor.api';
 
 interface PatientHeaderProps {
@@ -11,7 +11,7 @@ interface PatientHeaderProps {
 }
 
 export default function PatientHeader({ patientId, patientName }: PatientHeaderProps) {
-  const { isAuthenticated } = useDoctorAuthStore();
+  const { isAuthenticated } = useAuthStore();
 
   const { data } = useQuery({
     queryKey: ['doctor-patient-detail', patientId],
