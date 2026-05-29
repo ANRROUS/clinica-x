@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import { Download, Sparkles, FileJson } from 'lucide-react';
-import { useAuthStore } from '@/store/useAuthStore';
+import { useAdminAuthStore } from '@/store/useAdminAuthStore';
 import FileUploader from '@/components/admin/test-ocr/FileUploader';
 import ProcessingState from '@/components/admin/test-ocr/ProcessingState';
 import OcrResultsTable from '@/components/admin/test-ocr/OcrResultsTable';
@@ -21,7 +21,7 @@ const TIPOS_ANALISIS = [
 const PACIENTE_TEST_ID = '702dc3eb-d2cc-442d-b764-4e9f91095182';
 
 export default function TestOcrPage() {
-  const { isAuthenticated } = useAuthStore();
+  const { isAuthenticated } = useAdminAuthStore();
   const [archivoId, setArchivoId] = useState<string | null>(null);
   const [keyS3, setKeyS3] = useState<string | null>(null);
   const [uploadedFile, setUploadedFile] = useState<{ name: string; size: number } | null>(null);

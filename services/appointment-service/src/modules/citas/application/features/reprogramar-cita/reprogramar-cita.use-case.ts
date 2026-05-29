@@ -21,6 +21,8 @@ import type { IMedicoConsultaPort } from '@/modules/citas/domain/ports/out/medic
 import { toCitaResponseDto } from '@/modules/citas/application/mapper';
 import { nowLima } from '@clinica-x/date-utils';
 
+const CUATRO_HORAS_MS = 4 * 60 * 60 * 1000;
+
 export class ReprogramarCitaUseCase implements IReprogramarCitaPort {
   constructor(
     private readonly repo: ICitaRepository,
@@ -47,8 +49,8 @@ export class ReprogramarCitaUseCase implements IReprogramarCitaPort {
 
     const ahora = nowLima();
     const diffMs = dto.nuevaFechaHora.getTime() - ahora.getTime();
-    if (diffMs <= 0) {
-      return Err(new SlotNoDisponibleError('Debes reprogramar a una fecha futura'));
+    if (diffMs < CUATRO_HORAS_MS) {
+      return Err(new SlotNoDisponibleError('Debes reprogramar con al menos 4 horas de anticipación'));
     }
 
     // Verificar que el nuevo slot esté libre y actualizar atómicamente

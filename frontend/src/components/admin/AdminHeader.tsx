@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { HeartPulse } from 'lucide-react';
-import { useAuthStore } from '@/store/useAuthStore';
+import { useAdminAuthStore } from '@/store/useAdminAuthStore';
 
 const navItems = [
   { href: '/admin/dashboard', label: 'Dashboard' },
@@ -12,12 +12,12 @@ const navItems = [
 ];
 
 export default function AdminHeader() {
-  const { user, clearAuth } = useAuthStore();
+  const { user, clearAuth } = useAdminAuthStore();
   const router = useRouter();
   const pathname = usePathname();
 
-  const handleLogout = async () => {
-    await clearAuth();
+  const handleLogout = () => {
+    clearAuth();
     router.push('/admin/login');
   };
 

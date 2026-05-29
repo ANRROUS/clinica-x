@@ -7,7 +7,7 @@ import { z } from 'zod';
 import { toast } from 'sonner';
 import { Stethoscope, Mail, Lock } from 'lucide-react';
 import { login } from '@/lib/api/auth.api';
-import { useAuthStore } from '@/store/useAuthStore';
+import { useDoctorAuthStore } from '@/store/useDoctorAuthStore';
 
 const doctorLoginSchema = z.object({
   email: z.string().email('Usuario inválido'),
@@ -17,7 +17,7 @@ const doctorLoginSchema = z.object({
 type DoctorLoginForm = z.infer<typeof doctorLoginSchema>;
 
 export default function DoctorLoginForm() {
-  const { setUser } = useAuthStore();
+  const { setAuth } = useDoctorAuthStore();
   const [loading, setLoading] = useState(false);
   const [focusedField, setFocusedField] = useState<string | null>(null);
 
@@ -38,7 +38,7 @@ export default function DoctorLoginForm() {
           toast.error('Credenciales inválidas');
           return;
         }
-        setUser(res.data.usuario);
+        setAuth(res.data.usuario, res.data.token);
         toast.success('Bienvenido al Portal Médico');
         window.location.href = '/doctor/calendario';
       } else {

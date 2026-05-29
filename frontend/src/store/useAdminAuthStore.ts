@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import type { UsuarioDTO } from '@/lib/api/types';
 
-interface AuthStore {
+interface AdminAuthStore {
   user: UsuarioDTO | null;
   token: string | null;
   isAuthenticated: boolean;
@@ -12,46 +12,47 @@ interface AuthStore {
   hydrate: () => void;
 }
 
-const TOKEN_KEY = 'clinica_x_token';
+const TOKEN_KEY = 'clinica_x_admin_token';
+const USER_KEY = 'clinica_x_admin_user';
 
-export const useAuthStore = create<AuthStore>((set, get) => ({
+export const useAdminAuthStore = create<AdminAuthStore>((set, get) => ({
   user: null,
   token: null,
   isAuthenticated: false,
   _hasHydrated: false,
   setAuth: (user, token) => {
     localStorage.setItem(TOKEN_KEY, token);
-    localStorage.setItem('clinica_x_user', JSON.stringify(user));
+    localStorage.setItem(USER_KEY, JSON.stringify(user));
     const safeToken = encodeURIComponent(token);
     document.cookie = `${TOKEN_KEY}=${safeToken}; path=/; max-age=${60 * 60 * 24 * 7}; SameSite=Lax`;
     set({ user, token, isAuthenticated: true });
   },
   clearAuth: () => {
     localStorage.removeItem(TOKEN_KEY);
-    localStorage.removeItem('clinica_x_user');
+    localStorage.removeItem(USER_KEY);
     document.cookie = `${TOKEN_KEY}=; path=/; max-age=0; SameSite=Lax`;
     set({ user: null, token: null, isAuthenticated: false });
   },
   updateUser: (user) => {
-    localStorage.setItem('clinica_x_user', JSON.stringify(user));
+    localStorage.setItem(USER_KEY, JSON.stringify(user));
     set({ user });
   },
   hydrate: () => {
     if (get()._hasHydrated) return;
     const token = localStorage.getItem(TOKEN_KEY);
-    const userStr = localStorage.getItem('clinica_x_user');
+    const userStr = localStorage.getItem(USER_KEY);
     if (token && userStr) {
       try {
         const user = JSON.parse(userStr) as UsuarioDTO;
-        if (user.rol === 'PACIENTE') {
+        if (user.rol === 'ADMIN') {
           set({ user, token, isAuthenticated: true, _hasHydrated: true });
           return;
         }
         localStorage.removeItem(TOKEN_KEY);
-        localStorage.removeItem('clinica_x_user');
+        localStorage.removeItem(USER_KEY);
       } catch {
         localStorage.removeItem(TOKEN_KEY);
-        localStorage.removeItem('clinica_x_user');
+        localStorage.removeItem(USER_KEY);
       }
     }
     set({ _hasHydrated: true });
