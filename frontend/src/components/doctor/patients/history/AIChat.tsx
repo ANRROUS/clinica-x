@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { Send, Bot, User, RefreshCw } from 'lucide-react';
-import { useAuthStore } from '@/store/useAuthStore';
+import { useDoctorAuthStore } from '@/store/useDoctorAuthStore';
 import { parseApiDate, formatLima } from '@clinica-x/date-utils';
 import type { ConsultaMedicoDTO } from '@/lib/api/types';
 
@@ -24,7 +24,7 @@ export default function AIChat({
   lastConsultation,
   onSelectDateFilter,
 }: AIChatProps) {
-  const { user } = useAuthStore();
+  const { user } = useDoctorAuthStore();
   const doctorLastName = user?.apellido || 'Médico';
 
   const [messages, setMessages] = useState<ChatMessage[]>([]);

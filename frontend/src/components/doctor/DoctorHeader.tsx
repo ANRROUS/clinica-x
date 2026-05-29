@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { Stethoscope, Calendar, Users } from 'lucide-react';
-import { useAuthStore } from '@/store/useAuthStore';
+import { useDoctorAuthStore } from '@/store/useDoctorAuthStore';
 
 const navItems = [
   { href: '/doctor/calendario', label: 'Calendario', icon: Calendar },
@@ -11,12 +11,12 @@ const navItems = [
 ];
 
 export default function DoctorHeader() {
-  const { user, clearAuth } = useAuthStore();
+  const { user, clearAuth } = useDoctorAuthStore();
   const pathname = usePathname();
   const router = useRouter();
 
-  const handleLogout = async () => {
-    await clearAuth();
+  const handleLogout = () => {
+    clearAuth();
     router.push('/doctor/login');
   };
 

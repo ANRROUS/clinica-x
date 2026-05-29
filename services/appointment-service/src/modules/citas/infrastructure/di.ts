@@ -16,7 +16,6 @@ import { ListarCitasMedicoUseCase } from '@/modules/citas/application/features/l
 import { ObtenerDisponibilidadUseCase } from '@/modules/citas/application/features/obtener-disponibilidad/obtener-disponibilidad.use-case';
 import { ObtenerDisponibilidadPorEspecialidadUseCase } from '@/modules/citas/application/features/obtener-disponibilidad-por-especialidad/obtener-disponibilidad-por-especialidad.use-case';
 import { CambiarEstadoCitaUseCase } from '@/modules/citas/application/features/cambiar-estado-cita/cambiar-estado-cita.use-case';
-import { ObtenerSlotMasProximoUseCase } from '@/modules/citas/application/features/obtener-slot-mas-proximo/obtener-slot-mas-proximo.use-case';
 import { CitasController } from '@/modules/citas/infrastructure/adapters/in/http/citas.controller';
 import { createCitasRouter } from '@/modules/citas/infrastructure/adapters/in/http/citas.router';
 
@@ -35,7 +34,6 @@ const listarCitasMedicoUseCase = new ListarCitasMedicoUseCase(citaRepository, me
 const obtenerDisponibilidadUseCase = new ObtenerDisponibilidadUseCase(citaRepository, medicoConsulta);
 const obtenerDisponibilidadPorEspecialidadUseCase = new ObtenerDisponibilidadPorEspecialidadUseCase(citaRepository, medicoConsulta, authServiceClient);
 const cambiarEstadoCitaUseCase = new CambiarEstadoCitaUseCase(citaRepository, medicoConsulta);
-const obtenerSlotMasProximoUseCase = new ObtenerSlotMasProximoUseCase(citaRepository, medicoConsulta);
 
 // ─── Controlador ────────────────────────────────────────────────────────────
 const citasController = new CitasController(
@@ -48,7 +46,6 @@ const citasController = new CitasController(
   obtenerDisponibilidadUseCase,
   obtenerDisponibilidadPorEspecialidadUseCase,
   cambiarEstadoCitaUseCase,
-  obtenerSlotMasProximoUseCase,
   medicoConsulta,
 );
 

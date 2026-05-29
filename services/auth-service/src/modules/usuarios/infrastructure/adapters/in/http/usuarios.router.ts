@@ -19,7 +19,6 @@ export function createUsuariosRouter(
   // Públicas
   router.post('/register', controller.registrar);
   router.post('/login', controller.login);
-  router.post('/logout', controller.logout);
   router.post('/forgot-password', controller.forgotPassword);
   router.post('/reset-password', controller.resetPassword);
 

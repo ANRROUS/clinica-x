@@ -8,7 +8,7 @@ import { z } from 'zod';
 import { toast } from 'sonner';
 import { Shield, Mail, Lock } from 'lucide-react';
 import { login } from '@/lib/api/auth.api';
-import { useAuthStore } from '@/store/useAuthStore';
+import { useAdminAuthStore } from '@/store/useAdminAuthStore';
 
 const adminLoginSchema = z.object({
   email: z.string().email('Correo inválido'),
@@ -19,7 +19,7 @@ type AdminLoginForm = z.infer<typeof adminLoginSchema>;
 
 export default function AdminLoginForm() {
   const router = useRouter();
-  const { setUser } = useAuthStore();
+  const { setAuth } = useAdminAuthStore();
   const [loading, setLoading] = useState(false);
   const [focusedField, setFocusedField] = useState<string | null>(null);
 
@@ -40,7 +40,7 @@ export default function AdminLoginForm() {
           toast.error('Este portal es exclusivo para administradores.');
           return;
         }
-        setUser(res.data.usuario);
+        setAuth(res.data.usuario, res.data.token);
         toast.success('Bienvenido, Admin');
         router.push('/admin/dashboard');
       } else {

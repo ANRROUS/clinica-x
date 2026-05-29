@@ -34,7 +34,7 @@ interface RegisterFormContentProps {
 
 export default function RegisterFormContent({ onSuccess }: RegisterFormContentProps) {
   const router = useRouter();
-  const { setUser } = useAuthStore();
+  const { setAuth } = useAuthStore();
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [focusedField, setFocusedField] = useState<string | null>(null);
@@ -59,7 +59,7 @@ export default function RegisterFormContent({ onSuccess }: RegisterFormContentPr
         password: data.password,
       });
       if (res.success && res.data) {
-        setUser(res.data.usuario);
+        setAuth(res.data.usuario, res.data.token);
         toast.success('Cuenta creada correctamente');
         if (onSuccess) {
           onSuccess();

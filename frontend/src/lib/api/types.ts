@@ -32,16 +32,6 @@ export interface DisponibilidadDoctorDTO {
   dias: DiaDisponibilidadDTO[];
 }
 
-export interface SlotMasProximoDTO {
-  doctorId: string;
-  doctorName: string;
-  specialty: string;
-  fecha: string;
-  horaInicio: string;
-  horaFin: string;
-  slotDateTime: string;
-}
-
 export interface CitaDTO {
   id: string;
   pacienteId: string;

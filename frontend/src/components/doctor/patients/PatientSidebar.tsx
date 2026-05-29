@@ -4,7 +4,7 @@ import { useState, useCallback, useEffect, useRef, useMemo } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import { useQuery } from '@tanstack/react-query';
 import { ChevronLeft, ChevronRight, Users } from 'lucide-react';
-import { useAuthStore } from '@/store/useAuthStore';
+import { useDoctorAuthStore } from '@/store/useDoctorAuthStore';
 import { getActivePatient, getDoctorPatients, getDoctorSlotDuration } from '@/lib/api/doctor.api';
 import type { ConsultaMedicoDTO } from '@/lib/api/types';
 import { parseApiDate, nowLima, getLimaYear, getLimaMonth, getLimaDay } from '@clinica-x/date-utils';
@@ -24,7 +24,7 @@ export default function PatientSidebar({
   collapsed = false,
   onToggleCollapse,
 }: PatientSidebarProps) {
-  const { isAuthenticated } = useAuthStore();
+  const { isAuthenticated } = useDoctorAuthStore();
   const router = useRouter();
   const pathname = usePathname();
 
