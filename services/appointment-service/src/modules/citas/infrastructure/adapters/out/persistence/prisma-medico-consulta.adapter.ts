@@ -30,6 +30,25 @@ export class PrismaMedicoConsulta implements IMedicoConsultaPort {
     };
   }
 
+  async buscarPorIds(medicoIds: string[]): Promise<Map<string, MedicoConsulta>> {
+    if (medicoIds.length === 0) return new Map();
+    const raws = await prisma.medico.findMany({
+      where: { id: { in: medicoIds } },
+      include: { especialidad: true },
+    });
+    const map = new Map<string, MedicoConsulta>();
+    for (const raw of raws) {
+      map.set(raw.id, {
+        id: raw.id,
+        nombreUsuario: raw.nombreUsuario,
+        activo: raw.activo,
+        especialidadNombre: raw.especialidad?.nombre ?? 'Sin especialidad',
+        usuarioId: raw.usuarioId,
+      });
+    }
+    return map;
+  }
+
   async buscarPorUsuarioId(usuarioId: string): Promise<MedicoConsulta | null> {
     const raw = await prisma.medico.findUnique({
       where: { usuarioId },

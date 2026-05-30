@@ -82,22 +82,18 @@ app.use(
 // ─── Proxies por prefijo ────────────────────────────────────────────────────
 for (const ruta of rutasProxy) {
   app.use(
-    ruta.prefijo,
     createProxyMiddleware({
       target: ruta.upstream,
       changeOrigin: true,
-      // No reescribimos: el path llega tal cual al microservicio (incluyendo el prefijo)
-      pathRewrite: (path) => `${ruta.prefijo}${path}`,
+      pathFilter: ruta.prefijo,
       on: {
         proxyReq: (proxyReq, req) => {
-          // Propagar el request id
           if (req.headers['x-request-id']) {
             proxyReq.setHeader('x-request-id', String(req.headers['x-request-id']));
           }
         },
         error: (err, _req, res) => {
           logger.error({ err, servicio: ruta.servicio }, 'Error de proxy');
-          // `res` puede ser ServerResponse o Socket: solo respondemos si es HTTP
           const httpRes = res as Partial<express.Response>;
           if (
             typeof httpRes.status === 'function' &&

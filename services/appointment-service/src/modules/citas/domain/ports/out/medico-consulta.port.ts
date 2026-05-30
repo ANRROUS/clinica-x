@@ -27,6 +27,7 @@ export interface EspecialidadDTO {
 
 export interface IMedicoConsultaPort {
   buscarPorId(medicoId: string): Promise<MedicoConsulta | null>;
+  buscarPorIds(medicoIds: string[]): Promise<Map<string, MedicoConsulta>>;
   buscarPorUsuarioId(usuarioId: string): Promise<MedicoConsulta | null>;
   buscarPorEspecialidadActiva(especialidadId: string): Promise<MedicoConsulta[]>;
   listarHorarios(medicoId: string, diaSemana: number): Promise<HorarioConsulta[]>;

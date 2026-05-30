@@ -39,5 +39,6 @@ model Usuario {
   resetToken      String?   @map("reset_token")
   resetTokenExpira DateTime? @map("reset_token_expira")
 
+  @@index([resetToken])
   @@map("usuarios")
 }

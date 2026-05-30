@@ -22,17 +22,18 @@ export class ListarCitasPacienteUseCase implements IListarCitasPacientePort {
 
   async execute(dto: ListarCitasPacienteDto): Promise<Result<CitaResponseDto[], Error>> {
     const citas = await this.repo.buscarPorPaciente(dto.pacienteId);
+    if (citas.length === 0) return Ok([]);
 
-    const dtos: CitaResponseDto[] = [];
-    for (const cita of citas) {
-      const medico = await this.medicoReader.buscarPorId(cita.medicoId);
-      dtos.push(
-        toCitaResponseDto(cita, {
-          doctorName: medico?.nombreUsuario,
-          specialty: medico?.especialidadNombre,
-        }),
-      );
-    }
+    const medicoIds = [...new Set(citas.map((c) => c.medicoId))];
+    const medicosMap = await this.medicoReader.buscarPorIds(medicoIds);
+
+    const dtos: CitaResponseDto[] = citas.map((cita) => {
+      const medico = medicosMap.get(cita.medicoId);
+      return toCitaResponseDto(cita, {
+        doctorName: medico?.nombreUsuario,
+        specialty: medico?.especialidadNombre,
+      });
+    });
 
     return Ok(dtos);
   }

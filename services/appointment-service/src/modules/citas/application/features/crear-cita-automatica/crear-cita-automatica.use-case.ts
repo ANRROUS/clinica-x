@@ -4,6 +4,7 @@
  * ============================================================================
  * Dado un paciente y una especialidad, busca el primer slot libre disponible
  * en los próximos 7 días entre todos los médicos activos de esa especialidad.
+ * Optimizado con batch queries para evitar N+1.
  * ============================================================================
  */
 
@@ -40,37 +41,66 @@ export class CrearCitaAutomaticaUseCase implements ICrearCitaPort {
   ) {}
 
   async execute(dto: CrearCitaDto): Promise<Result<CitaResponseDto, Error>> {
-    const medicos = await this.medicoReader.buscarPorEspecialidadActiva(dto.medicoId); // dto.medicoId = especialidadId en modo automático
+    const medicos = await this.medicoReader.buscarPorEspecialidadActiva(dto.medicoId);
     if (medicos.length === 0) {
       return Err(new MedicoNoEncontradoError());
     }
 
     const ahora = nowLima();
     const maxDias = 7;
+    const medicoIds = medicos.map((m) => m.id);
+
+    const diasSemanaSet = new Set<number>();
+    for (let i = 0; i < maxDias; i++) {
+      diasSemanaSet.add(getLimaDayOfWeek(addDaysLima(ahora, i)));
+    }
+    const diasSemana = Array.from(diasSemanaSet);
+
+    // Batch queries
+    const horariosMap = await this.medicoReader.listarHorariosPorMedicos(medicoIds, diasSemana);
+
+    const inicioRango = startOfDayLima(ahora);
+    const finRango = endOfDayLima(addDaysLima(ahora, maxDias - 1));
+    const todasLasCitas = await this.repo.buscarPorMedicosYFecha(medicoIds, inicioRango, finRango);
+
+    const citasPorMedico = new Map<string, typeof todasLasCitas>();
+    for (const cita of todasLasCitas) {
+      const lista = citasPorMedico.get(cita.medicoId);
+      if (lista) {
+        lista.push(cita);
+      } else {
+        citasPorMedico.set(cita.medicoId, [cita]);
+      }
+    }
+
+    const citasPaciente = await this.repo.buscarPorPaciente(dto.pacienteId);
+    const citasPacienteActivas = citasPaciente.filter(
+      (c: any) =>
+        c.estado !== 'CANCELADA' &&
+        c.fechaHora >= inicioRango &&
+        c.fechaHora <= finRango,
+    );
 
     for (let diaOffset = 0; diaOffset < maxDias; diaOffset++) {
       const fecha = addDaysLima(ahora, diaOffset);
-
       const diaSemana = getLimaDayOfWeek(fecha);
+      const inicioDia = startOfDayLima(fecha);
+      const finDia = endOfDayLima(fecha);
 
       for (const medico of medicos) {
-        const horarios = await this.medicoReader.listarHorarios(medico.id, diaSemana);
+        const key = `${medico.id}#${diaSemana}`;
+        const horarios = horariosMap.get(key) ?? [];
         if (horarios.length === 0) continue;
 
-        const inicioDia = startOfDayLima(fecha);
-        const finDia = endOfDayLima(fecha);
-        const citas = await this.repo.buscarPorMedicoYFecha(medico.id, inicioDia, finDia);
-
-        // Verificar si el paciente ya tiene una cita con este médico el mismo día
-        const citasPacienteConMedico = await this.repo.buscarPorPacienteMedicoYDia(
-          dto.pacienteId,
-          medico.id,
-          inicioDia,
-          finDia,
+        const citasDelMedico = citasPorMedico.get(medico.id) ?? [];
+        const citasDelDia = citasDelMedico.filter(
+          (c: any) => c.fechaHora >= inicioDia && c.fechaHora <= finDia,
         );
-        if (citasPacienteConMedico.length > 0) {
-          continue; // Saltar este día porque ya tiene cita con este médico
-        }
+
+        const yaTieneCita = citasPacienteActivas.some(
+          (c: any) => c.medicoId === medico.id,
+        );
+        if (yaTieneCita) continue;
 
         for (const h of horarios) {
           let slotStart = this.parseTime(h.horaInicio, fecha);
@@ -88,9 +118,8 @@ export class CrearCitaAutomaticaUseCase implements ICrearCitaPort {
             const diffMs = slotDateTime.getTime() - ahora.getTime();
             if (
               diffMs >= CUATRO_HORAS_MS &&
-              !this.estaOcupado(slotStart, slotEnd, citas, h.duracionSlot)
+              !this.estaOcupado(slotStart, slotEnd, citasDelDia, h.duracionSlot)
             ) {
-              // Slot libre encontrado
               const id = crypto.randomUUID();
               const citaResult = Cita.create(id, {
                 pacienteId: dto.pacienteId,
@@ -101,15 +130,15 @@ export class CrearCitaAutomaticaUseCase implements ICrearCitaPort {
               });
               if (citaResult.isErr) return Err(citaResult.error);
 
-              const inicioRango = new Date(slotDateTime.getTime() - 1);
-              const finRango = new Date(slotDateTime.getTime() + h.duracionSlot * 60 * 1000);
+              const inicioRangoSlot = new Date(slotDateTime.getTime() - 1);
+              const finRangoSlot = new Date(slotDateTime.getTime() + h.duracionSlot * 60 * 1000);
               const guardada = await this.repo.guardarSiLibre(
                 citaResult.value,
-                inicioRango,
-                finRango,
+                inicioRangoSlot,
+                finRangoSlot,
               );
               if (!guardada) {
-                continue; // El slot fue tomado por otro usuario concurrente; seguir buscando
+                continue;
               }
 
               const voucherCode = `VCH-${id.slice(0, 8).toUpperCase()}`;

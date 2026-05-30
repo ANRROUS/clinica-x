@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
@@ -62,13 +62,6 @@ export default function ReservarCitaPage() {
     }
   }, [_hasHydrated, isAuthenticated, user, router]);
 
-  useEffect(() => {
-    if (prefillFromOrder) {
-      setSpecialty(prefillFromOrder.specialtyId, '');
-      setPrefill(null);
-    }
-  }, [prefillFromOrder, setSpecialty, setPrefill]);
-
   const { data: specialtiesData, isLoading: loadingSpecialties } = useQuery({
     queryKey: ['specialties'],
     queryFn: getSpecialties,
@@ -76,6 +69,14 @@ export default function ReservarCitaPage() {
   });
 
   const specialties: EspecialidadDTO[] = specialtiesData?.data ?? [];
+
+  useEffect(() => {
+    if (prefillFromOrder) {
+      const specialtyName = specialties.find((s) => s.id === prefillFromOrder.specialtyId)?.nombre ?? '';
+      setSpecialty(prefillFromOrder.specialtyId, specialtyName);
+      setPrefill(null);
+    }
+  }, [prefillFromOrder, setSpecialty, setPrefill, specialties]);
 
   const {
     data: doctorsData,
@@ -114,8 +115,7 @@ export default function ReservarCitaPage() {
 
   const patientAppointments: CitaDTO[] = patientAppointmentsData?.data ?? [];
 
-  // Verificar si ya existe una cita el mismo día con el mismo médico
-  const hasDuplicateAppointment = (): boolean => {
+  const isDuplicate = useMemo(() => {
     if (!selectedDoctor || !selectedDate) return false;
 
     return patientAppointments.some((cita) => {
@@ -125,9 +125,7 @@ export default function ReservarCitaPage() {
       const citaDate = formatLima(new Date(cita.fechaHora), 'yyyy-MM-dd');
       return citaDate === selectedDate;
     });
-  };
-
-  const isDuplicate = hasDuplicateAppointment();
+  }, [patientAppointments, selectedDoctor, selectedDate]);
 
   const handleSpecialtySelect = (id: string, name: string) => {
     setSpecialty(id, name);

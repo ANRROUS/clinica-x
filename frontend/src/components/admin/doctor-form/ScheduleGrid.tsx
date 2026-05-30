@@ -1,13 +1,25 @@
 'use client';
 
 import { useMemo } from 'react';
+import {
+  nowLima,
+  addDaysLima,
+  getLimaDayOfWeek,
+  getLimaDay,
+  formatLima,
+} from '@clinica-x/date-utils';
+
+const MONTH_NAMES = [
+  'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
+  'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre',
+];
 
 const DAYS = [
-  { value: 1, label: 'L' },
-  { value: 2, label: 'M' },
-  { value: 3, label: 'M' },
-  { value: 4, label: 'J' },
-  { value: 5, label: 'V' },
+  { value: 1, short: 'L', name: 'Lun' },
+  { value: 2, short: 'M', name: 'Mar' },
+  { value: 3, short: 'M', name: 'Mié' },
+  { value: 4, short: 'J', name: 'Jue' },
+  { value: 5, short: 'V', name: 'Vie' },
 ];
 
 function generateSlots(shift: 'MANANA' | 'TARDE'): { startTime: string; endTime: string }[] {
@@ -66,12 +78,58 @@ function toggleCell(
   return [...schedules, { diaSemana: dayOfWeek, horaInicio: startTime, horaFin: endTime }];
 }
 
+function getMonday(date: Date): Date {
+  const day = getLimaDayOfWeek(date);
+  const diff = day === 7 ? -6 : 1 - day;
+  return addDaysLima(date, diff);
+}
+
 export default function ScheduleGrid({ schedules, onChange, shift, error }: ScheduleGridProps) {
   const slots = useMemo(() => generateSlots(shift), [shift]);
 
+  const monday = useMemo(() => {
+    const today = nowLima();
+    const mon = getMonday(today);
+    const dow = getLimaDayOfWeek(today);
+    return dow >= 6 ? addDaysLima(mon, 7) : mon;
+  }, []);
+
+  const friday = useMemo(() => addDaysLima(monday, 4), [monday]);
+
+  const weekDays = useMemo(() => {
+    return DAYS.map((d, i) => {
+      const date = addDaysLima(monday, i);
+      return { ...d, date };
+    });
+  }, [monday]);
+
+  const monthLabel = useMemo(() => {
+    const month = Number(formatLima(monday, 'MM')) - 1;
+    const year = Number(formatLima(monday, 'yyyy'));
+    const fridayMonth = Number(formatLima(friday, 'MM')) - 1;
+    const fridayYear = Number(formatLima(friday, 'yyyy'));
+
+    if (month !== fridayMonth || year !== fridayYear) {
+      const displayYear = year !== fridayYear ? `${year}/${fridayYear}` : String(year);
+      return `${MONTH_NAMES[month]} - ${MONTH_NAMES[fridayMonth]} ${displayYear}`;
+    }
+
+    return `${MONTH_NAMES[month]} ${year}`;
+  }, [monday, friday]);
+
   return (
     <div className="space-y-4">
-      <h4 className="text-center text-lg font-bold text-gray-900">Abril 2026</h4>
+      <div className="text-center">
+        <h4 className="text-sm font-bold text-gray-900">{monthLabel}</h4>
+        <p className="text-xs text-gray-400">
+          {weekDays.map((d, i) => (
+            <span key={d.value}>
+              {d.name} {getLimaDay(d.date)}
+              {i < 4 ? ' — ' : ''}
+            </span>
+          ))}
+        </p>
+      </div>
 
       <div className="overflow-x-auto">
         <table className="w-full border-collapse text-sm">
@@ -83,13 +141,14 @@ export default function ScheduleGrid({ schedules, onChange, shift, error }: Sche
               >
                 Hora
               </th>
-              {DAYS.map((d) => (
+              {weekDays.map((d) => (
                 <th
                   key={d.value}
-                  className="w-20 border border-gray-200 px-2 py-2 text-xs font-semibold text-white"
+                  className="w-20 border border-gray-200 px-2 py-2 text-center text-xs font-semibold text-white"
                   style={{ backgroundColor: '#008585' }}
                 >
-                  {d.label}
+                  <div>{d.name}</div>
+                  <div className="text-white/70">{getLimaDay(d.date)}</div>
                 </th>
               ))}
             </tr>
@@ -117,7 +176,7 @@ export default function ScheduleGrid({ schedules, onChange, shift, error }: Sche
                             : { backgroundColor: '#fff', color: '#D1D5DB' }
                         }
                       >
-                        {selected ? '✓' : ''}
+                        {selected ? '\u2713' : ''}
                       </button>
                     </td>
                   );

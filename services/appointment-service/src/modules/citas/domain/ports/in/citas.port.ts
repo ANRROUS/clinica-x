@@ -51,6 +51,7 @@ export interface ObtenerDisponibilidadPorEspecialidadDto {
 
 export interface CambiarEstadoCitaDto {
   estado: EstadoCita;
+  medicoId?: string;
 }
 
 // ─── DTOs de salida ─────────────────────────────────────────────────────────

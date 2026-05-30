@@ -51,6 +51,7 @@ model Medico {
   horarios     HorarioMedico[]
   citas        Cita[]
 
+  @@index([especialidadId])
   @@map("medicos")
 }
 
@@ -66,6 +67,7 @@ model HorarioMedico {
 
   medico Medico @relation(fields: [medicoId], references: [id], onDelete: Cascade)
 
+  @@index([medicoId])
   @@unique([medicoId, diaSemana, horaInicio])
   @@map("horarios_medico")
 }
@@ -99,5 +101,7 @@ model Cita {
   @@unique([medicoId, fechaHora])
   @@index([medicoId, fechaHora])
   @@index([pacienteId, fechaHora])
+  @@index([pacienteId])
+  @@index([estado])
   @@map("citas")
 }

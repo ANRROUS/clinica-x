@@ -42,6 +42,15 @@ export default function ConsultationsTab() {
   const analysisOrders: AnalysisOrderDTO[] = selectedConsultation?.analysisOrders ?? [];
   const medications: MedicationDTO[] = selectedConsultation?.medications ?? [];
 
+  const filteredConsultations = consultations.filter((c) => {
+    if (!searchDate.trim()) return true;
+    const query = searchDate.toLowerCase().trim();
+    const dateStr = formatDate(c.fechaInicio).toLowerCase();
+    const idStr = c.id.slice(0, 8).toLowerCase();
+    const estadoStr = (c.estado === 'FINALIZADA' ? 'finalizada' : 'activa').toLowerCase();
+    return dateStr.includes(query) || idStr.includes(query) || estadoStr.includes(query);
+  });
+
   if (loadingHistory) {
     return (
       <div className="flex justify-center py-12">
@@ -75,7 +84,7 @@ export default function ConsultationsTab() {
           <Search className="absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#008585]" />
         </div>
         <div className="space-y-3">
-          {consultations.map((c) => {
+          {filteredConsultations.map((c) => {
             const isSelected = selectedId === c.id;
             return (
               <button
@@ -180,7 +189,7 @@ export default function ConsultationsTab() {
                   <p className="mb-4 text-sm text-gray-500">
                     Medicamentos recetados durante la consulta
                   </p>
-                  <div className="overflow-hidden rounded-lg border border-gray-200">
+                  <div className="overflow-x-auto rounded-lg border border-gray-200">
                     <table className="w-full text-sm">
                       <thead>
                         <tr className="bg-[#008585] text-white">

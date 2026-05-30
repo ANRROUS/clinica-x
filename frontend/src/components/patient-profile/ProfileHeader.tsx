@@ -13,7 +13,19 @@ export default function ProfileHeader() {
   const [editValue, setEditValue] = useState('');
   const [saving, setSaving] = useState(false);
 
-  if (!user) return null;
+  if (!user) {
+    return (
+      <div className="flex flex-col gap-4 rounded-xl border border-gray-200 bg-white p-6 animate-pulse">
+        <div className="flex items-center gap-4">
+          <div className="h-16 w-16 rounded-full bg-gray-200" />
+          <div className="space-y-2">
+            <div className="h-5 w-48 rounded bg-gray-200" />
+            <div className="h-4 w-24 rounded bg-gray-200" />
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   const initials = `${user.nombre?.[0] || ''}`;
   const fullName = `${user.nombre} ${user.apellido}`;
@@ -75,7 +87,7 @@ export default function ProfileHeader() {
                   type="email"
                   value={editValue}
                   onChange={(e) => setEditValue(e.target.value)}
-                  className="w-44 rounded border border-gray-300 px-2 py-1 text-sm"
+                  className="w-full rounded border border-gray-300 px-2 py-1 text-sm sm:w-44"
                 />
                 <button onClick={saveEdit} disabled={saving} className="text-[#008585] hover:text-[#007070]">
                   <Save className="h-4 w-4" />
@@ -104,7 +116,7 @@ export default function ProfileHeader() {
                   type="tel"
                   value={editValue}
                   onChange={(e) => setEditValue(e.target.value)}
-                  className="w-40 rounded border border-gray-300 px-2 py-1 text-sm"
+                  className="w-full rounded border border-gray-300 px-2 py-1 text-sm sm:w-40"
                 />
                 <button onClick={saveEdit} disabled={saving} className="text-[#008585] hover:text-[#007070]">
                   <Save className="h-4 w-4" />

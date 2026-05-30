@@ -34,6 +34,12 @@ model Consulta {
   ordenesAnalisis OrdenAnalisis[]
   medicamentos    Medicamento[]
 
+  @@index([pacienteId])
+  @@index([medicoId])
+  @@index([estado])
+  @@index([pacienteId, medicoId, estado])
+  @@index([medicoId, estado])
+  @@index([fechaInicio])
   @@map("consultas")
 }
 
@@ -52,6 +58,8 @@ model OrdenAnalisis {
   creadoEn           DateTime        @default(now())
   actualizadoEn      DateTime        @updatedAt
 
+  @@index([consultaId])
+  @@index([estado])
   @@map("ordenes_analisis")
 }
 
@@ -82,6 +90,9 @@ model AnalisisResultado {
 
   grupos                 AnalisisGrupo[]
 
+  @@index([pacienteId])
+  @@index([consultaId])
+  @@index([estadoOcr])
   @@map("analisis_resultados")
 }
 
@@ -96,6 +107,7 @@ model AnalisisGrupo {
 
   items                AnalisisItem[]
 
+  @@index([analisisResultadoId])
   @@map("analisis_grupos")
 }
 
@@ -115,6 +127,7 @@ model AnalisisItem {
   orden           Int           @default(0)
   creadoEn        DateTime      @default(now())
 
+  @@index([grupoId])
   @@map("analisis_items")
 }
 
@@ -139,5 +152,6 @@ model Medicamento {
   creadoEn   DateTime @default(now())
   actualizadoEn DateTime @updatedAt
 
+  @@index([consultaId])
   @@map("medicamentos")
 }

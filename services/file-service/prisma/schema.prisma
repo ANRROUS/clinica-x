@@ -28,5 +28,6 @@ model Archivo {
   tamanoBytes          Int
   subidoEn             DateTime @default(now())
 
+  @@index([propietarioServicio, propietarioRecursoId])
   @@map("archivos")
 }

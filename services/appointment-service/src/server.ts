@@ -48,6 +48,7 @@ app.get('/health', (_req, res) => {
 import { medicosAdminRouter } from '@/modules/medicos/infrastructure/di';
 import { citasRouter } from '@/modules/citas/infrastructure/di';
 import { especialidadesAdminRouter } from '@/modules/especialidades/infrastructure/di';
+import { registerClearHorariosJob } from '@/modules/cron-jobs/clear-horarios.job';
 
 // Rutas de negocio — Fase 2 (admin médicos)
 app.use(
@@ -73,6 +74,9 @@ app.use(
 );
 
 app.use(errorHandler);
+
+// ─── Cron jobs ───────────────────────────────────────────────────────────────
+registerClearHorariosJob();
 
 const server = app.listen(env.PORT, () => {
   logger.info(`📅 appointment-service escuchando en http://localhost:${env.PORT}`);
