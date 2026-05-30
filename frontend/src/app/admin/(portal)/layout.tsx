@@ -2,22 +2,18 @@
 
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { useAdminAuthStore } from '@/store/useAdminAuthStore';
+import { useAuthStore } from '@/store/useAuthStore';
 import AdminHeader from '@/components/admin/AdminHeader';
 
 export default function AdminPortalLayout({ children }: { children: React.ReactNode }) {
-  const { isAuthenticated, _hasHydrated, hydrate } = useAdminAuthStore();
+  const { isAuthenticated, _hasHydrated, user } = useAuthStore();
   const router = useRouter();
 
   useEffect(() => {
-    hydrate();
-  }, [hydrate]);
-
-  useEffect(() => {
-    if (_hasHydrated && !isAuthenticated) {
+    if (_hasHydrated && (!isAuthenticated || user?.rol !== 'ADMIN')) {
       router.push('/admin/login');
     }
-  }, [isAuthenticated, router, _hasHydrated]);
+  }, [isAuthenticated, router, _hasHydrated, user]);
 
   if (!_hasHydrated || !isAuthenticated) {
     return (

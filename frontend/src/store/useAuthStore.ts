@@ -1,59 +1,80 @@
 import { create } from 'zustand';
 import type { UsuarioDTO } from '@/lib/api/types';
+import { getMe, logoutApi } from '@/lib/api/auth.api';
+
+const USER_KEY = 'clinica_x_user';
+const AUTH_ROLE_COOKIE = 'auth_role';
+const COOKIE_MAX_AGE = 7 * 24 * 60 * 60; // 7 días
+
+type Rol = 'PACIENTE' | 'MEDICO' | 'ADMIN';
 
 interface AuthStore {
   user: UsuarioDTO | null;
-  token: string | null;
   isAuthenticated: boolean;
   _hasHydrated: boolean;
-  setAuth: (user: UsuarioDTO, token: string) => void;
-  clearAuth: () => void;
-  updateUser: (user: UsuarioDTO) => void;
-  hydrate: () => void;
+  setUser: (user: UsuarioDTO) => void;
+  clearAuth: () => Promise<void>;
+  hydrate: () => Promise<void>;
 }
 
-const TOKEN_KEY = 'clinica_x_token';
+function setRoleCookie(rol: Rol | null) {
+  if (typeof window === 'undefined') return;
+  if (rol) {
+    document.cookie = `${AUTH_ROLE_COOKIE}=${rol}; path=/; max-age=${COOKIE_MAX_AGE}; SameSite=Lax`;
+  } else {
+    document.cookie = `${AUTH_ROLE_COOKIE}=; path=/; max-age=0; SameSite=Lax`;
+  }
+}
 
 export const useAuthStore = create<AuthStore>((set, get) => ({
   user: null,
-  token: null,
   isAuthenticated: false,
   _hasHydrated: false,
-  setAuth: (user, token) => {
-    localStorage.setItem(TOKEN_KEY, token);
-    localStorage.setItem('clinica_x_user', JSON.stringify(user));
-    const safeToken = encodeURIComponent(token);
-    document.cookie = `${TOKEN_KEY}=${safeToken}; path=/; max-age=${60 * 60 * 24 * 7}; SameSite=Lax`;
-    set({ user, token, isAuthenticated: true });
+
+  setUser: (user) => {
+    localStorage.setItem(USER_KEY, JSON.stringify(user));
+    setRoleCookie(user.rol as Rol);
+    set({ user, isAuthenticated: true, _hasHydrated: true });
   },
-  clearAuth: () => {
-    localStorage.removeItem(TOKEN_KEY);
-    localStorage.removeItem('clinica_x_user');
-    document.cookie = `${TOKEN_KEY}=; path=/; max-age=0; SameSite=Lax`;
-    set({ user: null, token: null, isAuthenticated: false });
+
+  clearAuth: async () => {
+    try {
+      await logoutApi();
+    } catch {
+      // el endpoint de logout limpia la cookie httpOnly; ignoramos errores
+    }
+    localStorage.removeItem(USER_KEY);
+    setRoleCookie(null);
+    set({ user: null, isAuthenticated: false, _hasHydrated: true });
   },
-  updateUser: (user) => {
-    localStorage.setItem('clinica_x_user', JSON.stringify(user));
-    set({ user });
-  },
-  hydrate: () => {
+
+  hydrate: async () => {
     if (get()._hasHydrated) return;
-    const token = localStorage.getItem(TOKEN_KEY);
-    const userStr = localStorage.getItem('clinica_x_user');
-    if (token && userStr) {
+
+    const userStr = localStorage.getItem(USER_KEY);
+    if (userStr) {
       try {
         const user = JSON.parse(userStr) as UsuarioDTO;
-        if (user.rol === 'PACIENTE') {
-          set({ user, token, isAuthenticated: true, _hasHydrated: true });
-          return;
-        }
-        localStorage.removeItem(TOKEN_KEY);
-        localStorage.removeItem('clinica_x_user');
+        set({ user, isAuthenticated: true, _hasHydrated: true });
       } catch {
-        localStorage.removeItem(TOKEN_KEY);
-        localStorage.removeItem('clinica_x_user');
+        localStorage.removeItem(USER_KEY);
+        set({ user: null, isAuthenticated: false, _hasHydrated: true });
       }
+    } else {
+      set({ _hasHydrated: true });
     }
-    set({ _hasHydrated: true });
+
+    try {
+      const res = await getMe();
+      if (res.success && res.data) {
+        const user = res.data;
+        localStorage.setItem(USER_KEY, JSON.stringify(user));
+        setRoleCookie(user.rol as Rol);
+        set({ user, isAuthenticated: true });
+      }
+    } catch {
+      // Si getMe() falla, mantenemos el estado de localStorage
+      // El interceptor 401 de axios maneja tokens expirados
+    }
   },
 }));

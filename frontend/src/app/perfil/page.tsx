@@ -15,12 +15,8 @@ type TabKey = 'consultas' | 'tratamiento' | 'reservas';
 
 export default function PerfilPage() {
   const router = useRouter();
-  const { isAuthenticated, _hasHydrated, hydrate } = useAuthStore();
+  const { isAuthenticated, _hasHydrated } = useAuthStore();
   const [activeTab, setActiveTab] = useState<TabKey>('consultas');
-
-  useEffect(() => {
-    hydrate();
-  }, [hydrate]);
 
   useEffect(() => {
     if (_hasHydrated && !isAuthenticated) {
