@@ -14,6 +14,7 @@ interface AuthStore {
   _hasHydrated: boolean;
   setUser: (user: UsuarioDTO) => void;
   clearAuth: () => Promise<void>;
+  updateUser: (user: UsuarioDTO) => void;
   hydrate: () => Promise<void>;
 }
 
@@ -41,11 +42,15 @@ export const useAuthStore = create<AuthStore>((set, get) => ({
     try {
       await logoutApi();
     } catch {
-      // el endpoint de logout limpia la cookie httpOnly; ignoramos errores
     }
     localStorage.removeItem(USER_KEY);
     setRoleCookie(null);
     set({ user: null, isAuthenticated: false, _hasHydrated: true });
+  },
+
+  updateUser: (user) => {
+    localStorage.setItem(USER_KEY, JSON.stringify(user));
+    set({ user });
   },
 
   hydrate: async () => {

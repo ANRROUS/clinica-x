@@ -49,3 +49,7 @@ export async function resetPassword(
   const res = await api.post('/api/auth/reset-password', { token, nuevaContrasena });
   return res.data;
 }
+
+export async function logoutApi(): Promise<void> {
+  await api.post('/api/auth/logout');
+}
