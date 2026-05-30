@@ -1,7 +1,7 @@
 'use client';
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useState, useEffect } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -22,10 +22,18 @@ type LoginForm = z.infer<typeof loginSchema>;
 
 export default function LoginForm() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { setUser } = useAuthStore();
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [focusedField, setFocusedField] = useState<string | null>(null);
+
+  useEffect(() => {
+    const returnUrlFromQuery = searchParams.get('returnUrl');
+    if (returnUrlFromQuery) {
+      sessionStorage.setItem('returnUrl', returnUrlFromQuery);
+    }
+  }, [searchParams]);
 
   const {
     register,

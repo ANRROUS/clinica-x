@@ -241,7 +241,7 @@ export default function TreatmentTab() {
             <p className="text-sm text-gray-500">No tienes medicación activa actualmente</p>
           </div>
         ) : (
-          <div className="mt-6 overflow-hidden">
+          <div className="mt-6 overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
                 <tr className="border-b-2 border-[#008585]">

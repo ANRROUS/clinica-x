@@ -86,3 +86,12 @@ export class CitaDuplicadaMismoDiaError extends ErrorDominio {
     super('Ya tienes una cita programada con este médico el mismo día');
   }
 }
+
+export class MedicoNoAutorizadoError extends ErrorDominio {
+  readonly codigo = 'MEDICO_NO_AUTORIZADO';
+  readonly httpStatus = 403;
+
+  constructor() {
+    super('No tienes permiso para modificar esta cita porque no eres el médico asignado');
+  }
+}

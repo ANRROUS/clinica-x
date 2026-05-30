@@ -190,22 +190,16 @@ function addLima(
   const limaStr = formatInTimeZone(d, LIMA_TZ, "yyyy-MM-dd'T'HH:mm:ss");
   const [datePart, timePart] = limaStr.split('T');
   const [y, m, day] = datePart.split('-').map(Number);
-  let newY = y;
-  let newM = m;
-  let newD = day;
 
-  if (unit === 'day') newD += amount;
-  if (unit === 'month') newM += amount;
-  if (unit === 'year') newY += amount;
-
-  // Normalizar mes/año
-  while (newM > 12) { newM -= 12; newY++; }
-  while (newM < 1) { newM += 12; newY--; }
-
-  // Normalizar día (ej: 31 de febrero → 28/29 de febrero)
-  const lastDayOfMonth = new Date(newY, newM, 0).getDate();
-  if (newD > lastDayOfMonth) newD = lastDayOfMonth;
-  if (newD < 1) newD = 1;
+  // Usar JS Date nativo para manejar desbordamiento de mes/año correctamente
+  // (ej: 32 mayo → 1 junio, no recortado a 31 mayo)
+  const jsDate = new Date(y, m - 1, day);
+  if (unit === 'day') jsDate.setDate(jsDate.getDate() + amount);
+  if (unit === 'month') jsDate.setMonth(jsDate.getMonth() + amount);
+  if (unit === 'year') jsDate.setFullYear(jsDate.getFullYear() + amount);
+  const newY = jsDate.getFullYear();
+  const newM = jsDate.getMonth() + 1;
+  const newD = jsDate.getDate();
 
   const newDateStr = `${newY}-${String(newM).padStart(2, '0')}-${String(newD).padStart(2, '0')}T${timePart}`;
   return fromZonedTime(newDateStr, LIMA_TZ);

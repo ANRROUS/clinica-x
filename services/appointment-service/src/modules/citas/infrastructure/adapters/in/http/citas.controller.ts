@@ -18,8 +18,8 @@ import type {
   ICambiarEstadoCitaPort,
 } from '@/modules/citas/domain/ports/in/citas.port';
 import type { IMedicoConsultaPort } from '@/modules/citas/domain/ports/out/medico-consulta.port';
+import type { IObtenerSlotDurationPort } from '@/modules/citas/application/features/obtener-slot-duration/obtener-slot-duration.use-case';
 import { nowLima, parseLimaDate, formatLima } from '@clinica-x/date-utils';
-import { prisma } from '@/shared/prisma-client';
 
 // ─── Schemas Zod ────────────────────────────────────────────────────────────
 
@@ -48,6 +48,7 @@ export class CitasController {
     private readonly obtenerDisponibilidad: IObtenerDisponibilidadPort,
     private readonly obtenerDisponibilidadPorEspecialidad: IObtenerDisponibilidadPorEspecialidadPort,
     private readonly cambiarEstadoCita: ICambiarEstadoCitaPort,
+    private readonly slotDurationUseCase: IObtenerSlotDurationPort,
     private readonly medicoReader: IMedicoConsultaPort,
   ) {}
 
@@ -262,11 +263,8 @@ export class CitasController {
         res.status(404).json({ success: false, error: { codigo: 'MEDICO_NO_ENCONTRADO', mensaje: 'No se encontró médico asociado al usuario' } });
         return;
       }
-      const horario = await prisma.horarioMedico.findFirst({
-        where: { medicoId },
-      });
-      const duracionSlot = horario?.duracionSlot ?? 30;
-      res.status(200).json({ success: true, data: { duracionSlot } });
+      const resultado = await this.slotDurationUseCase.execute(medicoId);
+      this.manejarResultado(res, resultado as any);
     } catch (err) {
       next(err);
     }
@@ -281,7 +279,13 @@ export class CitasController {
       const body = cambiarEstadoSchema.parse(req.body);
       log.debug('application', 'DTO de cambio de estado validado', { input: { estado: body.estado } });
 
-      const resultado = await this.cambiarEstadoCita.execute(req.params.id, { estado: body.estado });
+      const medicoId = await this.getMedicoId(req);
+      if (!medicoId) {
+        res.status(404).json({ success: false, error: { codigo: 'MEDICO_NO_ENCONTRADO', mensaje: 'No se encontró médico asociado al usuario' } });
+        return;
+      }
+
+      const resultado = await this.cambiarEstadoCita.execute(req.params.id, { estado: body.estado, medicoId });
 
       if (resultado.isErr) {
         log.warn('controller', 'Error al cambiar estado de cita', { error: { message: (resultado.error as any).message } });

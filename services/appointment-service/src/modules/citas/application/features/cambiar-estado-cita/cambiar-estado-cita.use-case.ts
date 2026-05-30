@@ -1,13 +1,5 @@
-/**
- * ============================================================================
- * Caso de uso: CambiarEstadoCita
- * ============================================================================
- * Usado por el médico para iniciar atención o completar una cita.
- * ============================================================================
- */
-
 import { Result, Ok, Err } from '@clinica-x/shared-kernel';
-import { CitaNoEncontradaError } from '@/modules/citas/domain/exceptions/cita.errors';
+import { CitaNoEncontradaError, MedicoNoAutorizadoError } from '@/modules/citas/domain/exceptions/cita.errors';
 import type {
   ICambiarEstadoCitaPort,
   CambiarEstadoCitaDto,
@@ -27,6 +19,10 @@ export class CambiarEstadoCitaUseCase implements ICambiarEstadoCitaPort {
     const cita = await this.repo.buscarPorId(citaId);
     if (!cita) {
       return Err(new CitaNoEncontradaError(citaId));
+    }
+
+    if (dto.medicoId && cita.medicoId !== dto.medicoId) {
+      return Err(new MedicoNoAutorizadoError());
     }
 
     if (dto.estado === 'EN_ATENCION') {
