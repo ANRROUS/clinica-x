@@ -21,22 +21,6 @@ api.interceptors.response.use(
     if (error?.response?.status === 401 && typeof window !== 'undefined') {
       localStorage.removeItem('clinica_x_user');
       document.cookie = 'auth_role=; path=/; max-age=0; SameSite=Lax';
-
-      const path = window.location.pathname;
-      const isAuthPage =
-        path === '/login' ||
-        path === '/admin/login' ||
-        path === '/doctor/login';
-
-      if (!isAuthPage) {
-        if (path.startsWith('/doctor')) {
-          window.location.href = '/doctor/login';
-        } else if (path.startsWith('/admin')) {
-          window.location.href = '/admin/login';
-        } else {
-          window.location.href = '/login';
-        }
-      }
     }
     return Promise.reject(error);
   },
