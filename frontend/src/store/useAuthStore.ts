@@ -4,7 +4,7 @@ import { getMe, logoutApi } from '@/lib/api/auth.api';
 
 const USER_KEY = 'clinica_x_user';
 const AUTH_ROLE_COOKIE = 'auth_role';
-const COOKIE_MAX_AGE = 7 * 24 * 60 * 60; // 7 días
+const COOKIE_MAX_AGE = 7 * 24 * 60 * 60;
 
 type Rol = 'PACIENTE' | 'MEDICO' | 'ADMIN';
 
