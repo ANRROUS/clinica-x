@@ -14,7 +14,6 @@ export function registerClearHorariosJob(): void {
       }
     },
     {
-      scheduled: true,
       timezone: 'America/Lima',
     },
   );
