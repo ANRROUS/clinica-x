@@ -39,6 +39,8 @@ const origins = env.CORS_ORIGIN.split(',').map((s) => s.trim());
 app.use(
   cors({
     origin: origins,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'x-request-id'],
     credentials: true,
   }),
 );
