@@ -34,7 +34,7 @@ import type {
 export default function ReservarCitaPage() {
   const router = useRouter();
   const queryClient = useQueryClient();
-  const { isAuthenticated, _hasHydrated, hydrate, user } = useAuthStore();
+  const { isAuthenticated, _hasHydrated, user } = useAuthStore();
   const {
     selectedSpecialtyId,
     selectedSpecialtyName,
@@ -54,10 +54,6 @@ export default function ReservarCitaPage() {
 
   const [modalOpen, setModalOpen] = useState(false);
   const [bookingLoading, setBookingLoading] = useState(false);
-
-  useEffect(() => {
-    hydrate();
-  }, [hydrate]);
 
   useEffect(() => {
     if (_hasHydrated && (!isAuthenticated || user?.rol !== 'PACIENTE')) {

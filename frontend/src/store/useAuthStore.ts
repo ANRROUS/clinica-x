@@ -34,7 +34,7 @@ export const useAuthStore = create<AuthStore>((set, get) => ({
   setUser: (user) => {
     localStorage.setItem(USER_KEY, JSON.stringify(user));
     setRoleCookie(user.rol as Rol);
-    set({ user, isAuthenticated: true });
+    set({ user, isAuthenticated: true, _hasHydrated: true });
   },
 
   clearAuth: async () => {
@@ -45,40 +45,36 @@ export const useAuthStore = create<AuthStore>((set, get) => ({
     }
     localStorage.removeItem(USER_KEY);
     setRoleCookie(null);
-    set({ user: null, isAuthenticated: false });
+    set({ user: null, isAuthenticated: false, _hasHydrated: true });
   },
 
   hydrate: async () => {
     if (get()._hasHydrated) return;
 
-    // 1. Intentar restaurar usuario desde localStorage (persistencia rápida)
     const userStr = localStorage.getItem(USER_KEY);
     if (userStr) {
       try {
         const user = JSON.parse(userStr) as UsuarioDTO;
-        set({ user, isAuthenticated: true });
+        set({ user, isAuthenticated: true, _hasHydrated: true });
       } catch {
         localStorage.removeItem(USER_KEY);
+        set({ user: null, isAuthenticated: false, _hasHydrated: true });
       }
+    } else {
+      set({ _hasHydrated: true });
     }
 
-    // 2. Validar contra el backend (cookie httpOnly auth_token se envía automáticamente)
     try {
       const res = await getMe();
       if (res.success && res.data) {
         const user = res.data;
         localStorage.setItem(USER_KEY, JSON.stringify(user));
         setRoleCookie(user.rol as Rol);
-        set({ user, isAuthenticated: true, _hasHydrated: true });
-        return;
+        set({ user, isAuthenticated: true });
       }
     } catch {
-      // Token inválido o expirado
+      // Si getMe() falla, mantenemos el estado de localStorage
+      // El interceptor 401 de axios maneja tokens expirados
     }
-
-    // 3. Sesión inválida: limpiar todo
-    localStorage.removeItem(USER_KEY);
-    setRoleCookie(null);
-    set({ user: null, isAuthenticated: false, _hasHydrated: true });
   },
 }));

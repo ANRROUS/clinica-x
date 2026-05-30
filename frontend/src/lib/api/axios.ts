@@ -19,17 +19,23 @@ api.interceptors.response.use(
   (resp) => resp,
   (error) => {
     if (error?.response?.status === 401 && typeof window !== 'undefined') {
-      // Limpiar estado local y redirigir al login correspondiente
       localStorage.removeItem('clinica_x_user');
       document.cookie = 'auth_role=; path=/; max-age=0; SameSite=Lax';
 
       const path = window.location.pathname;
-      if (path.startsWith('/admin') && path !== '/admin/login') {
-        window.location.href = '/admin/login';
-      } else if (path.startsWith('/doctor') && path !== '/doctor/login') {
-        window.location.href = '/doctor/login';
-      } else if (path !== '/login') {
-        window.location.href = '/login';
+      const isAuthPage =
+        path === '/login' ||
+        path === '/admin/login' ||
+        path === '/doctor/login';
+
+      if (!isAuthPage) {
+        if (path.startsWith('/doctor')) {
+          window.location.href = '/doctor/login';
+        } else if (path.startsWith('/admin')) {
+          window.location.href = '/admin/login';
+        } else {
+          window.location.href = '/login';
+        }
       }
     }
     return Promise.reject(error);
