@@ -22,11 +22,6 @@ export async function login(data: {
   return res.data;
 }
 
-export async function logoutApi(): Promise<ApiResponse<{ message: string }>> {
-  const res = await api.post('/api/auth/logout');
-  return res.data;
-}
-
 export async function getMe(): Promise<ApiResponse<UsuarioDTO>> {
   const res = await api.get('/api/auth/me');
   return res.data;
@@ -53,4 +48,9 @@ export async function resetPassword(
 ): Promise<ApiResponse<{ message: string }>> {
   const res = await api.post('/api/auth/reset-password', { token, nuevaContrasena });
   return res.data;
+}
+
+export async function logoutApi(): Promise<void> {
+  // Logout es client-side only: el store limpia localStorage y cookies.
+  // No existe endpoint de logout en el backend (JWT stateless).
 }

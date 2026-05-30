@@ -2,12 +2,35 @@
 
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { LogOut, Calendar, Menu, X, ClipboardList, Shield } from 'lucide-react';
+import { Stethoscope, LogOut, User, Calendar, Menu, X, ClipboardList, Shield } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { useAuthStore } from '@/store/useAuthStore';
+import { useDoctorAuthStore } from '@/store/useDoctorAuthStore';
+import { useAdminAuthStore } from '@/store/useAdminAuthStore';
+
+type ActiveRole = 'PACIENTE' | 'MEDICO' | 'ADMIN' | null;
+
+function getActiveRole(
+  patientAuth: boolean, patientUser: { rol?: string } | null,
+  doctorAuth: boolean, doctorUser: { rol?: string } | null,
+  adminAuth: boolean, adminUser: { rol?: string } | null,
+): { role: ActiveRole; user: { nombre?: string; apellido?: string; rol?: string } | null; token: string | null } {
+  if (adminAuth && adminUser?.rol === 'ADMIN') {
+    return { role: 'ADMIN', user: adminUser, token: null };
+  }
+  if (doctorAuth && doctorUser?.rol === 'MEDICO') {
+    return { role: 'MEDICO', user: doctorUser, token: null };
+  }
+  if (patientAuth && patientUser?.rol === 'PACIENTE') {
+    return { role: 'PACIENTE', user: patientUser, token: null };
+  }
+  return { role: null, user: null, token: null };
+}
 
 export default function Header() {
-  const { user, isAuthenticated, clearAuth } = useAuthStore();
+  const { user: patientUser, isAuthenticated: patientAuth, clearAuth: clearPatientAuth } = useAuthStore();
+  const { user: doctorUser, isAuthenticated: doctorAuth, clearAuth: clearDoctorAuth } = useDoctorAuthStore();
+  const { user: adminUser, isAuthenticated: adminAuth, clearAuth: clearAdminAuth } = useAdminAuthStore();
   const pathname = usePathname();
   const router = useRouter();
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -17,10 +40,16 @@ export default function Header() {
     setMounted(true);
   }, []);
 
-  const role = user?.rol ?? null;
+  const { role, user } = getActiveRole(
+    patientAuth, patientUser,
+    doctorAuth, doctorUser,
+    adminAuth, adminUser,
+  );
 
-  const handleLogout = async () => {
-    await clearAuth();
+  const handleLogout = () => {
+    clearPatientAuth();
+    clearDoctorAuth();
+    clearAdminAuth();
     router.push('/');
   };
 
@@ -55,7 +84,7 @@ export default function Header() {
         >
           {mounted && (
             <>
-              {isAuthenticated && role === 'PACIENTE' && !isDoctorArea && !isAdminArea && (
+              {role === 'PACIENTE' && !isDoctorArea && !isAdminArea && (
                 <>
                   <div className="flex flex-col gap-2 md:flex-row md:items-center md:gap-8">
                     {patientLinks.map((link) => {
@@ -90,7 +119,7 @@ export default function Header() {
                   </div>
                 </>
               )}
-              {isAuthenticated && role === 'MEDICO' && isDoctorArea && (
+              {role === 'MEDICO' && isDoctorArea && (
                 <>
                   <Link
                     href="/doctor/calendario"
@@ -127,7 +156,7 @@ export default function Header() {
                   </div>
                 </>
               )}
-              {isAuthenticated && role === 'ADMIN' && isAdminArea && (
+              {role === 'ADMIN' && isAdminArea && (
                 <>
                   <Link
                     href="/admin/dashboard"
@@ -143,7 +172,7 @@ export default function Header() {
                     className="rounded-md px-3 py-2 text-sm font-medium text-gray-700 hover:bg-emerald-50 hover:text-emerald-700"
                     onClick={() => setMobileOpen(false)}
                   >
-                    <Shield className="inline h-4 w-4 mr-1 md:hidden" />
+                    <User className="inline h-4 w-4 mr-1 md:hidden" />
                     <span className="hidden md:inline">Médicos</span>
                     <span className="md:hidden">Médicos</span>
                   </Link>
@@ -164,7 +193,7 @@ export default function Header() {
                   </div>
                 </>
               )}
-              {!isAuthenticated && (
+              {!role && (
                 <>
                   <div className="flex flex-col gap-2 md:flex-row md:items-center md:gap-8">
                     <Link

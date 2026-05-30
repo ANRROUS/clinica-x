@@ -6,12 +6,8 @@ import { useAuthStore } from '@/store/useAuthStore';
 import DoctorHeader from '@/components/doctor/DoctorHeader';
 
 export default function DoctorPortalLayout({ children }: { children: React.ReactNode }) {
-  const { isAuthenticated, _hasHydrated, hydrate, user } = useAuthStore();
+  const { isAuthenticated, _hasHydrated, user } = useAuthStore();
   const router = useRouter();
-
-  useEffect(() => {
-    hydrate();
-  }, [hydrate]);
 
   useEffect(() => {
     if (_hasHydrated && (!isAuthenticated || user?.rol !== 'MEDICO')) {

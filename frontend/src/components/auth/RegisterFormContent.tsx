@@ -59,7 +59,7 @@ export default function RegisterFormContent({ onSuccess }: RegisterFormContentPr
         password: data.password,
       });
       if (res.success && res.data) {
-        setUser(res.data.usuario);
+        setUser(res.data.usuario, res.data.token);
         toast.success('Cuenta creada correctamente');
         if (onSuccess) {
           onSuccess();

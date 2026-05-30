@@ -40,7 +40,7 @@ const onSubmit = async (data: LoginForm) => {
   try {
     const res = await login(data);
     if (res.success && res.data) {
-      setUser(res.data.usuario);
+      setUser(res.data.usuario, res.data.token);
       toast.success('Sesión iniciada correctamente');
       const returnUrl = sessionStorage.getItem('returnUrl') || '/perfil';
       sessionStorage.removeItem('returnUrl');

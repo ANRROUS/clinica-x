@@ -1,13 +1,15 @@
 /**
  * Cliente Axios apuntando al api-gateway.
  *
- * La autenticación se maneja mediante cookie httpOnly `auth_token`
- * seteada por auth-service en el login. Axios la envía automáticamente
- * con `withCredentials: true`.
+ * La autenticacion se maneja mediante JWT almacenado en localStorage.
+ * El interceptor de request inyecta el header Authorization automáticamente.
+ * El interceptor de response limpia el estado si el token expira (401).
  */
 import axios from 'axios';
 
 const baseURL = process.env.NEXT_PUBLIC_API_BASE_URL ?? 'http://localhost:8080';
+const TOKEN_KEY = 'clinica_x_token';
+const USER_KEY = 'clinica_x_user';
 
 export const api = axios.create({
   baseURL,
@@ -15,22 +17,29 @@ export const api = axios.create({
   withCredentials: true,
 });
 
+// Interceptor request: inyectar Authorization header si hay token
+api.interceptors.request.use(
+  (config) => {
+    if (typeof window !== 'undefined') {
+      const token = localStorage.getItem(TOKEN_KEY);
+      if (token) {
+        config.headers.Authorization = `Bearer ${token}`;
+      }
+    }
+    return config;
+  },
+  (error) => Promise.reject(error),
+);
+
+// Interceptor response: limpiar estado en 401
 api.interceptors.response.use(
   (resp) => resp,
   (error) => {
     if (error?.response?.status === 401 && typeof window !== 'undefined') {
-      // Limpiar estado local y redirigir al login correspondiente
-      localStorage.removeItem('clinica_x_user');
+      localStorage.removeItem(TOKEN_KEY);
+      localStorage.removeItem(USER_KEY);
+      document.cookie = 'clinica_x_token=; path=/; max-age=0; SameSite=Lax';
       document.cookie = 'auth_role=; path=/; max-age=0; SameSite=Lax';
-
-      const path = window.location.pathname;
-      if (path.startsWith('/admin') && path !== '/admin/login') {
-        window.location.href = '/admin/login';
-      } else if (path.startsWith('/doctor') && path !== '/doctor/login') {
-        window.location.href = '/doctor/login';
-      } else if (path !== '/login') {
-        window.location.href = '/login';
-      }
     }
     return Promise.reject(error);
   },

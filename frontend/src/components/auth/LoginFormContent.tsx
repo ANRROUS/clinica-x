@@ -43,7 +43,7 @@ export default function LoginFormContent({ onSuccess }: LoginFormContentProps) {
     try {
       const res = await login(data);
       if (res.success && res.data) {
-        setUser(res.data.usuario);
+        setUser(res.data.usuario, res.data.token);
         toast.success('Sesión iniciada correctamente');
         if (onSuccess) {
           onSuccess();
