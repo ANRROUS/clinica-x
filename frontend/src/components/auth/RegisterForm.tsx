@@ -55,7 +55,7 @@ export default function RegisterForm() {
         password: data.password,
       });
       if (res.success && res.data) {
-        setUser(res.data.usuario);
+        setUser(res.data.usuario, res.data.token);
         toast.success('Cuenta creada correctamente');
         const returnUrl = sessionStorage.getItem('returnUrl') || '/perfil';
         sessionStorage.removeItem('returnUrl');

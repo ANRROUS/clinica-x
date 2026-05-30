@@ -51,5 +51,6 @@ export async function resetPassword(
 }
 
 export async function logoutApi(): Promise<void> {
-  await api.post('/api/auth/logout');
+  // Logout es client-side only: el store limpia localStorage y cookies.
+  // No existe endpoint de logout en el backend (JWT stateless).
 }
