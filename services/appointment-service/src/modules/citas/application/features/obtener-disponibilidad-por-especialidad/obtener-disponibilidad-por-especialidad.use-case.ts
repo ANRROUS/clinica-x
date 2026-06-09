@@ -32,6 +32,8 @@ export class ObtenerDisponibilidadPorEspecialidadUseCase implements IObtenerDisp
       return Ok([]);
     }
 
+    const ahora = nowLima();
+
     const usuarioIds = Array.from(
       new Set(medicos.map((m) => m.usuarioId).filter(Boolean)),
     );
@@ -103,7 +105,8 @@ export class ObtenerDisponibilidadPorEspecialidadUseCase implements IObtenerDisp
           while (slotStart < slotEndMax) {
             const slotEnd = new Date(slotStart.getTime() + h.duracionSlot * 60 * 1000);
             if (slotEnd > slotEndMax) break;
-            const disponible = !this.estaOcupado(slotStart, slotEnd, citasDelDia, h.duracionSlot);
+            const enPasado = slotStart <= ahora;
+            const disponible = !enPasado && !this.estaOcupado(slotStart, slotEnd, citasDelDia, h.duracionSlot);
             slots.push({
               horaInicio: this.formatTime(slotStart),
               horaFin: this.formatTime(slotEnd),
