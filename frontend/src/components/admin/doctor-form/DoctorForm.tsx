@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -87,30 +87,28 @@ export default function DoctorForm({ editId }: DoctorFormProps) {
   const displayName = [watchNombre, watchApellido].filter(Boolean).join(' ') || '';
   const displaySpecialty = specialties.find((s) => s.id === watchSpecialtyId)?.nombre || '';
 
-  const populateForm = (doc: MedicoDTO) => {
-    reset({
-      nombre: doc.nombre,
-      apellido: doc.apellido,
-      dni: doc.dni,
-      email: doc.email,
-      telefono: doc.telefono || '',
-      username: doc.username,
-      specialtyId: doc.specialtyId,
-      shift: doc.shift,
-      password: '',
-    });
-    setSchedules(
-      doc.schedules.map((s) => ({
-        diaSemana: s.diaSemana,
-        horaInicio: s.horaInicio,
-        horaFin: s.horaFin,
-      })),
-    );
-  };
-
-  if (isEditing && doctor && schedules.length === 0) {
-    populateForm(doctor);
-  }
+  useEffect(() => {
+    if (isEditing && doctor) {
+      reset({
+        nombre: doctor.nombre,
+        apellido: doctor.apellido,
+        dni: doctor.dni,
+        email: doctor.email,
+        telefono: doctor.telefono || '',
+        username: doctor.username,
+        specialtyId: doctor.specialtyId,
+        shift: doctor.shift,
+        password: '',
+      });
+      setSchedules(
+        doctor.schedules.map((s) => ({
+          diaSemana: s.diaSemana,
+          horaInicio: s.horaInicio,
+          horaFin: s.horaFin,
+        })),
+      );
+    }
+  }, [isEditing, doctor, reset]);
 
   const getErrorMessage = (err: any): string => {
     const code = err?.response?.data?.error?.codigo;
