@@ -10,8 +10,8 @@ const options: swaggerJsdoc.Options = {
     },
     servers: [
       {
-        url: process.env.NODE_ENV === 'production' ? 'https://clinica-x.onrender.com' : 'http://localhost:3000',
-        description: process.env.NODE_ENV === 'production' ? 'Render (Producción)' : 'Local (Desarrollo)',
+        url: process.env.NODE_ENV === 'production' ? 'https://clinica-x-auth-service.railway.app' : 'http://localhost:3000',
+        description: process.env.NODE_ENV === 'production' ? 'Railway (Producción)' : 'Local (Desarrollo)',
       },
     ],
     components: {
