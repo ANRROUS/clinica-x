@@ -252,6 +252,9 @@ importers:
       '@prisma/client':
         specifier: ^5.18.0
         version: 5.22.0(prisma@5.22.0)
+      '@scalar/express-api-reference':
+        specifier: ^0.9.20
+        version: 0.9.20
       bcryptjs:
         specifier: ^3.0.3
         version: 3.0.3
@@ -282,6 +285,9 @@ importers:
       pino-roll:
         specifier: ^4.0.0
         version: 4.0.0
+      swagger-jsdoc:
+        specifier: ^6.3.0
+        version: 6.3.0(openapi-types@12.1.3)
       zod:
         specifier: ^3.23.0
         version: 3.25.76
@@ -301,6 +307,9 @@ importers:
       '@types/node-cron':
         specifier: ^3.0.11
         version: 3.0.11
+      '@types/swagger-jsdoc':
+        specifier: ^6.0.4
+        version: 6.0.4
       cpx2:
         specifier: ^9.0.0
         version: 9.0.0
@@ -428,6 +437,9 @@ importers:
       '@prisma/client':
         specifier: ^5.18.0
         version: 5.22.0(prisma@5.22.0)
+      '@scalar/express-api-reference':
+        specifier: ^0.9.20
+        version: 0.9.20
       cors:
         specifier: ^2.8.5
         version: 2.8.6
@@ -455,6 +467,9 @@ importers:
       pino-roll:
         specifier: ^4.0.0
         version: 4.0.0
+      swagger-jsdoc:
+        specifier: ^6.3.0
+        version: 6.3.0(openapi-types@12.1.3)
       zod:
         specifier: ^3.23.0
         version: 3.25.76
@@ -471,6 +486,9 @@ importers:
       '@types/node':
         specifier: ^20.11.0
         version: 20.19.41
+      '@types/swagger-jsdoc':
+        specifier: ^6.0.4
+        version: 6.0.4
       cpx2:
         specifier: ^9.0.0
         version: 9.0.0
@@ -513,6 +531,9 @@ importers:
       '@prisma/client':
         specifier: ^5.18.0
         version: 5.22.0(prisma@5.22.0)
+      '@scalar/express-api-reference':
+        specifier: ^0.9.20
+        version: 0.9.20
       cors:
         specifier: ^2.8.5
         version: 2.8.6
@@ -540,6 +561,9 @@ importers:
       pino-roll:
         specifier: ^4.0.0
         version: 4.0.0
+      swagger-jsdoc:
+        specifier: ^6.3.0
+        version: 6.3.0(openapi-types@12.1.3)
       zod:
         specifier: ^3.23.0
         version: 3.25.76
@@ -559,6 +583,9 @@ importers:
       '@types/node':
         specifier: ^20.11.0
         version: 20.19.41
+      '@types/swagger-jsdoc':
+        specifier: ^6.0.4
+        version: 6.0.4
       cpx2:
         specifier: ^9.0.0
         version: 9.0.0
@@ -595,6 +622,9 @@ importers:
       '@prisma/client':
         specifier: ^5.18.0
         version: 5.22.0(prisma@5.22.0)
+      '@scalar/express-api-reference':
+        specifier: ^0.9.20
+        version: 0.9.20
       axios:
         specifier: ^1.7.0
         version: 1.16.1
@@ -625,6 +655,9 @@ importers:
       pino-roll:
         specifier: ^4.0.0
         version: 4.0.0
+      swagger-jsdoc:
+        specifier: ^6.3.0
+        version: 6.3.0(openapi-types@12.1.3)
       zod:
         specifier: ^3.23.0
         version: 3.25.76
@@ -641,6 +674,9 @@ importers:
       '@types/node':
         specifier: ^20.11.0
         version: 20.19.41
+      '@types/swagger-jsdoc':
+        specifier: ^6.0.4
+        version: 6.0.4
       cpx2:
         specifier: ^9.0.0
         version: 9.0.0

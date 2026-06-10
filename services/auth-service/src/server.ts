@@ -47,7 +47,7 @@ app.get('/health', (_req, res) => {
 });
 
 // ─── Documentación API (Scalar) ──────────────────────────────────────────────
-app.get('/openapi.json', (_req, res) => {
+app.get('/api/auth/openapi.json', (_req, res) => {
   res.setHeader('Content-Type', 'application/json');
   res.json(swaggerSpec);
 });
@@ -70,7 +70,7 @@ app.get('/docs', (_req, res) => {
   <body>
     <script
       id="api-reference"
-      data-url="/openapi.json"
+      data-url="/api/auth/openapi.json"
     ></script>
     <script src="https://cdn.jsdelivr.net/npm/@scalar/api-reference"></script>
   </body>
@@ -127,7 +127,7 @@ async function ensureTestUser(): Promise<void> {
   await ensureTestUser();
 
   const server = app.listen(env.PORT, () => {
-    logger.info(`🔐 auth-service escuchando en http://localhost:${env.PORT}`);
+    logger.info('🔐 auth-service escuchando en http://localhost:3000');
   });
 
   // ─── Apagado limpio ─────────────────────────────────────────────────────────
