@@ -18,9 +18,9 @@ services:
       - ./services/auth-service/.env
     environment:
       - NODE_ENV=production
-      - PORT=3000
+      - PORT=3005
     ports:
-      - "${HOST_BIND_IP:-127.0.0.1}:${HOST_AUTH_PORT:-3000}:3000"
+      - "${HOST_BIND_IP:-127.0.0.1}:${HOST_AUTH_PORT:-3005}:3005"
     networks:
       - clinica-x-net
 
@@ -36,7 +36,7 @@ services:
     environment:
       - NODE_ENV=production
       - PORT=3001
-      - AUTH_SERVICE_URL=http://auth-service:3000
+      - AUTH_SERVICE_URL=http://auth-service:3005
     ports:
       - "${HOST_BIND_IP:-127.0.0.1}:${HOST_APPOINTMENT_PORT:-3001}:3001"
     networks:
@@ -56,7 +56,7 @@ services:
     environment:
       - NODE_ENV=production
       - PORT=3002
-      - AUTH_SERVICE_URL=http://auth-service:3000
+      - AUTH_SERVICE_URL=http://auth-service:3005
       - APPOINTMENT_SERVICE_URL=http://appointment-service:3001
       - FILE_SERVICE_URL=http://file-service:3003
     ports:
@@ -98,7 +98,7 @@ services:
       - NODE_ENV=production
       - PORT=3004
       - FILE_SERVICE_URL=http://file-service:3003
-      - AUTH_SERVICE_URL=http://auth-service:3000
+      - AUTH_SERVICE_URL=http://auth-service:3005
     ports:
       - "${HOST_BIND_IP:-127.0.0.1}:${HOST_OCR_PORT:-3004}:3004"
     networks:
@@ -117,14 +117,14 @@ services:
       - ./services/api-gateway/.env
     environment:
       - NODE_ENV=production
-      - PORT=8080
-      - AUTH_SERVICE_URL=http://auth-service:3000
+      - PORT=3000
+      - AUTH_SERVICE_URL=http://auth-service:3005
       - APPOINTMENT_SERVICE_URL=http://appointment-service:3001
       - CLINICAL_SERVICE_URL=http://clinical-service:3002
       - FILE_SERVICE_URL=http://file-service:3003
       - OCR_SERVICE_URL=http://ocr-service:3004
     ports:
-      - "${HOST_BIND_IP:-127.0.0.1}:${HOST_GATEWAY_PORT:-8080}:8080"
+      - "${HOST_BIND_IP:-127.0.0.1}:${HOST_GATEWAY_PORT:-3000}:3000"
     networks:
       - clinica-x-net
     depends_on:
