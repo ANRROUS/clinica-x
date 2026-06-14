@@ -5,16 +5,16 @@ import { useRouter } from 'next/navigation';
 import { useQuery } from '@tanstack/react-query';
 import { CalendarX2 } from 'lucide-react';
 import { useDoctorAuthStore } from '@/store/useDoctorAuthStore';
-import { getDoctorPatients, getActivePatient, getDoctorSlotDuration } from '@/lib/api/doctor.api';
+import { getDoctorCalendar, getDoctorSlotDuration } from '@/lib/api/doctor.api';
 import PatientSidebar from '@/components/doctor/patients/PatientSidebar';
-import { nowLima, addMonthsLima, formatLima, parseApiDate } from '@clinica-x/date-utils';
+import { nowLima, addDaysLima, formatLima } from '@clinica-x/date-utils';
 
 export default function DoctorPacientesPage() {
   const { isAuthenticated } = useDoctorAuthStore();
   const router = useRouter();
   const [dateRange, setDateRange] = useState(() => {
-    const hasta = nowLima();
-    const desde = addMonthsLima(hasta, -1);
+    const desde = nowLima();
+    const hasta = addDaysLima(desde, 30);
     return {
       desde: formatLima(desde, 'yyyy-MM-dd'),
       hasta: formatLima(hasta, 'yyyy-MM-dd'),
@@ -26,15 +26,9 @@ export default function DoctorPacientesPage() {
     setMounted(true);
   }, []);
 
-  const { data: patientsData } = useQuery({
-    queryKey: ['doctor-patients', dateRange],
-    queryFn: () => getDoctorPatients(dateRange),
-    enabled: isAuthenticated,
-  });
-
-  const { data: activeData, isLoading: isActiveLoading } = useQuery({
-    queryKey: ['doctor-active-patient'],
-    queryFn: getActivePatient,
+  const { data: citasData } = useQuery({
+    queryKey: ['doctor-calendar', dateRange],
+    queryFn: () => getDoctorCalendar(dateRange),
     enabled: isAuthenticated,
   });
 
@@ -49,22 +43,7 @@ export default function DoctorPacientesPage() {
   });
   const slotDuration = slotDurationData ?? 30;
 
-  const patients = patientsData?.data || [];
-  const activeConsultation = activeData?.data || null;
-
-  const isConsultationValid = (() => {
-    if (!activeConsultation) return false;
-    const inicio = parseApiDate(activeConsultation.fechaInicio);
-    const now = nowLima();
-    const fin = new Date(inicio.getTime() + slotDuration * 60000);
-    return now >= inicio && now <= fin;
-  })();
-
-  useEffect(() => {
-    if (mounted && isAuthenticated && isConsultationValid && activeConsultation) {
-      router.replace(`/doctor/pacientes/${activeConsultation.pacienteId}`);
-    }
-  }, [mounted, isAuthenticated, isConsultationValid, activeConsultation, router]);
+  const citas = citasData?.data || [];
 
   useEffect(() => {
     if (!isAuthenticated) {
@@ -79,27 +58,21 @@ export default function DoctorPacientesPage() {
   return (
     <div className="flex h-full w-full">
       <PatientSidebar
-        activeConsultation={activeConsultation}
-        patients={patients}
+        citas={citas}
+        slotDuration={slotDuration}
         onSelectPatient={(id) => router.push(`/doctor/pacientes/${id}`)}
       />
 
       <div className="flex flex-1 flex-col overflow-hidden bg-gray-50">
-        {isActiveLoading || isConsultationValid ? (
-          <div className="flex flex-1 items-center justify-center text-gray-400">
-            Cargando consulta actual...
+        <div className="flex flex-1 flex-col items-center justify-center p-8 text-center">
+          <div className="mb-4 rounded-full bg-brand-50 p-4 text-brand-500">
+            <CalendarX2 className="h-12 w-12" style={{ color: '#008585' }} />
           </div>
-        ) : (
-          <div className="flex flex-1 flex-col items-center justify-center p-8 text-center">
-            <div className="mb-4 rounded-full bg-brand-50 p-4 text-brand-500">
-              <CalendarX2 className="h-12 w-12" style={{ color: '#008585' }} />
-            </div>
-            <h2 className="text-xl font-bold text-gray-900 mb-2">No tienes consultas actuales</h2>
-            <p className="text-gray-500 max-w-sm">
-              En este momento no cuentas con ninguna consulta en desarrollo. Selecciona un paciente del menú lateral para ver su historial o buscar otros pacientes.
-            </p>
-          </div>
-        )}
+          <h2 className="text-xl font-bold text-gray-900 mb-2">Pacientes</h2>
+          <p className="text-gray-500 max-w-sm">
+            Selecciona un paciente del menú lateral para ver su historial o gestionar su consulta.
+          </p>
+        </div>
       </div>
     </div>
   );

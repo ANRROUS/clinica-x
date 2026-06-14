@@ -16,15 +16,38 @@ function requireInternalApiKey(req: Request, res: Response, next: NextFunction):
   next();
 }
 
+function verifyOwnership(req: Request, res: Response, next: NextFunction): void {
+  const user = (req as any).user;
+  if (!user) {
+    res.status(401).json({
+      success: false,
+      error: { codigo: 'NO_AUTENTICADO', mensaje: 'Debes iniciar sesión' },
+    });
+    return;
+  }
+  if (user.rol === 'MEDICO' || user.rol === 'ADMIN') {
+    return next();
+  }
+  const requestedPacienteId = req.params.pacienteId;
+  if (requestedPacienteId && requestedPacienteId !== user.sub) {
+    res.status(403).json({
+      success: false,
+      error: { codigo: 'ROL_INSUFICIENTE', mensaje: 'No puedes acceder a resultados de otro paciente' },
+    });
+    return;
+  }
+  next();
+}
+
 export function createOcrRouter(controller: OcrController): Router {
   const router = Router();
 
   router.post('/process', requireInternalApiKey, controller.procesar);
   router.post('/admin/process', requireRole(['ADMIN']), controller.procesarAdmin);
-  router.get('/results/:archivoId', controller.obtenerPorArchivo);
-  router.get('/results/order/:ordenAnalisisId', controller.obtenerPorOrden);
-  router.get('/results/paciente/:pacienteId', controller.listarPorPaciente);
-  router.get('/status/:archivoId', controller.status);
+  router.get('/results/:archivoId', requireRole(['PACIENTE', 'MEDICO', 'ADMIN']), controller.obtenerPorArchivo);
+  router.get('/results/order/:ordenAnalisisId', requireRole(['PACIENTE', 'MEDICO', 'ADMIN']), controller.obtenerPorOrden);
+  router.get('/results/paciente/:pacienteId', requireRole(['PACIENTE', 'MEDICO', 'ADMIN']), verifyOwnership, controller.listarPorPaciente);
+  router.get('/status/:archivoId', requireRole(['PACIENTE', 'MEDICO', 'ADMIN']), controller.status);
 
   return router;
 }

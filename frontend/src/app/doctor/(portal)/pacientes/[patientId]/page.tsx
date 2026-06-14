@@ -1,18 +1,17 @@
 'use client';
 
 import { useState, useEffect, useMemo } from 'react';
-import { useRouter, useParams, useSearchParams } from 'next/navigation';
+import { useRouter, useParams } from 'next/navigation';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useDoctorAuthStore } from '@/store/useDoctorAuthStore';
-import { getActivePatient, getDoctorPatients, getDoctorSlotDuration } from '@/lib/api/doctor.api';
+import { getActivePatient, getDoctorCalendar, getDoctorSlotDuration } from '@/lib/api/doctor.api';
 import PatientSidebar from '@/components/doctor/patients/PatientSidebar';
 import PatientHeader from '@/components/doctor/patients/PatientHeader';
 import PatientTabs from '@/components/doctor/patients/PatientTabs';
 import ActiveConsultation from '@/components/doctor/patients/consultation/ActiveConsultation';
 import ConsultationHistory from '@/components/doctor/patients/history/ConsultationHistory';
 import type { ConsultaMedicoDTO } from '@/lib/api/types';
-import { nowLima, addMonthsLima, formatLima } from '@clinica-x/date-utils';
-import { parseApiDate } from '@/lib/date-utils';
+import { nowLima, addDaysLima, formatLima, parseApiDate } from '@clinica-x/date-utils';
 
 export default function DoctorPatientDetailPage() {
   const { isAuthenticated } = useDoctorAuthStore();
@@ -36,27 +35,17 @@ export default function DoctorPatientDetailPage() {
     enabled: isAuthenticated,
   });
 
-  const searchParams = useSearchParams();
-  const fromParam = searchParams.get('from');
-
   const dateRange = useMemo(() => {
     const hoy = nowLima();
-    let desde = addMonthsLima(hoy, -3);
-    if (fromParam) {
-      const fromDate = new Date(fromParam + 'T00:00:00');
-      if (!isNaN(fromDate.getTime()) && fromDate < desde) {
-        desde = fromDate;
-      }
-    }
     return {
-      desde: formatLima(desde, 'yyyy-MM-dd'),
-      hasta: formatLima(hoy, 'yyyy-MM-dd'),
+      desde: formatLima(hoy, 'yyyy-MM-dd'),
+      hasta: formatLima(addDaysLima(hoy, 30), 'yyyy-MM-dd'),
     };
-  }, [fromParam]);
+  }, []);
 
-  const { data: patientsData } = useQuery({
-    queryKey: ['doctor-patients', dateRange],
-    queryFn: () => getDoctorPatients(dateRange),
+  const { data: citasData } = useQuery({
+    queryKey: ['doctor-calendar', dateRange],
+    queryFn: () => getDoctorCalendar(dateRange),
     enabled: isAuthenticated,
   });
 
@@ -96,18 +85,18 @@ export default function DoctorPatientDetailPage() {
     return <div className="flex h-full" />;
   }
 
-  const patients = patientsData?.data || [];
-  const currentPatient = patients.find((c) => c.pacienteId === patientId);
+  const citas = citasData?.data || [];
+  const currentCita = citas.find((c) => c.pacienteId === patientId);
 
   const isActivePatient = activeConsultation?.pacienteId === patientId;
 
-  const patientName = currentPatient
-    ? `${currentPatient.pacienteNombre || ''} ${currentPatient.pacienteApellido || ''}`.trim()
+  const patientName = currentCita
+    ? `${currentCita.pacienteNombre || ''} ${currentCita.pacienteApellido || ''}`.trim()
     : `Paciente ${patientId.slice(0, 8)}...`;
 
   const sidebarProps = {
-    activeConsultation,
-    patients,
+    citas,
+    slotDuration,
     onSelectPatient: (id: string) => router.push(`/doctor/pacientes/${id}`),
     collapsed: sidebarCollapsed,
     onToggleCollapse: () => setSidebarCollapsed((prev) => !prev),

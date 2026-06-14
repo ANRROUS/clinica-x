@@ -32,8 +32,6 @@ import {
   formatLima,
 } from '@clinica-x/date-utils';
 
-const CUATRO_HORAS_MS = 4 * 60 * 60 * 1000;
-
 export class CrearCitaAutomaticaUseCase implements ICrearCitaPort {
   constructor(
     private readonly repo: ICitaRepository,
@@ -117,7 +115,7 @@ export class CrearCitaAutomaticaUseCase implements ICrearCitaPort {
 
             const diffMs = slotDateTime.getTime() - ahora.getTime();
             if (
-              diffMs >= CUATRO_HORAS_MS &&
+              diffMs > 0 &&
               !this.estaOcupado(slotStart, slotEnd, citasDelDia, h.duracionSlot)
             ) {
               const id = crypto.randomUUID();

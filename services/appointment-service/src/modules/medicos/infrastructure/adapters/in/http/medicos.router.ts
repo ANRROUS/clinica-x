@@ -15,6 +15,8 @@ export function createMedicosRouter(
 ): Router {
   const router = Router();
 
+  router.use(requireRole(['ADMIN']));
+
   router.get('/', controller.listar);
   router.post('/', controller.crear);
   router.get('/:id', controller.obtener);

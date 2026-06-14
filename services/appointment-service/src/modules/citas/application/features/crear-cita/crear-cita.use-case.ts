@@ -30,8 +30,6 @@ import type { IMedicoConsultaPort } from '@/modules/citas/domain/ports/out/medic
 import { toCitaResponseDto } from '@/modules/citas/application/mapper';
 import { nowLima, startOfDayLima, endOfDayLima } from '@clinica-x/date-utils';
 
-const CUATRO_HORAS_MS = 4 * 60 * 60 * 1000;
-
 export class CrearCitaUseCase implements ICrearCitaPort {
   constructor(
     private readonly repo: ICitaRepository,
@@ -48,11 +46,11 @@ export class CrearCitaUseCase implements ICrearCitaPort {
       return Err(new MedicoInactivoError());
     }
 
-    // 2. Verificar que la fecha sea futura (> 4 horas)
+    // 2. Verificar que la fecha sea futura
     const ahora = nowLima();
     const diffMs = dto.fechaHora.getTime() - ahora.getTime();
-    if (diffMs < CUATRO_HORAS_MS) {
-      return Err(new SlotNoDisponibleError('Debes reservar con al menos 4 horas de anticipación'));
+    if (diffMs <= 0) {
+      return Err(new SlotNoDisponibleError('Debes reservar en un horario futuro'));
     }
 
     // 2.5. Verificar que el paciente no tenga otra cita el mismo día con el mismo médico

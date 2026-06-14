@@ -17,10 +17,10 @@
  * ============================================================================
  */
 
-import express from 'express';
+import express, { Router } from 'express';
 import helmet from 'helmet';
 import cors from 'cors';
-import { requestIdMiddleware, errorHandler, jwtMiddleware, requestLogger } from '@clinica-x/shared-middleware';
+import { requestIdMiddleware, errorHandler, jwtMiddleware, requestLogger, requireRole } from '@clinica-x/shared-middleware';
 import { env } from './env';
 import { logger } from './shared/logger';
 import { disconnectPrisma } from './shared/prisma-client';
@@ -46,10 +46,14 @@ app.get('/health', (_req, res) => {
   });
 });
 
+import { consultasRouter } from '@/modules/consultas/infrastructure/di';
+import { prisma } from '@/shared/prisma-client';
+
 // ─── Stub del chat IA — visible desde Fase 0 ───────────────────────────────
 // El frontend del médico llamará a este endpoint y mostrará "Próximamente"
 // hasta que AI_ENABLED=true y se conecte el adaptador real de OpenAI.
-app.post('/api/medical/doctor/ai/chat', (_req, res) => {
+const aiChatRouter = Router();
+aiChatRouter.post('/doctor/ai/chat', requireRole(['MEDICO']), (_req, res) => {
   res.status(200).json({
     success: true,
     data: {
@@ -59,14 +63,12 @@ app.post('/api/medical/doctor/ai/chat', (_req, res) => {
   });
 });
 
-import { consultasRouter } from '@/modules/consultas/infrastructure/di';
-import { prisma } from '@/shared/prisma-client';
-
 // Rutas de negocio — Fase 4 (consultas)
 app.use(
   '/api/medical',
   jwtMiddleware({ secret: env.JWT_SECRET }),
   consultasRouter,
+  aiChatRouter,
 );
 
 // ─── Catálogos ───────────────────────────────────────────────────────────────

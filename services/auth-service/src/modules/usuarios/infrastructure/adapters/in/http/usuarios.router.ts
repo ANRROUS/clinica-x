@@ -645,7 +645,7 @@ export function createUsuariosRouter(
   router.put('/me', jwtMiddleware({ secret: jwtSecret }), controller.actualizarMe);
 
   // Internas
-  router.get('/internal/users', controller.listarPorIds);
+  router.get('/internal/users', jwtMiddleware({ secret: jwtSecret }), controller.listarPorIds);
 
   return router;
 }
