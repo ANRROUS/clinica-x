@@ -9,7 +9,7 @@ const envSchema = z.object({
   DATABASE_URL: z.string().url(),
   DIRECT_URL: z.string().url(),
   JWT_SECRET: z.string().min(8, 'JWT_SECRET debe tener al menos 8 caracteres'),
-  AUTH_SERVICE_URL: z.string().url().default('http://localhost:3000'),
+  AUTH_SERVICE_URL: z.string().url().default('http://localhost:3005'),
   INTERNAL_API_KEY: z.string().min(8).default('internal-dev-key-change-in-prod'),
   NODE_ENV: z.enum(['development', 'production', 'test']).default('development'),
 });

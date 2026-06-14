@@ -62,5 +62,11 @@ export const rutasPublicas: string[] = [
   '/api/auth/register',
   '/api/auth/forgot-password',
   '/api/auth/reset-password',
+  '/api/auth/openapi.json',
+  '/api/appointments/openapi.json',
+  '/api/medical/openapi.json',
+  '/api/files/openapi.json',
+  '/api/ocr/openapi.json',
   '/health',
+  '/docs',
 ];

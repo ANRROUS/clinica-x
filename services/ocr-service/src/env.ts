@@ -17,7 +17,7 @@ const envSchema = z.object({
   SUPABASE_BUCKET: z.string().default('clinica-x-archivos'),
 
   FILE_SERVICE_URL: z.string().url().default('http://localhost:3003'),
-  AUTH_SERVICE_URL: z.string().url().default('http://localhost:3000'),
+  AUTH_SERVICE_URL: z.string().url().default('http://localhost:3005'),
 
   INTERNAL_API_KEY: z.string().default('internal-dev-key-change-in-prod'),
 
