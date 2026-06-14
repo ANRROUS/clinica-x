@@ -8,6 +8,7 @@
     "pnpm": ">=8.0.0"
   },
   "scripts": {
+    "postinstall": "pnpm -r --filter \"@clinica-x/*\" run build",
     "build": "pnpm -r --filter \"@clinica-x/*\" --filter \"./services/*\" run build",
     "dev": "pnpm -r --parallel --filter \"./services/*\" --filter frontend run dev",
     "dev:services": "pnpm -r --parallel --filter \"./services/*\" run dev",
