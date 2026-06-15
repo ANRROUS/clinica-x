@@ -8,6 +8,7 @@ import { toast } from 'sonner';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { Stethoscope, FileText, MessageSquare } from 'lucide-react';
 import { startConsultation, finalizeConsultation } from '@/lib/api/doctor.api';
+import { getErrorMessage } from '@/lib/api/error-utils';
 import type { ConsultaMedicoDTO } from '@/lib/api/types';
 
 const finalizeSchema = z.object({
@@ -52,8 +53,8 @@ export default function ConsultationPanel({
         toast.error(res.error?.mensaje || 'No se pudo iniciar la consulta');
       }
     },
-    onError: () => {
-      toast.error('Error al iniciar consulta');
+    onError: (err) => {
+      toast.error(getErrorMessage(err));
     },
   });
 
@@ -69,8 +70,8 @@ export default function ConsultationPanel({
         toast.error(res.error?.mensaje || 'Error al finalizar consulta');
       }
     },
-    onError: () => {
-      toast.error('Error al finalizar consulta');
+    onError: (err) => {
+      toast.error(getErrorMessage(err));
     },
   });
 

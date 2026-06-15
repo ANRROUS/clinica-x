@@ -5,6 +5,7 @@ import { Pencil, Save, X } from 'lucide-react';
 import { toast } from 'sonner';
 import type { UsuarioDTO } from '@/lib/api/types';
 import { updateMe } from '@/lib/api/auth.api';
+import { getErrorMessage } from '@/lib/api/error-utils';
 import { useAuthStore } from '@/store/useAuthStore';
 
 export default function ProfileHeader() {
@@ -54,8 +55,8 @@ export default function ProfileHeader() {
       } else {
         toast.error(res.error?.mensaje || 'Error al actualizar');
       }
-    } catch {
-      toast.error('Error de conexión');
+    } catch (err) {
+      toast.error(getErrorMessage(err));
     } finally {
       setSaving(false);
     }

@@ -67,6 +67,7 @@ export const rutasPublicas: string[] = [
   '/api/medical/openapi.json',
   '/api/files/openapi.json',
   '/api/ocr/openapi.json',
+  '/api/ocr/process', // ← permitir llamadas internas del clinical-service
   '/health',
   '/docs',
 ];

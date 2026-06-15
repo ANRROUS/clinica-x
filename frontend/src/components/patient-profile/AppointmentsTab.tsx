@@ -10,6 +10,7 @@ import {
   rescheduleAppointment,
   getAvailabilityByDoctor,
 } from '@/lib/api/appointments.api';
+import { getErrorMessage } from '@/lib/api/error-utils';
 import type { CitaDTO, SlotDTO } from '@/lib/api/types';
 import { AppointmentCardSkeleton } from '@/components/shared/Skeleton';
 import {
@@ -107,8 +108,8 @@ function RescheduleModal({
       queryClient.invalidateQueries({ queryKey: ['patient-appointments'] });
       onClose();
     },
-    onError: () => {
-      toast.error('No se pudo reprogramar. Intenta de nuevo.');
+    onError: (err) => {
+      toast.error(getErrorMessage(err));
     },
   });
 
@@ -235,8 +236,8 @@ export default function AppointmentsTab() {
       queryClient.invalidateQueries({ queryKey: ['patient-appointments'] });
       setCancelTarget(null);
     },
-    onError: () => {
-      toast.error('No se pudo cancelar la cita. Intenta de nuevo.');
+    onError: (err) => {
+      toast.error(getErrorMessage(err));
     },
   });
 

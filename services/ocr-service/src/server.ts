@@ -64,7 +64,7 @@ import { ocrRouter } from '@/modules/ocr/infrastructure/di';
 
 app.use(
   '/api/ocr',
-  jwtMiddleware({ secret: env.JWT_SECRET, skipPaths: ['/api/ocr/process'] }),
+  jwtMiddleware({ secret: env.JWT_SECRET, skipPaths: ['/process'] }),
   ocrRouter,
 );
 
