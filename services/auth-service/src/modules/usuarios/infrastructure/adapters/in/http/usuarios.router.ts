@@ -646,6 +646,7 @@ export function createUsuariosRouter(
 
   // Internas
   router.get('/internal/users', controller.listarPorIds);
+  router.put('/internal/users/:id', controller.actualizarPorId);
 
   return router;
 }
