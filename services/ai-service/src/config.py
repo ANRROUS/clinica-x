@@ -5,8 +5,8 @@ class Settings(BaseSettings):
     PORT: int = 3005
     JWT_SECRET: str = "change_this_secret"
     GEMINI_API_KEY: str = ""
-    GEMINI_MODEL: str = "gemini-1.5-flash"
-    GEMINI_MODEL_PRO: str = "gemini-1.5-pro"
+    GEMINI_MODEL: str = "gemini-2.5-flash"
+    GEMINI_MODEL_PRO: str = "gemini-2.5-flash"
     AI_TIMEOUT_MS: int = 30000
 
     CLINICAL_SERVICE_URL: str = "http://localhost:3002"

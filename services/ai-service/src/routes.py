@@ -1,4 +1,5 @@
 import json
+import asyncpg
 from fastapi import APIRouter, HTTPException, Depends, Request
 from src.models.chat import ChatRequest, ChatResponse
 from src.agent.graph import build_graph
@@ -10,6 +11,25 @@ from src.logger import logger
 
 router = APIRouter()
 agent_graph = build_graph()
+
+# Singleton pool — se crea una sola vez y se reutiliza
+_pool: asyncpg.Pool | None = None
+
+async def get_pool() -> asyncpg.Pool:
+    global _pool
+    if _pool is None or _pool._closed:
+        _pool = await asyncpg.create_pool(
+            settings.DIRECT_URL or settings.DATABASE_URL,
+            min_size=1,
+            max_size=5,
+        )
+    return _pool
+
+async def close_pool():
+    global _pool
+    if _pool is not None and not _pool._closed:
+        await _pool.close()
+        _pool = None
 
 
 @router.post("/chat", response_model=ChatResponse)
@@ -64,13 +84,7 @@ async def chat(request: ChatRequest, http_request: Request, doctor_id: str = Dep
 @router.get("/chat/history/{patient_id}", response_model=ChatResponse)
 async def chat_history(patient_id: str, doctor_id: str = Depends(get_doctor_id_from_token)):
     try:
-        import asyncpg
-
-        pool = await asyncpg.create_pool(
-            settings.DIRECT_URL or settings.DATABASE_URL,
-            min_size=1,
-            max_size=2,
-        )
+        pool = await get_pool()
         async with pool.acquire() as conn:
             rows = await conn.fetch(
                 """
@@ -82,7 +96,6 @@ async def chat_history(patient_id: str, doctor_id: str = Depends(get_doctor_id_f
                 patient_id,
                 doctor_id,
             )
-        await pool.close()
 
         messages = []
         for r in rows:
@@ -112,13 +125,7 @@ async def _save_chat_message(
     tool_used: str | None = None,
     metadata: str | None = None,
 ):
-    import asyncpg
-
-    pool = await asyncpg.create_pool(
-        settings.DIRECT_URL or settings.DATABASE_URL,
-        min_size=1,
-        max_size=2,
-    )
+    pool = await get_pool()
     async with pool.acquire() as conn:
         if metadata:
             await conn.execute(
@@ -138,4 +145,3 @@ async def _save_chat_message(
                 """,
                 paciente_id, medico_id, consulta_id, role, content, tool_used,
             )
-    await pool.close()

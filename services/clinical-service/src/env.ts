@@ -17,7 +17,7 @@ const envSchema = z.object({
   OPENAI_API_KEY: z.string().optional(),
   AI_TIMEOUT_MS: z.coerce.number().int().positive().default(20000),
   // URLs cross-service
-  AUTH_SERVICE_URL: z.string().url().default('http://localhost:3005'),
+  AUTH_SERVICE_URL: z.string().url().default('http://localhost:3000'),
   APPOINTMENT_SERVICE_URL: z.string().url().default('http://localhost:3001'),
   FILE_SERVICE_URL: z.string().url().default('http://localhost:3003'),
   OCR_SERVICE_URL: z.string().url().default('http://localhost:3004'),

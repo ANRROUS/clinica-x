@@ -12,7 +12,7 @@ interface AIChatProps {
   patientName: string;
   consultationId?: string;
   lastConsultation: ConsultaMedicoDTO | null;
-  onSelectDateFilter: (dateStr: string, consultationId: string) => void;
+  onSelectDateFilter?: (dateStr: string, consultationId: string) => void;
 }
 
 interface ChatMessage {
@@ -135,12 +135,16 @@ export default function AIChat({
       return (
         <span className="inline-block">
           Hola Dr. {doctorLastName}, la última consulta realizada por el paciente {patientName} fue el día{' '}
-          <button
-            onClick={() => onSelectDateFilter(dateStrRaw, lastConsultation.id)}
-            className="inline-flex items-center font-semibold text-brand-600 underline hover:text-brand-800 transition-colors mx-1"
-          >
-            {dateStrDisplay}
-          </button>
+          {onSelectDateFilter ? (
+            <button
+              onClick={() => onSelectDateFilter(dateStrRaw, lastConsultation.id)}
+              className="inline-flex items-center font-semibold text-brand-600 underline hover:text-brand-800 transition-colors mx-1"
+            >
+              {dateStrDisplay}
+            </button>
+          ) : (
+            <span className="font-semibold text-brand-600">{dateStrDisplay}</span>
+          )}
         </span>
       );
     }
