@@ -9,7 +9,7 @@
   },
   "scripts": {
     "build": "pnpm -r --filter \"@clinica-x/*\" --filter \"./services/*\" run build",
-    "dev": "pnpm -r --parallel --filter \"./services/*\" --filter frontend run dev",
+    "dev": "concurrently --kill-others --names services,ai,frontend --prefix-colors cyan,green,blue \"pnpm dev:services\" \"pnpm dev:ai\" \"pnpm dev:frontend\"",
     "dev:services": "pnpm -r --parallel --filter \"./services/*\" run dev",
     "dev:auth": "pnpm --filter auth-service dev",
     "dev:appointment": "pnpm --filter appointment-service dev",
@@ -17,7 +17,9 @@
     "dev:file": "pnpm --filter file-service dev",
     "dev:gateway": "pnpm --filter api-gateway dev",
     "dev:frontend": "pnpm --filter frontend dev",
-    "lint": "pnpm -r run lint",
+"dev:ai": "cd services/ai-service && uvicorn src.main:app --reload --port 3005",
+"dev:ai:install": "pip install -r requirements.txt",
+"lint": "pnpm -r run lint",
     "format": "prettier --write \"**/*.{ts,tsx,js,json,md}\" --ignore-path .gitignore",
     "prisma:generate:all": "pnpm --filter auth-service prisma:generate && pnpm --filter appointment-service prisma:generate && pnpm --filter clinical-service prisma:generate && pnpm --filter file-service prisma:generate && pnpm --filter ocr-service prisma:generate",
     "prisma:migrate:all": "pnpm --filter auth-service prisma:migrate && pnpm --filter appointment-service prisma:migrate && pnpm --filter clinical-service prisma:migrate && pnpm --filter file-service prisma:migrate",
@@ -28,6 +30,7 @@
   },
   "devDependencies": {
     "@types/node": "^20.11.0",
+    "concurrently": "^10.0.3",
     "pg": "^8.12.0",
     "prettier": "^3.2.0",
     "typescript": "^5.4.0"

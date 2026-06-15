@@ -24,3 +24,6 @@ CREATE SCHEMA clinical_service;
 
 DROP SCHEMA IF EXISTS file_service CASCADE;
 CREATE SCHEMA file_service;
+
+DROP SCHEMA IF EXISTS chat_service CASCADE;
+CREATE SCHEMA chat_service;
