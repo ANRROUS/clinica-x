@@ -11,6 +11,7 @@ const envSchema = z.object({
   CLINICAL_SERVICE_URL: z.string().url(),
   FILE_SERVICE_URL: z.string().url(),
   OCR_SERVICE_URL: z.string().url().default('http://localhost:3004'),
+  AI_SERVICE_URL: z.string().url().default('http://localhost:3005'),
   JWT_SECRET: z.string().min(8, 'JWT_SECRET debe tener al menos 8 caracteres'),
   CORS_ORIGIN: z.string().default('http://localhost:3100'),
   NODE_ENV: z.enum(['development', 'production', 'test']).default('development'),

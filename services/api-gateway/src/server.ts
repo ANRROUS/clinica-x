@@ -171,6 +171,7 @@ app.get('/docs', (_req, res) => {
         <a href="?service=medical" id="btn-medical" class="tab-btn">🩺 Gestión Clínica</a>
         <a href="?service=files" id="btn-files" class="tab-btn">📁 Archivos</a>
         <a href="?service=ocr" id="btn-ocr" class="tab-btn">👁️ Procesamiento OCR</a>
+        <a href="?service=ai" id="btn-ai" class="tab-btn">🤖 Agente X</a>
       </nav>
     </header>
     
@@ -193,6 +194,7 @@ app.get('/docs', (_req, res) => {
       else if (currentService === 'medical') specPath = '/api/medical/openapi.json';
       else if (currentService === 'files') specPath = '/api/files/openapi.json';
       else if (currentService === 'ocr') specPath = '/api/ocr/openapi.json';
+      else if (currentService === 'ai') specPath = '/api/ai/openapi.json';
 
       Scalar.createApiReference('#app', {
         url: specPath,
