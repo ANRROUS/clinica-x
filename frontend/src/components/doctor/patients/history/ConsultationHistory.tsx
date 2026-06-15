@@ -97,6 +97,7 @@ export default function ConsultationHistory({ patientId }: ConsultationHistoryPr
           <AIChat
             patientId={patientId}
             patientName={patientName}
+            consultationId={activeData?.data?.id || undefined}
             lastConsultation={lastConsultation}
             onSelectDateFilter={(dateStr, consultationId) => {
               setFilterDate(dateStr);

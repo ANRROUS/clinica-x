@@ -8,19 +8,15 @@
  *  - Diagnósticos, recetas, medicamentos
  *  - Órdenes de análisis (asociadas a consulta)
  *  - Historial clínico del paciente
- *  - Chat IA "Agente X" (en Fase 0: stub "Próximamente")
  *
  * Endpoints: /api/medical/*
- *
- * En Fase 0 solo expone /health + un endpoint stub del chat IA para que la
- * UI del médico pueda renderizar "Próximamente" sin error.
  * ============================================================================
  */
 
-import express, { Router } from 'express';
+import express from 'express';
 import helmet from 'helmet';
 import cors from 'cors';
-import { requestIdMiddleware, errorHandler, jwtMiddleware, requestLogger, requireRole } from '@clinica-x/shared-middleware';
+import { requestIdMiddleware, errorHandler, jwtMiddleware, requestLogger } from '@clinica-x/shared-middleware';
 import { env } from './env';
 import { logger } from './shared/logger';
 import { disconnectPrisma } from './shared/prisma-client';
@@ -83,26 +79,11 @@ app.get('/docs', (_req, res) => {
 </html>`);
 });
 
-// ─── Stub del chat IA — visible desde Fase 0 ───────────────────────────────
-// El frontend del médico llamará a este endpoint y mostrará "Próximamente"
-// hasta que AI_ENABLED=true y se conecte el adaptador real de OpenAI.
-const aiChatRouter = Router();
-aiChatRouter.post('/doctor/ai/chat', requireRole(['MEDICO']), (_req, res) => {
-  res.status(200).json({
-    success: true,
-    data: {
-      status: 'coming_soon',
-      mensaje: 'El Agente X estará disponible próximamente',
-    },
-  });
-});
-
 // Rutas de negocio — Fase 4 (consultas)
 app.use(
   '/api/medical',
   jwtMiddleware({ secret: env.JWT_SECRET }),
   consultasRouter,
-  aiChatRouter,
 );
 
 // ─── Catálogos ───────────────────────────────────────────────────────────────

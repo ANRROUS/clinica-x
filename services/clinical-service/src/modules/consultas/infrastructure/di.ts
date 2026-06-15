@@ -36,6 +36,7 @@ const consultasController = new ConsultasController(
   listarConsultasMedicoUseCase,
   obtenerPacienteDetalleUseCase,
   consultaRepository,
+  authServiceClient,
 );
 
 // ─── Router ─────────────────────────────────────────────────────────────────
