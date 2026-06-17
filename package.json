@@ -24,7 +24,19 @@
     "db:reset": "node scripts/clean-schemas.js",
     "seed:demo": "node scripts/seed-demo.js",
     "seed:all": "pnpm --filter auth-service seed && pnpm --filter appointment-service seed && node scripts/seed-demo.js",
-    "test:e2e": "node scripts/test-e2e.js"
+    "test:e2e": "node scripts/test-e2e.js",
+    "test:selenium": "pnpm --filter @clinica-x/tests-selenium test",
+    "test:selenium:paciente": "pnpm --filter @clinica-x/tests-selenium test:paciente",
+    "test:selenium:paciente:login": "pnpm --filter @clinica-x/tests-selenium test:paciente:login",
+    "test:selenium:paciente:registro": "pnpm --filter @clinica-x/tests-selenium test:paciente:registro",
+    "test:selenium:paciente:manual": "pnpm --filter @clinica-x/tests-selenium test:paciente:manual",
+    "test:selenium:paciente:auto": "pnpm --filter @clinica-x/tests-selenium test:paciente:auto",
+    "test:selenium:medico": "pnpm --filter @clinica-x/tests-selenium test:medico",
+    "test:selenium:admin": "pnpm --filter @clinica-x/tests-selenium test:admin",
+    "test:selenium:admin:login": "pnpm --filter @clinica-x/tests-selenium test:admin:login",
+    "test:selenium:admin:dashboard": "pnpm --filter @clinica-x/tests-selenium test:admin:dashboard",
+    "test:selenium:admin:agregar-doctor": "pnpm --filter @clinica-x/tests-selenium test:admin:agregar-doctor",
+    "test:selenium:admin:editar-doctor": "pnpm --filter @clinica-x/tests-selenium test:admin:editar-doctor"
   },
   "devDependencies": {
     "@types/node": "^20.11.0",

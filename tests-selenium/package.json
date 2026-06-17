@@ -1,0 +1,30 @@
+{
+  "name": "@clinica-x/tests-selenium",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "test": "jest",
+    "test:paciente": "jest tests/paciente/",
+    "test:paciente:login": "jest 1.1-login",
+    "test:paciente:registro": "jest 1.2-registro",
+    "test:paciente:manual": "jest 1.3-reserva-manual",
+    "test:paciente:auto": "jest 1.4-reserva-auto",
+    "test:medico": "jest flujo-medico",
+    "test:admin": "jest tests/admin/",
+    "test:admin:login": "jest 3.1-login",
+    "test:admin:dashboard": "jest 3.2-dashboard-kpis",
+    "test:admin:agregar-doctor": "jest 3.3-agregar-doctor",
+    "test:admin:editar-doctor": "jest 3.4-editar-doctor"
+  },
+  "dependencies": {
+    "selenium-webdriver": "^4.20.0",
+    "dotenv": "^16.0.0"
+  },
+  "devDependencies": {
+    "@types/selenium-webdriver": "^4.1.0",
+    "@types/jest": "^29.0.0",
+    "jest": "^29.0.0",
+    "ts-jest": "^29.0.0",
+    "typescript": "^5.0.0"
+  }
+}
