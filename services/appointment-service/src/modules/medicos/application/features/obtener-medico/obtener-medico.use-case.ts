@@ -9,6 +9,7 @@ import { MedicoNoEncontradoError } from '@/modules/medicos/domain/exceptions/med
 import type { IObtenerMedicoPort, MedicoResponseDto } from '@/modules/medicos/domain/ports/in/medicos.port';
 import type { IAuthServiceClient, IMedicoRepository } from '@/modules/medicos/domain/ports/out/medico.repository.port';
 import { toMedicoResponseDto } from '@/modules/medicos/application/mapper';
+import { logger } from '@/shared/logger';
 
 export class ObtenerMedicoUseCase implements IObtenerMedicoPort {
   constructor(
@@ -49,8 +50,8 @@ export class ObtenerMedicoUseCase implements IObtenerMedicoPort {
           telefono: usuario.telefono,
         };
       }
-    } catch {
-      // fallback a valores por defecto
+    } catch (err) {
+      logger.error({ err, medicoId, usuarioId: medico.usuarioId }, 'Error al obtener datos del usuario desde auth-service. Se usarán valores por defecto.');
     }
 
     return Ok(

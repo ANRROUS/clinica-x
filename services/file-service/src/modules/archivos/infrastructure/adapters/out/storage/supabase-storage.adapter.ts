@@ -72,7 +72,8 @@ export class SupabaseStorageAdapter implements IStoragePort {
     }
     const data = (await res.json()) as { signedURL: string } | { signedUrl: string };
     const signedURL = 'signedURL' in data ? data.signedURL : (data as any).signedUrl;
-    return signedURL;
+    // Supabase puede devolver una ruta relativa; prefijar con la base si es necesario
+    return signedURL.startsWith('http') ? signedURL : `${STORAGE_BASE}${signedURL}`;
   }
 
   async eliminar(key: string): Promise<void> {

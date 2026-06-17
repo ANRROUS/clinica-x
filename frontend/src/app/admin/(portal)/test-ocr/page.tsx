@@ -9,6 +9,7 @@ import FileUploader from '@/components/admin/test-ocr/FileUploader';
 import ProcessingState from '@/components/admin/test-ocr/ProcessingState';
 import OcrResultsTable from '@/components/admin/test-ocr/OcrResultsTable';
 import { uploadFile, processOcrAdmin, getOcrResults, getOcrStatus } from '@/lib/api/ocr.api';
+import { getErrorMessage } from '@/lib/api/error-utils';
 import type { AnalisisResultadoDTO } from '@/lib/api/types';
 
 const TIPOS_ANALISIS = [
@@ -40,8 +41,8 @@ export default function TestOcrPage() {
       setKeyS3(keyS3);
       toast.success('Archivo subido correctamente');
     },
-    onError: () => {
-      toast.error('Error al subir el archivo');
+    onError: (err) => {
+      toast.error(getErrorMessage(err));
     },
   });
 
@@ -61,8 +62,8 @@ export default function TestOcrPage() {
       setResultId(id);
       toast.success('OCR iniciado. Esperando resultados...');
     },
-    onError: (err: any) => {
-      toast.error(err.message || 'Error al procesar OCR');
+    onError: (err) => {
+      toast.error(getErrorMessage(err));
     },
   });
 

@@ -8,7 +8,7 @@ import { z } from 'zod';
 import { toast } from 'sonner';
 import { Mail, X } from 'lucide-react';
 import { forgotPassword } from '@/lib/api/auth.api';
-import axios from 'axios';
+import { getErrorMessage } from '@/lib/api/error-utils';
 
 const forgotPasswordSchema = z.object({
   email: z.string().email('Correo inválido'),
@@ -39,12 +39,8 @@ export default function ForgotPasswordForm() {
       } else {
         toast.error(res.error?.mensaje || 'Error al enviar el correo');
       }
-    } catch (error) {
-      if (axios.isAxiosError(error)) {
-        toast.error(error.response?.data?.error?.mensaje || 'Error de conexión. Intenta de nuevo.');
-      } else {
-        toast.error('Error de conexión. Intenta de nuevo.');
-      }
+    } catch (err) {
+      toast.error(getErrorMessage(err));
     } finally {
       setLoading(false);
     }

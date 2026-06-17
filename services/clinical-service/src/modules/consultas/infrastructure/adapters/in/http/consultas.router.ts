@@ -555,5 +555,25 @@ export function createConsultasRouter(controller: ConsultasController): Router {
    */
   router.post('/patient/analysis-results', requireRole(['PACIENTE']), controller.uploadAnalysisResult);
 
+  // ─── Médico — Endpoints para Agente X (ai-service) ────────────────────────
+
+  /**
+   * GET /api/medical/doctor/patient/:patientId/history
+   * Retorna todas las consultas finalizadas del paciente con diagnósticos, medicamentos y órdenes de análisis.
+   */
+  router.get('/doctor/patient/:patientId/history', requireRole(['MEDICO']), controller.doctorPatientHistory);
+
+  /**
+   * GET /api/medical/doctor/patient/:patientId/analysis-results
+   * Retorna resultados de análisis OCR con grupos y parámetros (biomarcadores).
+   */
+  router.get('/doctor/patient/:patientId/analysis-results', requireRole(['MEDICO']), controller.patientAnalysisResults);
+
+  /**
+   * GET /api/medical/doctor/patient/:patientId/medications
+   * Retorna todos los medicamentos recetados en consultas finalizadas del paciente.
+   */
+  router.get('/doctor/patient/:patientId/medications', requireRole(['MEDICO']), controller.patientMedications);
+
   return router;
 }

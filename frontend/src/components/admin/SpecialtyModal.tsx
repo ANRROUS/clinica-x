@@ -10,6 +10,7 @@ import {
   updateSpecialty,
   toggleSpecialtyStatus,
 } from '@/lib/api/admin.api';
+import { getErrorMessage } from '@/lib/api/error-utils';
 import type { EspecialidadDTO } from '@/lib/api/types';
 
 interface SpecialtyModalProps {
@@ -44,7 +45,7 @@ export default function SpecialtyModal({ open, onClose }: SpecialtyModalProps) {
       setNombre('');
     },
     onError: (err: any) => {
-      toast.error(err?.response?.data?.error?.mensaje || 'Error al crear especialidad');
+      toast.error(getErrorMessage(err));
     },
   });
 
@@ -59,7 +60,7 @@ export default function SpecialtyModal({ open, onClose }: SpecialtyModalProps) {
       setNombre('');
     },
     onError: (err: any) => {
-      toast.error(err?.response?.data?.error?.mensaje || 'Error al actualizar especialidad');
+      toast.error(getErrorMessage(err));
     },
   });
 
@@ -71,7 +72,7 @@ export default function SpecialtyModal({ open, onClose }: SpecialtyModalProps) {
       queryClient.invalidateQueries({ queryKey: ['admin-dashboard'] });
     },
     onError: (err: any) => {
-      toast.error(err?.response?.data?.error?.mensaje || 'Error al cambiar estado');
+      toast.error(getErrorMessage(err));
     },
   });
 

@@ -9,6 +9,7 @@ import { z } from 'zod';
 import { toast } from 'sonner';
 import { Eye, EyeOff, Mail, Lock, CreditCard } from 'lucide-react';
 import { login } from '@/lib/api/auth.api';
+import { getErrorMessage } from '@/lib/api/error-utils';
 import { useAuthStore } from '@/store/useAuthStore';
 
 const loginSchema = z.object({
@@ -55,8 +56,8 @@ export default function LoginFormContent({ onSuccess }: LoginFormContentProps) {
       } else {
         toast.error(res.error?.mensaje || 'Credenciales inválidas');
       }
-    } catch {
-      toast.error('Error de conexión. Intenta de nuevo.');
+    } catch (err) {
+      toast.error(getErrorMessage(err));
     } finally {
       setLoading(false);
     }

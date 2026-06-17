@@ -9,8 +9,8 @@ import { z } from 'zod';
 import { toast } from 'sonner';
 import { Eye, EyeOff, Mail, Lock, CreditCard, X } from 'lucide-react';
 import { login } from '@/lib/api/auth.api';
+import { getErrorMessage } from '@/lib/api/error-utils';
 import { useAuthStore } from '@/store/useAuthStore';
-import axios from 'axios';
 
 const loginSchema = z.object({
   dni: z.string().length(8, 'El DNI debe tener 8 dígitos').regex(/^\d+$/, 'Solo números'),
@@ -57,20 +57,7 @@ const onSubmit = async (data: LoginForm) => {
       toast.error(res.error?.mensaje || 'Credenciales inválidas');
     }
   } catch (error) {
-    if (axios.isAxiosError(error)) {
-      const status = error.response?.status;
-      const backendMessage = error.response?.data?.error?.mensaje;
-
-      if (status === 401) {
-        toast.error(backendMessage || 'Credenciales inválidas');
-      } else if (status === 400) {
-        toast.error(backendMessage || 'Datos inválidos');
-      } else {
-        toast.error(backendMessage || 'Error de conexión. Intenta de nuevo.');
-      }
-    } else {
-      toast.error('Error de conexión. Intenta de nuevo.');
-    }
+    toast.error(getErrorMessage(error));
   } finally {
     setLoading(false);
   }

@@ -5,6 +5,7 @@ import { Pencil } from 'lucide-react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import { toggleDoctorStatus } from '@/lib/api/admin.api';
+import { getErrorMessage } from '@/lib/api/error-utils';
 import type { MedicoDTO } from '@/lib/api/types';
 
 const diaSemanaLabels: Record<number, string> = {
@@ -46,11 +47,11 @@ export default function DoctorTableRow({ doctor }: DoctorTableRowProps) {
     onSuccess: () => {
       toast.success(doctor.activo ? 'Médico desactivado correctamente' : 'Médico activado correctamente');
     },
-    onError: (_err, _activo, context) => {
+    onError: (err, _activo, context) => {
       if (context?.previous) {
         queryClient.setQueryData(['admin-dashboard'], context.previous);
       }
-      toast.error('No se pudo cambiar el estado del médico.');
+      toast.error(getErrorMessage(err));
     },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ['admin-dashboard'] });

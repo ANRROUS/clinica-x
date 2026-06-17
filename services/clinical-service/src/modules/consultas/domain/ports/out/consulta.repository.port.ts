@@ -22,4 +22,5 @@ export interface IConsultaRepository {
   }): Promise<Consulta[]>;
   actualizarOrdenAnalisis(id: string, data: { archivoId: string; resultado?: string; estado?: string }): Promise<void>;
   buscarOrdenAnalisisPorId(id: string): Promise<{ id: string; consultaId: string; tipoAnalisis: string; estado: string } | null>;
+  buscarResultadosAnalisisPorPaciente(pacienteId: string, biomarcador?: string): Promise<any[]>;
 }

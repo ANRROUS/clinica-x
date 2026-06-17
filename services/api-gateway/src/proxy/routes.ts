@@ -51,6 +51,12 @@ export const rutasProxy: RutaProxy[] = [
     upstream: env.OCR_SERVICE_URL,
     servicio: 'ocr-service',
   },
+  // --- ai-service (Agente X) ---
+  {
+    prefijo: '/api/ai',
+    upstream: env.AI_SERVICE_URL,
+    servicio: 'ai-service',
+  },
 ];
 
 /**
@@ -67,6 +73,7 @@ export const rutasPublicas: string[] = [
   '/api/medical/openapi.json',
   '/api/files/openapi.json',
   '/api/ocr/openapi.json',
+  '/api/ocr/process', // ← permitir llamadas internas del clinical-service
   '/health',
   '/docs',
 ];

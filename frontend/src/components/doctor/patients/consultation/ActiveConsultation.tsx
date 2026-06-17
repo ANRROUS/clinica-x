@@ -5,6 +5,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import { Stethoscope } from 'lucide-react';
 import { startConsultation, finalizeConsultation } from '@/lib/api/doctor.api';
+import { getErrorMessage } from '@/lib/api/error-utils';
 import DiagnosisForm from './DiagnosisForm';
 import AnalysisOrderManager from './AnalysisOrderManager';
 import MedicationTable from './MedicationTable';
@@ -61,7 +62,7 @@ export default function ActiveConsultation({
         toast.error(res.error?.mensaje || 'No se pudo iniciar la consulta');
       }
     },
-    onError: () => toast.error('Error al iniciar consulta'),
+    onError: (err) => toast.error(getErrorMessage(err)),
   });
 
   const finalizeMutation = useMutation({
@@ -72,7 +73,7 @@ export default function ActiveConsultation({
       resetStore();
       onConsultationFinalized();
     },
-    onError: () => toast.error('Error al finalizar consulta'),
+    onError: (err) => toast.error(getErrorMessage(err)),
   });
 
   if (!consultation) {

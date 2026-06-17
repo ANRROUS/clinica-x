@@ -2,12 +2,13 @@
 
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { Stethoscope, Calendar, Users } from 'lucide-react';
+import { Stethoscope, Calendar, Users, Bot } from 'lucide-react';
 import { useDoctorAuthStore } from '@/store/useDoctorAuthStore';
 
 const navItems = [
   { href: '/doctor/calendario', label: 'Calendario', icon: Calendar },
   { href: '/doctor/pacientes', label: 'Pacientes', icon: Users },
+  { href: '/doctor/ia-test', label: 'IA - Test', icon: Bot },
 ];
 
 export default function DoctorHeader() {

@@ -6,6 +6,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 import { toggleDoctorStatus } from '@/lib/api/admin.api';
+import { getErrorMessage } from '@/lib/api/error-utils';
 
 interface DangerZoneProps {
   doctorId: string;
@@ -25,8 +26,8 @@ export default function DangerZone({ doctorId, doctorName, isActive }: DangerZon
       queryClient.invalidateQueries({ queryKey: ['admin-dashboard'] });
       router.push('/admin/dashboard');
     },
-    onError: () => {
-      toast.error('No se pudo desactivar el médico.');
+    onError: (err) => {
+      toast.error(getErrorMessage(err));
     },
   });
 
