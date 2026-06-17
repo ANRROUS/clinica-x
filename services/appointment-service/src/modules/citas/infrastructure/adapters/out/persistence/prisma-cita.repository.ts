@@ -5,9 +5,11 @@
  */
 
 import { prisma } from '@/shared/prisma-client';
+import { Prisma } from '@/generated/prisma';
 import { Cita } from '@/modules/citas/domain/entities/cita.entity';
 import type { ICitaRepository } from '@/modules/citas/domain/ports/out/cita.repository.port';
 import { parseLimaDate } from '@clinica-x/date-utils';
+import { logger } from '@/shared/logger';
 
 export class PrismaCitaRepository implements ICitaRepository {
   async guardar(cita: Cita): Promise<void> {
@@ -134,20 +136,61 @@ export class PrismaCitaRepository implements ICitaRepository {
           throw new Error('Slot ocupado');
         }
 
-        await tx.cita.create({
-          data: {
-            id: cita.id,
-            pacienteId: cita.pacienteId,
+        const citaCancelada = await tx.cita.findFirst({
+          where: {
             medicoId: cita.medicoId,
             fechaHora: cita.fechaHora,
-            estado: cita.estado,
-            tipoReserva: cita.tipoReserva,
-            motivo: cita.motivo,
+            estado: 'CANCELADA',
           },
         });
+
+        if (citaCancelada) {
+          await tx.cita.update({
+            where: { id: citaCancelada.id },
+            data: {
+              pacienteId: cita.pacienteId,
+              estado: cita.estado,
+              tipoReserva: cita.tipoReserva,
+              motivo: cita.motivo,
+            },
+          });
+        } else {
+          await tx.cita.create({
+            data: {
+              id: cita.id,
+              pacienteId: cita.pacienteId,
+              medicoId: cita.medicoId,
+              fechaHora: cita.fechaHora,
+              estado: cita.estado,
+              tipoReserva: cita.tipoReserva,
+              motivo: cita.motivo,
+            },
+          });
+        }
       });
       return true;
-    } catch {
+    } catch (err) {
+      if (err instanceof Prisma.PrismaClientKnownRequestError && err.code === 'P2002') {
+        logger.warn({
+          msg: 'Unique constraint violation al crear cita (race condition)',
+          meta: err.meta,
+          medicoId: cita.medicoId,
+          fechaHora: cita.fechaHora,
+        });
+      } else if (err instanceof Error && err.message === 'Slot ocupado') {
+        logger.debug({
+          msg: 'Slot ocupado detectado en guardarSiLibre',
+          medicoId: cita.medicoId,
+          fechaHora: cita.fechaHora,
+        });
+      } else {
+        logger.error({
+          msg: 'Error inesperado en guardarSiLibre',
+          err,
+          medicoId: cita.medicoId,
+          fechaHora: cita.fechaHora,
+        });
+      }
       return false;
     }
   }

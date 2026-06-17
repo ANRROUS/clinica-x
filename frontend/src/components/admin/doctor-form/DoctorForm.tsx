@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -84,6 +84,7 @@ export default function DoctorForm({ editId }: DoctorFormProps) {
   const watchApellido = watch('apellido');
   const watchSpecialtyId = watch('specialtyId');
   const watchShift = watch('shift');
+  const prevShiftRef = useRef<string | undefined>(undefined);
 
   const displayName = [watchNombre, watchApellido].filter(Boolean).join(' ') || '';
   const displaySpecialty = specialties.find((s) => s.id === watchSpecialtyId)?.nombre || '';
@@ -110,6 +111,13 @@ export default function DoctorForm({ editId }: DoctorFormProps) {
       );
     }
   }, [isEditing, doctor, reset]);
+
+  useEffect(() => {
+    if (prevShiftRef.current !== undefined && prevShiftRef.current !== watchShift) {
+      setSchedules([]);
+    }
+    prevShiftRef.current = watchShift;
+  }, [watchShift]);
 
   const createMutation = useMutation({
     mutationFn: createDoctor,
@@ -141,6 +149,17 @@ export default function DoctorForm({ editId }: DoctorFormProps) {
       return;
     }
     setScheduleError('');
+
+    // Validar coherencia entre turno y horarios seleccionados
+    const turnoStart = data.shift === 'MANANA' ? '00:00' : '12:00';
+    const turnoEnd = data.shift === 'MANANA' ? '12:00' : '24:00';
+    const horariosInvalidos = schedules.some(
+      (s) => s.horaInicio < turnoStart || s.horaFin > turnoEnd
+    );
+    if (horariosInvalidos) {
+      toast.error('Los horarios seleccionados no corresponden al turno elegido');
+      return;
+    }
 
     if (isEditing) {
       const body: any = {

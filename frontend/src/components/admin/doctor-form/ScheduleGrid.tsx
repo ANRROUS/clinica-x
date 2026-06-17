@@ -24,8 +24,8 @@ const DAYS = [
 
 function generateSlots(shift: 'MANANA' | 'TARDE'): { startTime: string; endTime: string }[] {
   const slots: { startTime: string; endTime: string }[] = [];
-  const startHour = shift === 'MANANA' ? 8 : 14;
-  const endHour = shift === 'MANANA' ? 13 : 19;
+  const startHour = shift === 'MANANA' ? 0 : 12;
+  const endHour = shift === 'MANANA' ? 12 : 24;
 
   for (let h = startHour; h < endHour; h++) {
     const startStr = `${String(h).padStart(2, '0')}:00`;
