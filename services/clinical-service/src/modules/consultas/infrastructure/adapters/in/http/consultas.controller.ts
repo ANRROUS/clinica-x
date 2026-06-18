@@ -15,6 +15,8 @@ import type {
   IObtenerPacienteDetallePort,
 } from '@/modules/consultas/domain/ports/in/consultas.port';
 import type { IConsultaRepository } from '@/modules/consultas/domain/ports/out/consulta.repository.port';
+import type { IAuthServiceClient } from '@/modules/consultas/domain/ports/out/auth-service.port';
+import { toConsultaDto } from '@/modules/consultas/application/mapper';
 import { parseLimaDate } from '@clinica-x/date-utils';
 import { env } from '@/env';
 import { logger } from '@/shared/logger';
@@ -59,6 +61,7 @@ export class ConsultasController {
     private readonly listarConsultasMedico: IListarConsultasMedicoPort,
     private readonly obtenerPacienteDetalle: IObtenerPacienteDetallePort,
     private readonly consultaRepository: IConsultaRepository,
+    private readonly authServiceClient: IAuthServiceClient,
   ) {}
 
   // ─── Helpers ──────────────────────────────────────────────────────────────
@@ -229,6 +232,66 @@ export class ConsultasController {
       });
     } catch (err) {
       if (err instanceof ZodError) { this.manejarZodError(res, err); return; }
+      next(err);
+    }
+  };
+
+  // ─── GET /api/medical/doctor/patient/:patientId/history ─────────────────
+  doctorPatientHistory = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    try {
+      const { patientId } = req.params;
+      const fechaDesde = req.query.desde ? parseLimaDate(req.query.desde as string + 'T00:00:00') : undefined;
+      const fechaHasta = req.query.hasta ? parseLimaDate(req.query.hasta as string + 'T23:59:59.999') : undefined;
+      const consultas = await this.consultaRepository.listar({ pacienteId: patientId, estado: 'FINALIZADA', fechaDesde, fechaHasta });
+
+      const medicoIds = [...new Set(consultas.map((c) => c.medicoId))];
+      let medicosMap = new Map<string, { nombre: string; apellido: string }>();
+      try {
+        const medicos = await this.authServiceClient.obtenerUsuariosPorIds(medicoIds);
+        medicos.forEach((m) => medicosMap.set(m.id, m));
+      } catch { }
+
+      const dtos = consultas.map((c) => {
+        const medico = medicosMap.get(c.medicoId);
+        return toConsultaDto(c, { medicoNombre: medico?.nombre, medicoApellido: medico?.apellido });
+      });
+
+      res.status(200).json({ success: true, data: { consultations: dtos } });
+    } catch (err) {
+      next(err);
+    }
+  };
+
+  // ─── GET /api/medical/doctor/patient/:patientId/analysis-results ────────
+  patientAnalysisResults = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    try {
+      const { patientId } = req.params;
+      const biomarcador = req.query.biomarcador as string | undefined;
+      const results = await this.consultaRepository.buscarResultadosAnalisisPorPaciente(patientId, biomarcador);
+      res.status(200).json({ success: true, data: { results } });
+    } catch (err) {
+      next(err);
+    }
+  };
+
+  // ─── GET /api/medical/doctor/patient/:patientId/medications ────────────
+  patientMedications = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    try {
+      const { patientId } = req.params;
+      const consultas = await this.consultaRepository.listar({ pacienteId: patientId, estado: 'FINALIZADA' });
+      const medications: Array<{ name: string; days: number; frequency: string; fechaConsulta: string }> = [];
+      for (const c of consultas) {
+        for (const m of c.medicamentos) {
+          medications.push({
+            name: m.nombre,
+            days: m.dias,
+            frequency: m.frecuencia,
+            fechaConsulta: c.fechaInicio?.toISOString() ?? new Date().toISOString(),
+          });
+        }
+      }
+      res.status(200).json({ success: true, data: { medications } });
+    } catch (err) {
       next(err);
     }
   };

@@ -21,6 +21,9 @@ import type {
   ISolicitarRecuperacionPort,
   IRestablecerContrasenaPort,
 } from '@/modules/usuarios/domain/ports/in/usuarios.port';
+import type { IUsuarioRepository, IHashService } from '@/modules/usuarios/domain/ports/out/usuario.repository.port';
+import { Dni } from '@/modules/usuarios/domain/value-objects/dni.vo';
+import { Email } from '@/modules/usuarios/domain/value-objects/email.vo';
 
 // ─── Schemas de validación Zod para entrada HTTP ────────────────────────────
 
@@ -56,6 +59,15 @@ const restablecerContrasenaSchema = z.object({
   nuevaContrasena: z.string().min(8, 'La contraseña debe tener al menos 8 caracteres'),
 });
 
+const actualizarUsuarioAdminSchema = z.object({
+  nombre: z.string().min(1).optional(),
+  apellido: z.string().min(1).optional(),
+  dni: z.string().length(8).regex(/^\d+$/).optional(),
+  email: z.string().email().optional(),
+  telefono: z.string().optional(),
+  password: z.string().min(8).optional(),
+});
+
 export class UsuariosController {
   constructor(
     private readonly crearUsuario: ICrearUsuarioPort,
@@ -65,6 +77,8 @@ export class UsuariosController {
     private readonly listarUsuariosPorIds: IListarUsuariosPorIdsPort,
     private readonly solicitarRecuperacion: ISolicitarRecuperacionPort,
     private readonly restablecerContrasena: IRestablecerContrasenaPort,
+    private readonly usuarioRepository?: IUsuarioRepository,
+    private readonly hashService?: IHashService,
   ) {}
 
   // ─── POST /api/auth/register ──────────────────────────────────────────────
@@ -277,6 +291,141 @@ export class UsuariosController {
     }
 
     res.status(200).json({ success: true, data: { usuarios: resultado.value } });
+  };
+
+  // ─── PUT /api/auth/internal/users/:id ────────────────────────────────────
+  actualizarPorId = async (req: Request, res: Response): Promise<void> => {
+    const apiKey = req.headers['x-internal-api-key'];
+    if (apiKey !== env.INTERNAL_API_KEY) {
+      res.status(403).json({
+        success: false,
+        error: { codigo: 'FORBIDDEN', mensaje: 'No autorizado' },
+      });
+      return;
+    }
+
+    if (!this.usuarioRepository || !this.hashService) {
+      res.status(500).json({
+        success: false,
+        error: { codigo: 'ERROR', mensaje: 'Servicio no configurado correctamente' },
+      });
+      return;
+    }
+
+    const usuarioId = req.params.id;
+    if (!usuarioId) {
+      res.status(400).json({
+        success: false,
+        error: { codigo: 'VALIDACION', mensaje: 'ID de usuario requerido' },
+      });
+      return;
+    }
+
+    let dto: z.infer<typeof actualizarUsuarioAdminSchema>;
+    try {
+      dto = actualizarUsuarioAdminSchema.parse(req.body);
+    } catch (err) {
+      if (err instanceof ZodError) {
+        res.status(400).json({
+          success: false,
+          error: {
+            codigo: 'VALIDACION',
+            mensaje: 'Datos inválidos',
+            detalles: err.errors.map((e) => ({ campo: e.path.join('.'), mensaje: e.message })),
+          },
+        });
+        return;
+      }
+      throw err;
+    }
+
+    try {
+      const usuario = await this.usuarioRepository.buscarPorId(usuarioId);
+      if (!usuario) {
+        res.status(404).json({
+          success: false,
+          error: { codigo: 'USUARIO_NO_ENCONTRADO', mensaje: `Usuario ${usuarioId} no encontrado` },
+        });
+        return;
+      }
+
+      if (dto.email && dto.email !== usuario.email.value) {
+        const existente = await this.usuarioRepository.buscarPorEmail(dto.email);
+        if (existente && existente.id !== usuarioId) {
+          res.status(409).json({
+            success: false,
+            error: { codigo: 'USUARIO_DUPLICADO', mensaje: 'El correo ya está en uso por otro usuario' },
+          });
+          return;
+        }
+      }
+
+      if (dto.dni && dto.dni !== usuario.dni.value) {
+        const existente = await this.usuarioRepository.buscarPorDni(dto.dni);
+        if (existente && existente.id !== usuarioId) {
+          res.status(409).json({
+            success: false,
+            error: { codigo: 'USUARIO_DUPLICADO', mensaje: 'El DNI ya está en uso por otro usuario' },
+          });
+          return;
+        }
+      }
+
+      usuario.actualizarPerfil({
+        nombre: dto.nombre,
+        apellido: dto.apellido,
+        telefono: dto.telefono,
+      });
+
+      if (dto.email && dto.email !== usuario.email.value) {
+        const emailResult = Email.create(dto.email);
+        if (emailResult.isErr) {
+          res.status(400).json({
+            success: false,
+            error: { codigo: 'VALIDACION', mensaje: emailResult.error.message },
+          });
+          return;
+        }
+        Object.assign(usuario, { _email: emailResult.value });
+      }
+
+      if (dto.dni && dto.dni !== usuario.dni.value) {
+        const dniResult = Dni.create(dto.dni);
+        if (dniResult.isErr) {
+          res.status(400).json({
+            success: false,
+            error: { codigo: 'VALIDACION', mensaje: dniResult.error.message },
+          });
+          return;
+        }
+        Object.assign(usuario, { _dni: dniResult.value });
+      }
+
+      if (dto.password) {
+        const hash = await this.hashService.hash(dto.password);
+        usuario.cambiarPasswordHash(hash);
+      }
+
+      await this.usuarioRepository.actualizar(usuario);
+
+      res.status(200).json({
+        success: true,
+        data: {
+          id: usuario.id,
+          nombre: usuario.nombre,
+          apellido: usuario.apellido,
+          dni: usuario.dni.value,
+          email: usuario.email.value,
+          telefono: usuario.telefono,
+          rol: usuario.rol,
+        },
+      });
+    } catch (err) {
+      res.status(500).json({
+        success: false,
+        error: { codigo: 'ERROR', mensaje: 'Error interno al actualizar usuario' },
+      });
+    }
   };
 
   // ─── POST /api/auth/forgot-password ──────────────────────────────────────

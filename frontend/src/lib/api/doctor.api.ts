@@ -1,6 +1,8 @@
 import { api } from './axios';
 import type {
   ApiResponse,
+  AiChatResponseDTO,
+  AiChatMessageDTO,
   CitaCalendarioDTO,
   ConsultaMedicoDTO,
   PatientSummaryDTO,
@@ -87,14 +89,14 @@ export async function sendAIChatMessage(data: {
   consultationId?: string;
   patientId: string;
   message: string;
-}): Promise<ApiResponse<{ reply: string }>> {
-  const res = await api.post('/api/medical/doctor/ai/chat', data);
+}): Promise<ApiResponse<AiChatResponseDTO>> {
+  const res = await api.post('/api/ai/chat', data);
   return res.data;
 }
 
 export async function getAIChatHistory(
-  consultationId: string,
-): Promise<ApiResponse<{ messages: { id: string; role: string; content: string; createdAt: string }[] }>> {
-  const res = await api.get(`/api/medical/doctor/ai/chat/${consultationId}`);
+  patientId: string,
+): Promise<ApiResponse<{ messages: AiChatMessageDTO[] }>> {
+  const res = await api.get(`/api/ai/chat/history/${patientId}`);
   return res.data;
 }

@@ -4,13 +4,19 @@ import { useQuery } from '@tanstack/react-query';
 import { Mail, Phone } from 'lucide-react';
 import { useDoctorAuthStore } from '@/store/useDoctorAuthStore';
 import { getDoctorPatientDetail } from '@/lib/api/doctor.api';
+import { PatientHeaderSkeleton } from '@/components/shared/Skeleton';
+import ConsultationTimer from './ConsultationTimer';
 
 interface PatientHeaderProps {
   patientId: string;
   patientName: string;
+  isActivePatient?: boolean;
+  fechaHora?: string;
+  slotDuration?: number;
+  isLoading?: boolean;
 }
 
-export default function PatientHeader({ patientId, patientName }: PatientHeaderProps) {
+export default function PatientHeader({ patientId, patientName, isActivePatient, fechaHora, slotDuration, isLoading = false }: PatientHeaderProps) {
   const { isAuthenticated } = useDoctorAuthStore();
 
   const { data } = useQuery({
@@ -18,6 +24,10 @@ export default function PatientHeader({ patientId, patientName }: PatientHeaderP
     queryFn: () => getDoctorPatientDetail(patientId),
     enabled: isAuthenticated && !!patientId,
   });
+
+  if (isLoading) {
+    return <PatientHeaderSkeleton />;
+  }
 
   const patient = data?.data?.patient;
   const displayName = patient ? `${patient.nombre} ${patient.apellido}`.trim() : patientName;
@@ -45,14 +55,21 @@ export default function PatientHeader({ patientId, patientName }: PatientHeaderP
         </div>
       </div>
 
-      <div className="flex items-center gap-6 text-sm text-gray-600">
-        <div className="flex items-center gap-1.5">
-          <Mail className="h-4 w-4 text-gray-400" />
-          <span>{patient?.email || '—'}</span>
-        </div>
-        <div className="flex items-center gap-1.5">
-          <Phone className="h-4 w-4 text-gray-400" />
-          <span>{patient?.telefono || '—'}</span>
+      <div className="flex items-center gap-6">
+        {isActivePatient && fechaHora && slotDuration && (
+          <div className="flex-shrink-0">
+            <ConsultationTimer key={fechaHora} fechaHora={fechaHora} slotDuration={slotDuration} />
+          </div>
+        )}
+        <div className="flex items-center gap-6 text-sm text-gray-600">
+          <div className="flex items-center gap-1.5">
+            <Mail className="h-4 w-4 text-gray-400" />
+            <span>{patient?.email || '—'}</span>
+          </div>
+          <div className="flex items-center gap-1.5">
+            <Phone className="h-4 w-4 text-gray-400" />
+            <span>{patient?.telefono || '—'}</span>
+          </div>
         </div>
       </div>
     </div>

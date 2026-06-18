@@ -23,6 +23,7 @@ import {
   bookAutomatic,
   getPatientAppointments,
 } from '@/lib/api/appointments.api';
+import { getErrorMessage } from '@/lib/api/error-utils';
 import type {
   EspecialidadDTO,
   DisponibilidadDoctorDTO,
@@ -92,7 +93,7 @@ export default function ReservarCitaPage() {
 
   useEffect(() => {
     if (doctorsError) {
-      toast.error('Error al cargar médicos. Verifica tu conexión.');
+      toast.error(getErrorMessage(doctorsError));
     }
   }, [doctorsError]);
 
@@ -151,8 +152,8 @@ export default function ReservarCitaPage() {
       } else {
         toast.error(res.error?.mensaje || 'No hay turnos disponibles en este momento.');
       }
-    } catch {
-      toast.error('Error al reservar. Intenta de nuevo.');
+    } catch (err) {
+      toast.error(getErrorMessage(err));
     } finally {
       setBookingLoading(false);
     }
@@ -182,8 +183,8 @@ export default function ReservarCitaPage() {
       } else {
         toast.error(res.error?.mensaje || 'No se pudo confirmar la reserva.');
       }
-    } catch {
-      toast.error('Error al reservar. Intenta de nuevo.');
+    } catch (err) {
+      toast.error(getErrorMessage(err));
     } finally {
       setBookingLoading(false);
     }

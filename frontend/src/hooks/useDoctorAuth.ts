@@ -4,6 +4,7 @@ import { useDoctorAuthStore } from '@/store/useDoctorAuthStore';
 import { useRouter } from 'next/navigation';
 import { useCallback } from 'react';
 import { login } from '@/lib/api/auth.api';
+import { getErrorMessage } from '@/lib/api/error-utils';
 import { toast } from 'sonner';
 
 export function useDoctorAuth() {
@@ -25,8 +26,8 @@ export function useDoctorAuth() {
         }
         toast.error('Usuario o contraseña incorrectos');
         return false;
-      } catch {
-        toast.error('Error de conexión. Intenta de nuevo.');
+      } catch (err) {
+        toast.error(getErrorMessage(err));
         return false;
       }
     },

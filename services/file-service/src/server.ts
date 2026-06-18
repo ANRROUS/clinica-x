@@ -23,10 +23,13 @@ import { env } from './env';
 import { logger } from './shared/logger';
 import { disconnectPrisma } from './shared/prisma-client';
 import { nowLima } from '@clinica-x/date-utils';
+import { swaggerSpec } from './config/openapi.config';
 
 const app = express();
 
-app.use(helmet());
+app.use(helmet({
+  contentSecurityPolicy: false,
+}));
 app.use(cors({ origin: true, credentials: true }));
 app.use(express.json({ limit: '1mb' }));
 app.use(requestIdMiddleware());
@@ -44,6 +47,37 @@ app.get('/health', (_req, res) => {
       timestamp: nowLima().toISOString(),
     },
   });
+});
+
+// ─── Documentación API (Scalar) ──────────────────────────────────────────────
+app.get('/api/files/openapi.json', (_req, res) => {
+  res.setHeader('Content-Type', 'application/json');
+  res.json(swaggerSpec);
+});
+
+app.get('/docs', (_req, res) => {
+  res.setHeader('Content-Type', 'text/html');
+  res.send(`<!DOCTYPE html>
+<html>
+  <head>
+    <title>Clínica X — File Service API</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <script
+      id="api-reference"
+      data-url="/api/files/openapi.json"
+    ></script>
+    <script src="https://cdn.jsdelivr.net/npm/@scalar/api-reference"></script>
+  </body>
+</html>`);
 });
 
 import { archivosRouter, storageAdapter } from '@/modules/archivos/infrastructure/di';

@@ -4,7 +4,9 @@ import { useEffect, useState } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import { Stethoscope } from 'lucide-react';
+import { ActiveConsultationSkeleton } from '@/components/shared/Skeleton';
 import { startConsultation, finalizeConsultation } from '@/lib/api/doctor.api';
+import { getErrorMessage } from '@/lib/api/error-utils';
 import DiagnosisForm from './DiagnosisForm';
 import AnalysisOrderManager from './AnalysisOrderManager';
 import MedicationTable from './MedicationTable';
@@ -17,6 +19,7 @@ interface ActiveConsultationProps {
   patientId: string;
   patientName?: string;
   onConsultationFinalized: () => void;
+  isLoading?: boolean;
 }
 
 export default function ActiveConsultation({
@@ -24,6 +27,7 @@ export default function ActiveConsultation({
   patientId,
   patientName,
   onConsultationFinalized,
+  isLoading = false,
 }: ActiveConsultationProps) {
   const queryClient = useQueryClient();
   const [showFinalizeModal, setShowFinalizeModal] = useState(false);
@@ -42,14 +46,6 @@ export default function ActiveConsultation({
     reset: resetStore,
   } = useConsultationStore();
 
-  // Sincronizar el store cuando cambia la consulta activa
-  useEffect(() => {
-    if (consultation && storedConsultationId !== consultation.id) {
-      resetStore();
-      setConsultationId(consultation.id);
-    }
-  }, [consultation, storedConsultationId, setConsultationId, resetStore]);
-
   const startMutation = useMutation({
     mutationFn: startConsultation,
     onSuccess: (res) => {
@@ -61,19 +57,25 @@ export default function ActiveConsultation({
         toast.error(res.error?.mensaje || 'No se pudo iniciar la consulta');
       }
     },
-    onError: () => toast.error('Error al iniciar consulta'),
+    onError: (err) => toast.error(getErrorMessage(err)),
   });
 
   const finalizeMutation = useMutation({
     mutationFn: ({ id, data }: { id: string; data: { diagnostico: string; analysisOrders: typeof analysisOrders; medications: typeof medications } }) =>
       finalizeConsultation(id, data),
-    onSuccess: () => {
-      toast.success('Consulta finalizada correctamente');
-      resetStore();
-      onConsultationFinalized();
-    },
-    onError: () => toast.error('Error al finalizar consulta'),
   });
+
+  // Sincronizar el store cuando cambia la consulta activa
+  useEffect(() => {
+    if (consultation && storedConsultationId !== consultation.id) {
+      resetStore();
+      setConsultationId(consultation.id);
+    }
+  }, [consultation, storedConsultationId, setConsultationId, resetStore]);
+
+  if (isLoading) {
+    return <ActiveConsultationSkeleton />;
+  }
 
   if (!consultation) {
     return (
@@ -127,17 +129,24 @@ export default function ActiveConsultation({
 
       {showFinalizeModal && (
         <FinalizeConsultationModal
-          onConfirm={() => {
+          onConfirm={async () => {
             if (!diagnosis.trim()) {
               toast.error('El diagnóstico no puede estar vacío');
               return;
             }
             const activeId = consultation.id;
-            finalizeMutation.mutate({
-              id: activeId,
-              data: { diagnostico: diagnosis, analysisOrders, medications },
-            });
-            setShowFinalizeModal(false);
+            try {
+              await finalizeMutation.mutateAsync({
+                id: activeId,
+                data: { diagnostico: diagnosis, analysisOrders, medications },
+              });
+              setShowFinalizeModal(false);
+              toast.success('Consulta finalizada correctamente');
+              resetStore();
+              onConsultationFinalized();
+            } catch (err) {
+              toast.error(getErrorMessage(err));
+            }
           }}
           onCancel={() => setShowFinalizeModal(false)}
           loading={finalizeMutation.isPending}

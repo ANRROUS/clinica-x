@@ -168,6 +168,38 @@ export class PrismaConsultaRepository implements IConsultaRepository {
     return orden;
   }
 
+  async buscarResultadosAnalisisPorPaciente(pacienteId: string, biomarcador?: string): Promise<any[]> {
+    const where: any = {
+      pacienteId,
+      estadoOcr: 'COMPLETADO',
+    };
+    if (biomarcador) {
+      where.grupos = {
+        some: {
+          items: {
+            some: {
+              nombre: { contains: biomarcador, mode: 'insensitive' },
+            },
+          },
+        },
+      };
+    }
+    return prisma.analisisResultado.findMany({
+      where,
+      include: {
+        grupos: {
+          orderBy: { orden: 'asc' },
+          include: {
+            items: {
+              orderBy: { orden: 'asc' },
+            },
+          },
+        },
+      },
+      orderBy: { fechaResultado: 'asc' },
+    });
+  }
+
   // ─── Helpers ──────────────────────────────────────────────────────────────
 
   private toEntity(registro: any): Consulta {

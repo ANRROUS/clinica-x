@@ -19,6 +19,14 @@ function formatDate(iso: string): string {
   return `${getLimaDay(d)} de ${MONTH_NAMES[getLimaMonth(d)]} de ${getLimaYear(d)}`;
 }
 
+function toInputDate(iso: string): string {
+  const d = parseLimaDate(iso);
+  const y = getLimaYear(d);
+  const m = String(getLimaMonth(d) + 1).padStart(2, '0');
+  const day = String(getLimaDay(d)).padStart(2, '0');
+  return `${y}-${m}-${day}`;
+}
+
 export default function ConsultationsTab() {
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [searchDate, setSearchDate] = useState('');
@@ -42,13 +50,14 @@ export default function ConsultationsTab() {
   const analysisOrders: AnalysisOrderDTO[] = selectedConsultation?.analysisOrders ?? [];
   const medications: MedicationDTO[] = selectedConsultation?.medications ?? [];
 
-  const filteredConsultations = consultations.filter((c) => {
+  // Ordenar cronológicamente para numerar y filtrar
+  const sortedConsultations = [...consultations].sort(
+    (a, b) => new Date(a.fechaInicio).getTime() - new Date(b.fechaInicio).getTime()
+  );
+
+  const filteredConsultations = sortedConsultations.filter((c) => {
     if (!searchDate.trim()) return true;
-    const query = searchDate.toLowerCase().trim();
-    const dateStr = formatDate(c.fechaInicio).toLowerCase();
-    const idStr = c.id.slice(0, 8).toLowerCase();
-    const estadoStr = (c.estado === 'FINALIZADA' ? 'finalizada' : 'activa').toLowerCase();
-    return dateStr.includes(query) || idStr.includes(query) || estadoStr.includes(query);
+    return toInputDate(c.fechaInicio) === searchDate;
   });
 
   if (loadingHistory) {
@@ -75,8 +84,7 @@ export default function ConsultationsTab() {
         <p className="mb-3 text-sm text-gray-700">Historial de consultas del paciente:</p>
         <div className="relative mb-4">
           <input
-            type="text"
-            placeholder="  /     /"
+            type="date"
             value={searchDate}
             onChange={(e) => setSearchDate(e.target.value)}
             className="w-full rounded-md border border-gray-300 px-3 py-2 pr-10 text-sm focus:border-[#008585] focus:outline-none"
@@ -84,8 +92,11 @@ export default function ConsultationsTab() {
           <Search className="absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#008585]" />
         </div>
         <div className="space-y-3">
-          {filteredConsultations.map((c) => {
+          {filteredConsultations.map((c, index) => {
             const isSelected = selectedId === c.id;
+            const doctorName = c.medicoNombre || c.medicoApellido
+              ? `Dr. ${c.medicoNombre || ''} ${c.medicoApellido || ''}`.trim()
+              : 'Doctor';
             return (
               <button
                 key={c.id}
@@ -97,10 +108,13 @@ export default function ConsultationsTab() {
                 }`}
               >
                 <p className={`font-medium ${isSelected ? 'text-white' : 'text-[#008585]'}`}>
-                  Consulta #{c.id.slice(0, 8)}
+                  Consulta {index + 1}
                 </p>
                 <p className={`mt-1 text-sm ${isSelected ? 'text-white/90' : 'text-gray-600'}`}>
                   Fecha: {formatDate(c.fechaInicio)}
+                </p>
+                <p className={`mt-1 text-sm ${isSelected ? 'text-white/90' : 'text-gray-600'}`}>
+                  {doctorName}
                 </p>
                 <p className={`mt-1 text-sm ${isSelected ? 'text-white/90' : 'text-gray-600'}`}>
                   Estado: {c.estado === 'FINALIZADA' ? 'Finalizada' : 'Activa'}

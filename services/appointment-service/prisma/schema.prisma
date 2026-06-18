@@ -98,7 +98,7 @@ model Cita {
 
   medico Medico @relation(fields: [medicoId], references: [id])
 
-  @@unique([medicoId, fechaHora])
+  @@unique([medicoId, fechaHora, estado])
   @@index([medicoId, fechaHora])
   @@index([pacienteId, fechaHora])
   @@index([pacienteId])

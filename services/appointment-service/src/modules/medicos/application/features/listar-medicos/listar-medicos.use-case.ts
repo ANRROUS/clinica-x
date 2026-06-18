@@ -8,6 +8,7 @@ import { Result, Ok } from '@clinica-x/shared-kernel';
 import type { IListarMedicosPort, MedicoResponseDto } from '@/modules/medicos/domain/ports/in/medicos.port';
 import type { IAuthServiceClient, IMedicoRepository } from '@/modules/medicos/domain/ports/out/medico.repository.port';
 import { toMedicoResponseDto } from '@/modules/medicos/application/mapper';
+import { logger } from '@/shared/logger';
 
 export class ListarMedicosUseCase implements IListarMedicosPort {
   constructor(
@@ -34,7 +35,8 @@ export class ListarMedicosUseCase implements IListarMedicosPort {
       try {
         const usuarios = await this.authClient.obtenerUsuariosPorIds(usuarioIds);
         usuariosPorId = new Map(usuarios.map((u) => [u.id, u]));
-      } catch {
+      } catch (err) {
+        logger.error({ err, totalUsuarioIds: usuarioIds.length }, 'Error al obtener datos de usuarios desde auth-service. Los nombres no se mostrarán.');
         usuariosPorId = new Map();
       }
     }

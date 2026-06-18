@@ -6,6 +6,7 @@
 
 import { PrismaConsultaRepository } from '@/modules/consultas/infrastructure/adapters/out/persistence/prisma-consulta.repository';
 import { AuthServiceClient } from '@/modules/consultas/infrastructure/adapters/out/external-apis/auth-service.client';
+import { AppointmentServiceClient } from '@/modules/consultas/infrastructure/adapters/out/external-apis/appointment-service.client';
 import { IniciarConsultaUseCase } from '@/modules/consultas/application/features/iniciar-consulta/iniciar-consulta.use-case';
 import { FinalizarConsultaUseCase } from '@/modules/consultas/application/features/finalizar-consulta/finalizar-consulta.use-case';
 import { ObtenerConsultaUseCase } from '@/modules/consultas/application/features/obtener-consulta/obtener-consulta.use-case';
@@ -18,10 +19,11 @@ import { createConsultasRouter } from '@/modules/consultas/infrastructure/adapte
 // ─── Adaptadores de salida ──────────────────────────────────────────────────
 const consultaRepository = new PrismaConsultaRepository();
 const authServiceClient = new AuthServiceClient();
+const appointmentServiceClient = new AppointmentServiceClient();
 
 // ─── Casos de uso ───────────────────────────────────────────────────────────
 const iniciarConsultaUseCase = new IniciarConsultaUseCase(consultaRepository);
-const finalizarConsultaUseCase = new FinalizarConsultaUseCase(consultaRepository);
+const finalizarConsultaUseCase = new FinalizarConsultaUseCase(consultaRepository, appointmentServiceClient);
 const obtenerConsultaUseCase = new ObtenerConsultaUseCase(consultaRepository, authServiceClient);
 const listarConsultasPacienteUseCase = new ListarConsultasPacienteUseCase(consultaRepository, authServiceClient);
 const listarConsultasMedicoUseCase = new ListarConsultasMedicoUseCase(consultaRepository, authServiceClient);
@@ -36,6 +38,7 @@ const consultasController = new ConsultasController(
   listarConsultasMedicoUseCase,
   obtenerPacienteDetalleUseCase,
   consultaRepository,
+  authServiceClient,
 );
 
 // ─── Router ─────────────────────────────────────────────────────────────────

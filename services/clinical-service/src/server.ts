@@ -8,12 +8,8 @@
  *  - Diagnósticos, recetas, medicamentos
  *  - Órdenes de análisis (asociadas a consulta)
  *  - Historial clínico del paciente
- *  - Chat IA "Agente X" (en Fase 0: stub "Próximamente")
  *
  * Endpoints: /api/medical/*
- *
- * En Fase 0 solo expone /health + un endpoint stub del chat IA para que la
- * UI del médico pueda renderizar "Próximamente" sin error.
  * ============================================================================
  */
 
@@ -25,10 +21,13 @@ import { env } from './env';
 import { logger } from './shared/logger';
 import { disconnectPrisma } from './shared/prisma-client';
 import { nowLima } from '@clinica-x/date-utils';
+import { swaggerSpec } from './config/openapi.config';
 
 const app = express();
 
-app.use(helmet());
+app.use(helmet({
+  contentSecurityPolicy: false,
+}));
 app.use(cors({ origin: true, credentials: true }));
 app.use(express.json({ limit: '1mb' }));
 app.use(requestIdMiddleware());
@@ -46,21 +45,39 @@ app.get('/health', (_req, res) => {
   });
 });
 
-// ─── Stub del chat IA — visible desde Fase 0 ───────────────────────────────
-// El frontend del médico llamará a este endpoint y mostrará "Próximamente"
-// hasta que AI_ENABLED=true y se conecte el adaptador real de OpenAI.
-app.post('/api/medical/doctor/ai/chat', (_req, res) => {
-  res.status(200).json({
-    success: true,
-    data: {
-      status: 'coming_soon',
-      mensaje: 'El Agente X estará disponible próximamente',
-    },
-  });
-});
-
 import { consultasRouter } from '@/modules/consultas/infrastructure/di';
 import { prisma } from '@/shared/prisma-client';
+
+// ─── Documentación API (Scalar) ──────────────────────────────────────────────
+app.get('/api/medical/openapi.json', (_req, res) => {
+  res.setHeader('Content-Type', 'application/json');
+  res.json(swaggerSpec);
+});
+
+app.get('/docs', (_req, res) => {
+  res.setHeader('Content-Type', 'text/html');
+  res.send(`<!DOCTYPE html>
+<html>
+  <head>
+    <title>Clínica X — Clinical Service API</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <script
+      id="api-reference"
+      data-url="/api/medical/openapi.json"
+    ></script>
+    <script src="https://cdn.jsdelivr.net/npm/@scalar/api-reference"></script>
+  </body>
+</html>`);
+});
 
 // Rutas de negocio — Fase 4 (consultas)
 app.use(

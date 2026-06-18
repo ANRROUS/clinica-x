@@ -4,13 +4,15 @@ import { useState, useEffect } from 'react';
 import { Send, Bot, User, RefreshCw } from 'lucide-react';
 import { useDoctorAuthStore } from '@/store/useDoctorAuthStore';
 import { parseApiDate, formatLima } from '@clinica-x/date-utils';
+import { sendAIChatMessage, getAIChatHistory } from '@/lib/api/doctor.api';
 import type { ConsultaMedicoDTO } from '@/lib/api/types';
 
 interface AIChatProps {
   patientId: string;
   patientName: string;
+  consultationId?: string;
   lastConsultation: ConsultaMedicoDTO | null;
-  onSelectDateFilter: (dateStr: string, consultationId: string) => void;
+  onSelectDateFilter?: (dateStr: string, consultationId: string) => void;
 }
 
 interface ChatMessage {
@@ -21,6 +23,7 @@ interface ChatMessage {
 export default function AIChat({
   patientId,
   patientName,
+  consultationId,
   lastConsultation,
   onSelectDateFilter,
 }: AIChatProps) {
@@ -32,22 +35,40 @@ export default function AIChat({
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    if (lastConsultation) {
-      const dateStr = formatLima(parseApiDate(lastConsultation.fechaInicio), 'dd/MM/yyyy');
-      setMessages([
-        {
-          role: 'assistant',
-          content: `Hola Dr. ${doctorLastName}, la última consulta realizada por el paciente ${patientName} fue el día ${dateStr}`,
-        },
-      ]);
-    } else {
-      setMessages([
-        {
-          role: 'assistant',
-          content: `Buenos días, Doctor/a. El paciente ${patientName} no tiene consultas anteriores registradas. ¿En qué puedo ayudarle a revisar hoy?`,
-        },
-      ]);
-    }
+    const init = async () => {
+      try {
+        const res = await getAIChatHistory(patientId);
+        if (res.success && res.data?.messages && res.data.messages.length > 0) {
+          setMessages(
+            res.data.messages.map((m) => ({
+              role: m.role as 'user' | 'assistant',
+              content: m.content,
+            })),
+          );
+          return;
+        }
+      } catch {
+        // Si falla la carga del historial, mostrar mensaje de bienvenida
+      }
+
+      if (lastConsultation) {
+        const dateStr = formatLima(parseApiDate(lastConsultation.fechaInicio), 'dd/MM/yyyy');
+        setMessages([
+          {
+            role: 'assistant',
+            content: `Hola Dr. ${doctorLastName}, la última consulta realizada por el paciente ${patientName} fue el día ${dateStr}`,
+          },
+        ]);
+      } else {
+        setMessages([
+          {
+            role: 'assistant',
+            content: `Buenos días, Doctor/a. El paciente ${patientName} no tiene consultas anteriores registradas. ¿En qué puedo ayudarle a revisar hoy?`,
+          },
+        ]);
+      }
+    };
+    init();
   }, [patientId, patientName, lastConsultation, doctorLastName]);
 
   const handleSend = async () => {
@@ -58,20 +79,36 @@ export default function AIChat({
     setInput('');
     setLoading(true);
 
-    setTimeout(() => {
+    try {
+      const res = await sendAIChatMessage({
+        patientId,
+        consultationId,
+        message: userMessage.content,
+      });
+
+      if (res.success && res.data?.reply) {
+        setMessages((prev) => [
+          ...prev,
+          { role: 'assistant', content: res.data!.reply },
+        ]);
+      } else {
+        setMessages((prev) => [
+          ...prev,
+          { role: 'assistant', content: 'Lo siento, no pude procesar tu consulta en este momento. Intenta de nuevo.' },
+        ]);
+      }
+    } catch {
       setMessages((prev) => [
         ...prev,
-        {
-          role: 'assistant',
-          content:
-            'El Agente X está en implementación. Pronto podrás consultar el expediente de este paciente mediante lenguaje natural.',
-        },
+        { role: 'assistant', content: 'Error de conexión con el asistente. Verifica que los servicios estén funcionando.' },
       ]);
+    } finally {
       setLoading(false);
-    }, 1500);
+    }
   };
 
   const handleNewChat = () => {
+    setInput('');
     if (lastConsultation) {
       const dateStr = formatLima(parseApiDate(lastConsultation.fechaInicio), 'dd/MM/yyyy');
       setMessages([
@@ -88,23 +125,26 @@ export default function AIChat({
         },
       ]);
     }
-    setInput('');
   };
 
   const renderMessageContent = (msg: ChatMessage, index: number) => {
-    if (index === 0 && lastConsultation) {
+    if (index === 0 && lastConsultation && msg.role === 'assistant') {
       const fecha = parseApiDate(lastConsultation.fechaInicio);
       const dateStrDisplay = formatLima(fecha, 'dd/MM/yyyy');
       const dateStrRaw = formatLima(fecha, 'yyyy-MM-dd');
       return (
         <span className="inline-block">
           Hola Dr. {doctorLastName}, la última consulta realizada por el paciente {patientName} fue el día{' '}
-          <button
-            onClick={() => onSelectDateFilter(dateStrRaw, lastConsultation.id)}
-            className="inline-flex items-center font-semibold text-brand-600 underline hover:text-brand-800 transition-colors mx-1"
-          >
-            {dateStrDisplay}
-          </button>
+          {onSelectDateFilter ? (
+            <button
+              onClick={() => onSelectDateFilter(dateStrRaw, lastConsultation.id)}
+              className="inline-flex items-center font-semibold text-brand-600 underline hover:text-brand-800 transition-colors mx-1"
+            >
+              {dateStrDisplay}
+            </button>
+          ) : (
+            <span className="font-semibold text-brand-600">{dateStrDisplay}</span>
+          )}
         </span>
       );
     }

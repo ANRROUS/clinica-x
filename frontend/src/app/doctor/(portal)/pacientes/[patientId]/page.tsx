@@ -1,18 +1,16 @@
 'use client';
 
 import { useState, useEffect, useMemo } from 'react';
-import { useRouter, useParams, useSearchParams } from 'next/navigation';
+import { useRouter, useParams } from 'next/navigation';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useDoctorAuthStore } from '@/store/useDoctorAuthStore';
-import { getActivePatient, getDoctorPatients, getDoctorSlotDuration } from '@/lib/api/doctor.api';
+import { getActivePatient, getDoctorCalendar, getDoctorSlotDuration } from '@/lib/api/doctor.api';
 import PatientSidebar from '@/components/doctor/patients/PatientSidebar';
 import PatientHeader from '@/components/doctor/patients/PatientHeader';
 import PatientTabs from '@/components/doctor/patients/PatientTabs';
 import ActiveConsultation from '@/components/doctor/patients/consultation/ActiveConsultation';
 import ConsultationHistory from '@/components/doctor/patients/history/ConsultationHistory';
-import type { ConsultaMedicoDTO } from '@/lib/api/types';
-import { nowLima, addMonthsLima, formatLima } from '@clinica-x/date-utils';
-import { parseApiDate } from '@/lib/date-utils';
+import { nowLima, addDaysLima, formatLima, parseApiDate } from '@clinica-x/date-utils';
 
 export default function DoctorPatientDetailPage() {
   const { isAuthenticated } = useDoctorAuthStore();
@@ -22,45 +20,41 @@ export default function DoctorPatientDetailPage() {
   const queryClient = useQueryClient();
 
   const [activeTab, setActiveTab] = useState<'historial' | 'consulta'>('historial');
-  const [activeConsultation, setActiveConsultation] = useState<ConsultaMedicoDTO | null>(null);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [mounted, setMounted] = useState(false);
+
+  // Actualizar 'now' cada segundo para que isActivePatient y el cronómetro sean en tiempo real
+  const [now, setNow] = useState(nowLima);
+  useEffect(() => {
+    const interval = setInterval(() => setNow(nowLima()), 1000);
+    return () => clearInterval(interval);
+  }, []);
 
   useEffect(() => {
     setMounted(true);
   }, []);
 
-  const { data: activeData } = useQuery({
+  const { data: activeData, isLoading: isLoadingActive } = useQuery({
     queryKey: ['doctor-active-patient'],
     queryFn: getActivePatient,
     enabled: isAuthenticated,
   });
 
-  const searchParams = useSearchParams();
-  const fromParam = searchParams.get('from');
-
   const dateRange = useMemo(() => {
     const hoy = nowLima();
-    let desde = addMonthsLima(hoy, -3);
-    if (fromParam) {
-      const fromDate = new Date(fromParam + 'T00:00:00');
-      if (!isNaN(fromDate.getTime()) && fromDate < desde) {
-        desde = fromDate;
-      }
-    }
     return {
-      desde: formatLima(desde, 'yyyy-MM-dd'),
-      hasta: formatLima(hoy, 'yyyy-MM-dd'),
+      desde: formatLima(hoy, 'yyyy-MM-dd'),
+      hasta: formatLima(addDaysLima(hoy, 30), 'yyyy-MM-dd'),
     };
-  }, [fromParam]);
+  }, []);
 
-  const { data: patientsData } = useQuery({
-    queryKey: ['doctor-patients', dateRange],
-    queryFn: () => getDoctorPatients(dateRange),
+  const { data: citasData, isLoading: isLoadingCitas } = useQuery({
+    queryKey: ['doctor-calendar', dateRange],
+    queryFn: () => getDoctorCalendar(dateRange),
     enabled: isAuthenticated,
   });
 
-  const { data: slotDurationData } = useQuery({
+  const { data: slotDurationData, isLoading: isLoadingSlot } = useQuery({
     queryKey: ['doctorSlotDuration'],
     queryFn: async () => {
       const res = await getDoctorSlotDuration();
@@ -71,20 +65,36 @@ export default function DoctorPatientDetailPage() {
   });
   const slotDuration = slotDurationData ?? 30;
 
-  useEffect(() => {
-    if (activeData?.success && activeData.data) {
-      const active = activeData.data;
-      const inicio = parseApiDate(active.fechaInicio);
-      const now = nowLima();
-      const appointmentEnd = new Date(inicio.getTime() + slotDuration * 60000);
-      if (now >= inicio && now <= appointmentEnd) {
-        setActiveConsultation(active);
-        if (active.pacienteId === patientId) {
-          setActiveTab('consulta');
-        }
-      }
+  // Consulta activa del backend solo si está dentro del slot de tiempo
+  const activeConsultation = (() => {
+    if (!activeData?.success || !activeData.data) return null;
+    const active = activeData.data;
+    const inicio = parseApiDate(active.fechaInicio);
+    const appointmentEnd = new Date(inicio.getTime() + slotDuration * 60000);
+    if (now >= inicio && now <= appointmentEnd) {
+      return active;
     }
-  }, [activeData, patientId, slotDuration]);
+    return null;
+  })();
+
+  // Filtrar citas completadas para no mostrarlas como activas
+  const citas = (citasData?.data || []).filter((c) => c.estado !== 'COMPLETADA');
+  const currentCita = citas.find((c) => c.pacienteId === patientId);
+
+  // El paciente es "activo" si su cita actual está dentro del slot de tiempo
+  const isActivePatient = (() => {
+    if (!currentCita || !slotDuration) return false;
+    const inicio = parseApiDate(currentCita.fechaHora);
+    const fin = new Date(inicio.getTime() + slotDuration * 60000);
+    return now >= inicio && now <= fin;
+  })();
+
+  // Auto-abrir tab de consulta cuando se activa el paciente
+  useEffect(() => {
+    if (isActivePatient) {
+      setActiveTab('consulta');
+    }
+  }, [isActivePatient]);
 
   useEffect(() => {
     if (!isAuthenticated) {
@@ -96,31 +106,37 @@ export default function DoctorPatientDetailPage() {
     return <div className="flex h-full" />;
   }
 
-  const patients = patientsData?.data || [];
-  const currentPatient = patients.find((c) => c.pacienteId === patientId);
-
-  const isActivePatient = activeConsultation?.pacienteId === patientId;
-
-  const patientName = currentPatient
-    ? `${currentPatient.pacienteNombre || ''} ${currentPatient.pacienteApellido || ''}`.trim()
+  const patientName = currentCita
+    ? `${currentCita.pacienteNombre || ''} ${currentCita.pacienteApellido || ''}`.trim()
     : `Paciente ${patientId.slice(0, 8)}...`;
 
+  const isLoading = isLoadingActive || isLoadingCitas || isLoadingSlot;
+
   const sidebarProps = {
-    activeConsultation,
-    patients,
+    citas,
+    slotDuration,
     onSelectPatient: (id: string) => router.push(`/doctor/pacientes/${id}`),
     collapsed: sidebarCollapsed,
     onToggleCollapse: () => setSidebarCollapsed((prev) => !prev),
+    isLoading,
   };
 
   const content = (
     <div className="flex flex-1 flex-col overflow-hidden">
-      <PatientHeader patientId={patientId} patientName={patientName} />
+      <PatientHeader
+        patientId={patientId}
+        patientName={patientName}
+        isActivePatient={isActivePatient}
+        fechaHora={currentCita?.fechaHora}
+        slotDuration={slotDuration}
+        isLoading={isLoading}
+      />
 
       <PatientTabs
         activeTab={activeTab}
         onTabChange={setActiveTab}
         isActivePatient={isActivePatient}
+        isLoading={isLoading}
       />
 
       <div className="flex-1 overflow-y-auto bg-gray-50 p-6">
@@ -130,14 +146,19 @@ export default function DoctorPatientDetailPage() {
             patientId={patientId}
             patientName={patientName || undefined}
             onConsultationFinalized={() => {
-              setActiveConsultation(null);
               setActiveTab('historial');
               queryClient.invalidateQueries({ queryKey: ['doctor-active-patient'] });
               queryClient.invalidateQueries({ queryKey: ['doctor-calendar'] });
             }}
+            isLoading={isLoading}
           />
         ) : (
-          <ConsultationHistory patientId={patientId} />
+          <ConsultationHistory
+            patientId={patientId}
+            isActivePatient={isActivePatient}
+            consultationId={activeConsultation?.id || undefined}
+            isLoading={isLoading}
+          />
         )}
       </div>
     </div>

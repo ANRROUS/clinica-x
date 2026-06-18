@@ -8,6 +8,7 @@ import { z } from 'zod';
 import { toast } from 'sonner';
 import { Shield, Mail, Lock } from 'lucide-react';
 import { login } from '@/lib/api/auth.api';
+import { getErrorMessage } from '@/lib/api/error-utils';
 import { useAdminAuthStore } from '@/store/useAdminAuthStore';
 
 const adminLoginSchema = z.object({
@@ -46,8 +47,8 @@ export default function AdminLoginForm() {
       } else {
         toast.error(res.error?.mensaje || 'Credenciales inválidas');
       }
-    } catch {
-      toast.error('Error de conexión. Intenta de nuevo.');
+    } catch (err) {
+      toast.error(getErrorMessage(err));
     } finally {
       setLoading(false);
     }

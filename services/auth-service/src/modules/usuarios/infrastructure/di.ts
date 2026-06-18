@@ -57,6 +57,8 @@ const usuariosController = new UsuariosController(
   listarUsuariosPorIdsUseCase,
   solicitarRecuperacionUseCase,
   restablecerContrasenaUseCase,
+  usuarioRepository,
+  hashService,
 );
 
 // ─── Router ─────────────────────────────────────────────────────────────────

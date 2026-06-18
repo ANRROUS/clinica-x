@@ -9,7 +9,7 @@ import { z } from 'zod';
 import { toast } from 'sonner';
 import { Lock, Eye, EyeOff, X } from 'lucide-react';
 import { resetPassword } from '@/lib/api/auth.api';
-import axios from 'axios';
+import { getErrorMessage } from '@/lib/api/error-utils';
 
 const resetPasswordSchema = z
   .object({
@@ -52,18 +52,8 @@ export default function ResetPasswordForm() {
       } else {
         toast.error(res.error?.mensaje || 'Error al restablecer la contraseña');
       }
-    } catch (error) {
-      if (axios.isAxiosError(error)) {
-        const status = error.response?.status;
-        const msg = error.response?.data?.error?.mensaje;
-        if (status === 400 && msg?.toLowerCase().includes('expirado')) {
-          toast.error('El enlace ha expirado. Solicita uno nuevo.');
-        } else {
-          toast.error(msg || 'Error de conexión. Intenta de nuevo.');
-        }
-      } else {
-        toast.error('Error de conexión. Intenta de nuevo.');
-      }
+    } catch (err) {
+      toast.error(getErrorMessage(err));
     } finally {
       setLoading(false);
     }

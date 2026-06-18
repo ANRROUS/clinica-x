@@ -4,8 +4,10 @@ import { useRef, useState, useCallback } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { Loader2, FileText, Upload, FlaskConical, Pill, CheckCircle, Eye } from 'lucide-react';
 import { toast } from 'sonner';
+import UploadAnimation from '@/components/shared/UploadAnimation';
 import { useAuthStore } from '@/store/useAuthStore';
 import { getPatientHistory, uploadFile, uploadAnalysisResult, getOcrStatus } from '@/lib/api/medical.api';
+import { getErrorMessage } from '@/lib/api/error-utils';
 import type { ConsultaDTO, AnalysisOrderDTO, MedicationDTO } from '@/lib/api/types';
 import { parseApiDate, formatLima, nowLima } from '@clinica-x/date-utils';
 import AnalysisResultViewer from './AnalysisResultViewer';
@@ -100,14 +102,14 @@ export default function TreatmentTab() {
       }
       const uploadRes = await uploadFile(file, 'clinical-service', user.id);
       if (!uploadRes.success || !uploadRes.data?.id) {
-        toast.error('Error al subir el archivo');
+        toast.error(uploadRes.error?.mensaje || 'Error al subir el archivo');
         setUploadingId(null);
         return;
       }
 
       const associateRes = await uploadAnalysisResult(selectedOrder.id, uploadRes.data.id);
       if (!associateRes.success) {
-        toast.error('Error al asociar resultado');
+        toast.error(associateRes.error?.mensaje || 'Error al asociar resultado');
         setUploadingId(null);
         return;
       }
@@ -116,8 +118,8 @@ export default function TreatmentTab() {
       setUploadingId(null);
       setSelectedOrder(null);
       queryClient.invalidateQueries({ queryKey: ['patient-history'] });
-    } catch {
-      toast.error('Error al subir el archivo');
+    } catch (err) {
+      toast.error(getErrorMessage(err));
       setUploadingId(null);
     }
 
@@ -150,14 +152,14 @@ export default function TreatmentTab() {
           Análisis indicados por tus doctores. Puedes subir el PDF de tus resultados para completarlos.
         </p>
 
-        {allAnalysisOrders.length === 0 ? (
+        {allAnalysisOrders.filter((item) => item.order.estado !== 'COMPLETADA').length === 0 ? (
           <div className="mt-6 flex flex-col items-center gap-3 rounded-xl border-2 border-dashed border-gray-300 py-10">
             <FlaskConical className="h-10 w-10 text-gray-300" />
             <p className="text-sm text-gray-500">No tienes análisis indicados</p>
           </div>
         ) : (
           <div className="mt-6 grid gap-6 sm:grid-cols-2">
-            {allAnalysisOrders.map((item, idx) => {
+            {allAnalysisOrders.filter((item) => item.order.estado !== 'COMPLETADA').map((item, idx) => {
               const order = item.order;
               const isUploading = uploadingId === order.id;
               const isCompleted = order.estado === 'COMPLETADA';
@@ -187,26 +189,22 @@ export default function TreatmentTab() {
 
                   <div className="mt-4 flex gap-3">
                     {!isCompleted ? (
-                      <button
-                        onClick={() => {
-                          setSelectedOrder(order);
-                          fileInputRef.current?.click();
-                        }}
-                        disabled={isUploading}
-                        className="flex items-center gap-2 rounded-lg bg-[#008585] px-6 py-2 text-sm font-medium text-white hover:bg-[#007070] transition disabled:opacity-50"
-                      >
-                        {isUploading ? (
-                          <>
-                            <Loader2 className="h-4 w-4 animate-spin" />
-                            Subiendo...
-                          </>
-                        ) : (
-                          <>
-                            <Upload className="h-4 w-4" />
-                            Subir PDF
-                          </>
-                        )}
-                      </button>
+                      isUploading ? (
+                        <div className="flex flex-1 items-center justify-center py-4">
+                          <UploadAnimation label="Subiendo PDF..." />
+                        </div>
+                      ) : (
+                        <button
+                          onClick={() => {
+                            setSelectedOrder(order);
+                            fileInputRef.current?.click();
+                          }}
+                          className="flex items-center gap-2 rounded-lg bg-[#008585] px-6 py-2 text-sm font-medium text-white hover:bg-[#007070] transition"
+                        >
+                          <Upload className="h-4 w-4" />
+                          Subir PDF
+                        </button>
+                      )
                     ) : (
                       <button
                         onClick={() => {

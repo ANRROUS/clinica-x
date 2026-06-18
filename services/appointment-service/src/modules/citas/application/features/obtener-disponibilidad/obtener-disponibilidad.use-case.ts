@@ -15,7 +15,7 @@ import type {
 } from '@/modules/citas/domain/ports/in/citas.port';
 import type { ICitaRepository } from '@/modules/citas/domain/ports/out/cita.repository.port';
 import type { IMedicoConsultaPort } from '@/modules/citas/domain/ports/out/medico-consulta.port';
-import { getLimaDayOfWeek, startOfDayLima, endOfDayLima, buildLimaDate, formatLima } from '@clinica-x/date-utils';
+import { getLimaDayOfWeek, startOfDayLima, endOfDayLima, buildLimaDate, formatLima, nowLima } from '@clinica-x/date-utils';
 
 export class ObtenerDisponibilidadUseCase implements IObtenerDisponibilidadPort {
   constructor(
@@ -32,6 +32,8 @@ export class ObtenerDisponibilidadUseCase implements IObtenerDisponibilidadPort 
     const diaSemana = getLimaDayOfWeek(dto.fecha); // 1=Lunes ... 7=Domingo
     const horarios = await this.medicoReader.listarHorarios(dto.medicoId, diaSemana);
 
+    const ahora = nowLima();
+
     // Obtener citas existentes para esa fecha
     const inicioDia = startOfDayLima(dto.fecha);
     const finDia = endOfDayLima(dto.fecha);
@@ -47,7 +49,8 @@ export class ObtenerDisponibilidadUseCase implements IObtenerDisponibilidadPort 
         const slotEnd = new Date(slotStart.getTime() + h.duracionSlot * 60 * 1000);
         if (slotEnd > slotEndMax) break;
 
-        const disponible = !this.estaOcupado(slotStart, slotEnd, citas, h.duracionSlot);
+        const enPasado = slotStart <= ahora;
+        const disponible = !enPasado && !this.estaOcupado(slotStart, slotEnd, citas, h.duracionSlot);
         slots.push({
           horaInicio: this.formatTime(slotStart),
           horaFin: this.formatTime(slotEnd),

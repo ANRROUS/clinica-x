@@ -83,12 +83,38 @@ export class AuthServiceClient implements IAuthServiceClient {
       password?: string;
     },
   ): Promise<void> {
-    // Nota: auth-service no expone PUT /api/auth/me/:id aún.
-    // En desarrollo local, hacemos una llamada interna simulada.
-    // Para producción, auth-service debería exponer un endpoint de admin.
-    logger.warn({ usuarioId, dto }, 'actualizarUsuario en auth-service: stub — se necesita endpoint admin en auth-service');
-    // Stub: no hacemos nada por ahora. En una implementación real,
-    // se llamaría a un endpoint tipo PUT /api/admin/users/:id
+    const url = `${this.baseUrl}/api/auth/internal/users/${encodeURIComponent(usuarioId)}`;
+    logger.debug({ url, usuarioId }, 'Llamando a auth-service para actualizar usuario');
+
+    const body: Record<string, unknown> = {};
+    if (dto.nombre) body.nombre = dto.nombre;
+    if (dto.apellido) body.apellido = dto.apellido;
+    if (dto.dni) body.dni = dto.dni;
+    if (dto.email) body.email = dto.email;
+    if (dto.telefono !== undefined) body.telefono = dto.telefono;
+    if (dto.password) body.password = dto.password;
+
+    const response = await fetch(url, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Internal-Api-Key': env.INTERNAL_API_KEY,
+      },
+      body: JSON.stringify(body),
+    });
+
+    if (!response.ok) {
+      let errorBody: any;
+      try {
+        errorBody = await response.json();
+      } catch {
+        errorBody = null;
+      }
+      const code = errorBody?.error?.codigo || 'AUTH_SERVICE_ERROR';
+      const message = errorBody?.error?.mensaje || 'Error desconocido del auth-service';
+      logger.error({ status: response.status, code, message }, 'auth-service respondió error al actualizar usuario');
+      throw new AuthServiceClientError(response.status, code, message);
+    }
   }
 
   async obtenerUsuariosPorIds(ids: string[]): Promise<Array<{

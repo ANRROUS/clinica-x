@@ -9,6 +9,7 @@ import { z } from 'zod';
 import { toast } from 'sonner';
 import { Eye, EyeOff, Mail, Lock, CreditCard, User, Phone } from 'lucide-react';
 import { register as registerApi } from '@/lib/api/auth.api';
+import { getErrorMessage } from '@/lib/api/error-utils';
 import { useAuthStore } from '@/store/useAuthStore';
 
 const registerSchema = z
@@ -72,8 +73,8 @@ export default function RegisterFormContent({ onSuccess }: RegisterFormContentPr
         const errorMsg = res.error?.mensaje || 'Error al crear cuenta';
         toast.error(errorMsg);
       }
-    } catch {
-      toast.error('Error de conexión. Intenta de nuevo.');
+    } catch (err) {
+      toast.error(getErrorMessage(err));
     } finally {
       setLoading(false);
     }

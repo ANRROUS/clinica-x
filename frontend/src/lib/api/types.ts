@@ -221,6 +221,22 @@ export interface CrearMedicoDTO {
   schedules: HorarioMedicoDTO[];
 }
 
+export interface AiChatMessageDTO {
+  id: string;
+  pacienteId: string;
+  medicoId: string;
+  consultaId: string | null;
+  role: 'user' | 'assistant';
+  content: string;
+  toolUsed: string | null;
+  creadoEn: string;
+}
+
+export interface AiChatResponseDTO {
+  reply: string;
+  toolUsed?: string;
+}
+
 export interface ActualizarMedicoDTO {
   nombre?: string;
   apellido?: string;
