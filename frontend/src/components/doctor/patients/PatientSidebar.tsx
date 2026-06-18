@@ -110,7 +110,13 @@ export default function PatientSidebar({
         </div>
         <div className="flex-1 min-w-0">
           <span className="truncate block">{p.name}</span>
-          {showTime && p.fechaHora && (
+          {isActive && (
+            <span className="text-xs text-accent-600 font-semibold flex items-center gap-1">
+              <span className="h-2 w-2 rounded-full bg-accent-500 animate-pulse" />
+              En consulta
+            </span>
+          )}
+          {!isActive && showTime && p.fechaHora && (
             <span className="text-xs text-gray-400 flex items-center gap-1">
               <Clock className="h-3 w-3" />
               {p.fechaHora.slice(11, 16)}
@@ -192,7 +198,6 @@ export default function PatientSidebar({
               fechaHora: activeCita.fechaHora,
             }}
             isActive
-            showTime
           />
         ) : (
           <div className="rounded-lg border border-dashed border-white/40 bg-white/10 px-3 py-3">

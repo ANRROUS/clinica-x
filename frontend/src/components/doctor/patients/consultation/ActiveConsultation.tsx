@@ -68,12 +68,6 @@ export default function ActiveConsultation({
   const finalizeMutation = useMutation({
     mutationFn: ({ id, data }: { id: string; data: { diagnostico: string; analysisOrders: typeof analysisOrders; medications: typeof medications } }) =>
       finalizeConsultation(id, data),
-    onSuccess: () => {
-      toast.success('Consulta finalizada correctamente');
-      resetStore();
-      onConsultationFinalized();
-    },
-    onError: (err) => toast.error(getErrorMessage(err)),
   });
 
   if (!consultation) {
@@ -128,17 +122,24 @@ export default function ActiveConsultation({
 
       {showFinalizeModal && (
         <FinalizeConsultationModal
-          onConfirm={() => {
+          onConfirm={async () => {
             if (!diagnosis.trim()) {
               toast.error('El diagnóstico no puede estar vacío');
               return;
             }
             const activeId = consultation.id;
-            finalizeMutation.mutate({
-              id: activeId,
-              data: { diagnostico: diagnosis, analysisOrders, medications },
-            });
-            setShowFinalizeModal(false);
+            try {
+              await finalizeMutation.mutateAsync({
+                id: activeId,
+                data: { diagnostico: diagnosis, analysisOrders, medications },
+              });
+              setShowFinalizeModal(false);
+              toast.success('Consulta finalizada correctamente');
+              resetStore();
+              onConsultationFinalized();
+            } catch (err) {
+              toast.error(getErrorMessage(err));
+            }
           }}
           onCancel={() => setShowFinalizeModal(false)}
           loading={finalizeMutation.isPending}

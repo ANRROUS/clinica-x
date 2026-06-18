@@ -1,5 +1,6 @@
 'use client';
 
+import { createPortal } from 'react-dom';
 import { AlertTriangle } from 'lucide-react';
 
 interface FinalizeConsultationModalProps {
@@ -13,8 +14,10 @@ export default function FinalizeConsultationModal({
   onCancel,
   loading,
 }: FinalizeConsultationModalProps) {
-  return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+  if (typeof document === 'undefined') return null;
+
+  return createPortal(
+    <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/50">
       <div className="mx-4 w-full max-w-md rounded-xl bg-white p-6 shadow-xl">
         <div className="mb-4 flex items-center gap-3">
           <div className="flex h-10 w-10 items-center justify-center rounded-full bg-amber-100">
@@ -44,6 +47,7 @@ export default function FinalizeConsultationModal({
           </button>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }
