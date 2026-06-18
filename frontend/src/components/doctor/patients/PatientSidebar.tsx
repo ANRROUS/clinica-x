@@ -3,6 +3,7 @@
 import { useRouter, usePathname } from 'next/navigation';
 import { useMemo } from 'react';
 import { ChevronLeft, ChevronRight, Users, Clock } from 'lucide-react';
+import { PatientSidebarSkeleton } from '@/components/shared/Skeleton';
 import type { CitaCalendarioDTO } from '@/lib/api/types';
 import { parseApiDate, nowLima, isSameDayLima } from '@clinica-x/date-utils';
 
@@ -12,6 +13,7 @@ interface PatientSidebarProps {
   onSelectPatient: (id: string) => void;
   collapsed?: boolean;
   onToggleCollapse?: () => void;
+  isLoading?: boolean;
 }
 
 export default function PatientSidebar({
@@ -20,6 +22,7 @@ export default function PatientSidebar({
   onSelectPatient,
   collapsed = false,
   onToggleCollapse,
+  isLoading = false,
 }: PatientSidebarProps) {
   const router = useRouter();
   const pathname = usePathname();
@@ -127,6 +130,10 @@ export default function PatientSidebar({
     );
   };
 
+  if (isLoading && !collapsed) {
+    return <PatientSidebarSkeleton />;
+  }
+
   if (collapsed) {
     return (
       <aside className="flex h-full w-14 flex-col items-center bg-brand-500 py-4">
@@ -207,7 +214,7 @@ export default function PatientSidebar({
       </div>
 
       {/* Para hoy */}
-      <div className="px-4 py-3">
+      <div className="px-4 py-2">
         <p className="text-xs font-semibold uppercase text-white/90">Para hoy</p>
         {todayFuture.length > 0 ? (
           <div className="mt-2 space-y-1">
@@ -231,7 +238,7 @@ export default function PatientSidebar({
       </div>
 
       {/* General */}
-      <div className="flex-1 overflow-y-auto px-4 py-3">
+      <div className="flex-1 overflow-y-auto px-4 py-2">
         <p className="text-xs font-semibold uppercase text-white/90 mb-2">General</p>
         {generalList.length > 0 ? (
           <div className="space-y-1">

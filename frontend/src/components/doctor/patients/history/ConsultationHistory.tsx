@@ -15,9 +15,10 @@ interface ConsultationHistoryProps {
   patientId: string;
   isActivePatient: boolean;
   consultationId?: string;
+  isLoading?: boolean;
 }
 
-export default function ConsultationHistory({ patientId, isActivePatient, consultationId }: ConsultationHistoryProps) {
+export default function ConsultationHistory({ patientId, isActivePatient, consultationId, isLoading: isLoadingProp = false }: ConsultationHistoryProps) {
   const { isAuthenticated } = useDoctorAuthStore();
   const [selectedConsultationId, setSelectedConsultationId] = useState<string | null>(null);
   const [filterDate, setFilterDate] = useState<string>('');
@@ -28,11 +29,13 @@ export default function ConsultationHistory({ patientId, isActivePatient, consul
     hasta: formatLima(hoy, 'yyyy-MM-dd'),
   };
 
-  const { data: patientsData, isLoading } = useQuery({
+  const { data: patientsData, isLoading: isLoadingPatients } = useQuery({
     queryKey: ['doctor-patients', dateRange],
     queryFn: () => getDoctorPatients(dateRange),
     enabled: isAuthenticated,
   });
+
+  const isLoading = isLoadingProp || isLoadingPatients;
 
   const patients = patientsData?.data || [];
   const patientConsultations = patients.filter((c) => c.pacienteId === patientId);

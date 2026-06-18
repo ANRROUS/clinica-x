@@ -34,7 +34,7 @@ export default function DoctorPatientDetailPage() {
     setMounted(true);
   }, []);
 
-  const { data: activeData } = useQuery({
+  const { data: activeData, isLoading: isLoadingActive } = useQuery({
     queryKey: ['doctor-active-patient'],
     queryFn: getActivePatient,
     enabled: isAuthenticated,
@@ -48,13 +48,13 @@ export default function DoctorPatientDetailPage() {
     };
   }, []);
 
-  const { data: citasData } = useQuery({
+  const { data: citasData, isLoading: isLoadingCitas } = useQuery({
     queryKey: ['doctor-calendar', dateRange],
     queryFn: () => getDoctorCalendar(dateRange),
     enabled: isAuthenticated,
   });
 
-  const { data: slotDurationData } = useQuery({
+  const { data: slotDurationData, isLoading: isLoadingSlot } = useQuery({
     queryKey: ['doctorSlotDuration'],
     queryFn: async () => {
       const res = await getDoctorSlotDuration();
@@ -110,12 +110,15 @@ export default function DoctorPatientDetailPage() {
     ? `${currentCita.pacienteNombre || ''} ${currentCita.pacienteApellido || ''}`.trim()
     : `Paciente ${patientId.slice(0, 8)}...`;
 
+  const isLoading = isLoadingActive || isLoadingCitas || isLoadingSlot;
+
   const sidebarProps = {
     citas,
     slotDuration,
     onSelectPatient: (id: string) => router.push(`/doctor/pacientes/${id}`),
     collapsed: sidebarCollapsed,
     onToggleCollapse: () => setSidebarCollapsed((prev) => !prev),
+    isLoading,
   };
 
   const content = (
@@ -126,12 +129,14 @@ export default function DoctorPatientDetailPage() {
         isActivePatient={isActivePatient}
         fechaHora={currentCita?.fechaHora}
         slotDuration={slotDuration}
+        isLoading={isLoading}
       />
 
       <PatientTabs
         activeTab={activeTab}
         onTabChange={setActiveTab}
         isActivePatient={isActivePatient}
+        isLoading={isLoading}
       />
 
       <div className="flex-1 overflow-y-auto bg-gray-50 p-6">
@@ -145,12 +150,14 @@ export default function DoctorPatientDetailPage() {
               queryClient.invalidateQueries({ queryKey: ['doctor-active-patient'] });
               queryClient.invalidateQueries({ queryKey: ['doctor-calendar'] });
             }}
+            isLoading={isLoading}
           />
         ) : (
           <ConsultationHistory
             patientId={patientId}
             isActivePatient={isActivePatient}
             consultationId={activeConsultation?.id || undefined}
+            isLoading={isLoading}
           />
         )}
       </div>
