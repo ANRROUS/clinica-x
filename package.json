@@ -39,7 +39,9 @@
     "test:selenium:admin:login": "pnpm --filter @clinica-x/tests-selenium test:admin:login",
     "test:selenium:admin:dashboard": "pnpm --filter @clinica-x/tests-selenium test:admin:dashboard",
     "test:selenium:admin:agregar-doctor": "pnpm --filter @clinica-x/tests-selenium test:admin:agregar-doctor",
-    "test:selenium:admin:editar-doctor": "pnpm --filter @clinica-x/tests-selenium test:admin:editar-doctor"
+    "test:selenium:admin:editar-doctor": "pnpm --filter @clinica-x/tests-selenium test:admin:editar-doctor",
+    "test:selenium:admin:desactivar-doctor": "pnpm --filter @clinica-x/tests-selenium test:admin:desactivar-doctor",
+    "test:selenium:admin:dni-duplicado": "pnpm --filter @clinica-x/tests-selenium test:admin:dni-duplicado"
   },
   "devDependencies": {
     "@types/node": "^20.11.0",

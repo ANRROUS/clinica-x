@@ -1,5 +1,6 @@
 export const CREDENTIALS = {
   admin: {
+    dni: '00000000',
     email: 'admin@clinicax.com',
     password: 'Admin123!',
   },

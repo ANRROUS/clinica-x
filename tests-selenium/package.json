@@ -14,7 +14,9 @@
     "test:admin:login": "jest 3.1-login",
     "test:admin:dashboard": "jest 3.2-dashboard-kpis",
     "test:admin:agregar-doctor": "jest 3.3-agregar-doctor",
-    "test:admin:editar-doctor": "jest 3.4-editar-doctor"
+    "test:admin:editar-doctor": "jest 3.4-editar-doctor",
+    "test:admin:desactivar-doctor": "jest 3.5-desactivar-doctor",
+    "test:admin:dni-duplicado": "jest 3.6-agregar-doctor-dni-duplicado"
   },
   "dependencies": {
     "selenium-webdriver": "^4.20.0",

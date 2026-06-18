@@ -17,7 +17,7 @@ describe('3.2 — Verificar dashboard con KPIs', () => {
     await loginPage.navigate();
     await loginPage.login(CREDENTIALS.admin.email, CREDENTIALS.admin.password);
     await loginPage.waitForRedirect();
-    await loginPage.sleep(2000); // dashboard cargado tras login
+    await loginPage.sleep(4000); // [captura] dashboard cargado tras login — reducir a 2000ms
   });
 
   afterAll(async () => {
@@ -26,7 +26,7 @@ describe('3.2 — Verificar dashboard con KPIs', () => {
 
   test('Existen 4 KPIs y al menos una fila de médicos en la tabla', async () => {
     await dashboardPage.waitForLoad();
-    await dashboardPage.sleep(2000); // tabla y KPIs visibles
+    await dashboardPage.sleep(4000); // [captura] tabla y KPIs visibles — reducir a 2000ms
 
     const kpiCards = await dashboardPage.getKpiCards();
     expect(kpiCards.length).toBe(4);

@@ -27,50 +27,51 @@ describe('3.4 — Editar doctor: nombre, teléfono y horario', () => {
     await driver.quit();
   });
 
-  test('Editar doctor existente → redirect a /admin/dashboard', async () => {
+  test('Editar doctor existente → formulario modal → guardar cambios', async () => {
     await dashboardPage.waitForLoad();
-    await dashboardPage.sleep(1500); // dashboard visible
+    await dashboardPage.sleep(4000); // [captura] dashboard visible — reducir a 1500ms
 
-    // Si "Doctor Test Selenium" (creado en 3.3) existe, se edita ese.
-    // Si no (porque 3.3 falló por la inestabilidad de microservicios),
-    // se cae al primer médico de la tabla, como contempla el plan original.
+    // Tras el pull, el botón editar ya no navega a /edit sino que abre un modal.
+    // Se intenta editar "Doctor Test Selenium" (si 3.3 lo creó); si no existe,
+    // se edita el primer médico de la tabla.
     try {
       await dashboardPage.clickEditarDoctorByName('Doctor Test Selenium');
     } catch {
       await dashboardPage.clickEditarPrimerDoctor();
     }
 
-    await formPage.waitForUrl('/edit', 8000);
+    // El modal carga el formulario (puede mostrar skeleton mientras hace fetch del doctor).
     await formPage.waitForLoad();
-    await formPage.sleep(2000); // formulario con datos pre-cargados visible
+    await formPage.sleep(4000); // [captura] modal con formulario pre-cargado — reducir a 2000ms
 
     await formPage.fillNombre('Doctor Test');
     await formPage.fillApellido('Actualizado');
     await formPage.fillTelefono('912345678');
-    // El formulario de edición no siempre precarga DNI/email válidos desde la
-    // BD (bug conocido del admin). Se rellenan solo si vienen vacíos/inválidos,
-    // para llegar al submit real y no quedar bloqueados por validación del navegador.
+    // Por si acaso el precargado de DNI/email falla (el pull lo arreglará, pero se mantiene como red de seguridad).
     await formPage.ensureValidDni();
     await formPage.ensureValidEmail();
-    await formPage.sleep(1500); // datos actualizados
+    await formPage.sleep(4000); // [captura] datos actualizados en el formulario — reducir a 1500ms
 
-    // Segunda columna del grid (día siguiente), primera fila de horario del turno actual del doctor.
+    // Marcar celda adicional: martes (dayIndex=1), primera fila del turno del doctor.
     await formPage.clickHorarioCell(1, 0);
-    await formPage.sleep(1000); // celda adicional marcada
+    await formPage.sleep(4000); // [captura] celda de horario marcada — reducir a 1000ms
 
     await formPage.clickGuardarCambios();
 
+    // El éxito se detecta por el cierre del modal (input[name="nombre"] desaparece del DOM).
+    // Si tras 15s sigue visible, la edición falló — se captura el toast y se falla el test.
     try {
-      await formPage.waitForUrl('/admin/dashboard', 15000);
+      await formPage.waitForFormHidden();
     } catch {
       const toastMsg = await formPage.getToastMessage();
       throw new Error(
-        `No se completó la edición del doctor. Mensaje real del sistema: "${toastMsg ?? '(sin toast detectado)'}". ` +
+        `No se completó la edición del doctor (modal no se cerró). ` +
+        `Mensaje real del sistema: "${toastMsg ?? '(sin toast detectado)'}". ` +
         'Puede reflejar una falla real de los microservicios de administración, no un error del test.',
       );
     }
 
-    await formPage.sleep(1500); // dashboard cargado con los cambios
+    await formPage.sleep(4000); // [captura] dashboard con cambios guardados — reducir a 1500ms
     const url = await driver.getCurrentUrl();
     expect(url).toContain('/admin/dashboard');
   });

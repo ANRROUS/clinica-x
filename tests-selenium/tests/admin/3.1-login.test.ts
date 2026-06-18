@@ -18,13 +18,13 @@ describe('3.1 — Login de admin', () => {
 
   test('Login con email + password → redirect a /admin/dashboard', async () => {
     await loginPage.navigate();
-    await loginPage.sleep(2000); // formulario vacío visible
+    await loginPage.sleep(4000); // [captura] formulario vacío visible — reducir a 1500ms en ejecución normal
 
     await loginPage.login(CREDENTIALS.admin.email, CREDENTIALS.admin.password);
-    await loginPage.sleep(2000); // formulario relleno antes de submit
+    await loginPage.sleep(4000); // [captura] formulario relleno antes de submit — reducir a 1500ms
 
     await loginPage.waitForRedirect();
-    await loginPage.sleep(2000); // dashboard cargado
+    await loginPage.sleep(4000); // [captura] dashboard cargado tras login — reducir a 2000ms
 
     const url = await driver.getCurrentUrl();
     expect(url).toContain('/admin/dashboard');
