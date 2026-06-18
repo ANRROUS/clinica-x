@@ -7,7 +7,7 @@ WORKDIR /workspace
 
 RUN corepack enable && corepack prepare pnpm@8.15.0 --activate
 
-COPY pnpm-workspace.yaml package.json tsconfig.base.json ./
+COPY pnpm-workspace.yaml pnpm-lock.yaml package.json tsconfig.base.json ./
 COPY packages ./packages
 COPY services/appointment-service ./services/appointment-service
 
