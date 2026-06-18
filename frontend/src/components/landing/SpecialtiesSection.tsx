@@ -1,6 +1,5 @@
 "use client";
 
-import Link from 'next/link';
 import { Heart, Baby, Smile, Brain, Bone } from 'lucide-react';
 
 const specialties = [
@@ -51,19 +50,15 @@ export default function SpecialtiesSection() {
 
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {specialties.map((s) => (
-            <Link
+            <div
               key={s.title}
-              href="/register"
-              onClick={() => {
-                sessionStorage.setItem('scrollToSpecialties', '1');
-              }}
               className="flex flex-col items-center rounded-xl border border-gray-100 border-t-[8px] bg-white p-8 text-center shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-md"
               style={{ borderTopColor: s.color }}
             >
               <s.icon className="h-10 w-10" style={{ color: s.color }} />
               <h3 className="mt-4 text-base font-bold text-gray-900">{s.title}</h3>
               <p className="mt-2 text-xs leading-relaxed text-gray-500">{s.description}</p>
-            </Link>
+            </div>
           ))}
         </div>
       </div>
