@@ -3,6 +3,7 @@
 import { useRouter, usePathname } from 'next/navigation';
 import { useMemo } from 'react';
 import { ChevronLeft, ChevronRight, Users, Clock } from 'lucide-react';
+import { PatientSidebarSkeleton } from '@/components/shared/Skeleton';
 import type { CitaCalendarioDTO } from '@/lib/api/types';
 import { parseApiDate, nowLima, isSameDayLima } from '@clinica-x/date-utils';
 
@@ -12,6 +13,7 @@ interface PatientSidebarProps {
   onSelectPatient: (id: string) => void;
   collapsed?: boolean;
   onToggleCollapse?: () => void;
+  isLoading?: boolean;
 }
 
 export default function PatientSidebar({
@@ -20,6 +22,7 @@ export default function PatientSidebar({
   onSelectPatient,
   collapsed = false,
   onToggleCollapse,
+  isLoading = false,
 }: PatientSidebarProps) {
   const router = useRouter();
   const pathname = usePathname();
@@ -110,7 +113,13 @@ export default function PatientSidebar({
         </div>
         <div className="flex-1 min-w-0">
           <span className="truncate block">{p.name}</span>
-          {showTime && p.fechaHora && (
+          {isActive && (
+            <span className="text-xs text-accent-600 font-semibold flex items-center gap-1">
+              <span className="h-2 w-2 rounded-full bg-accent-500 animate-pulse" />
+              En consulta
+            </span>
+          )}
+          {!isActive && showTime && p.fechaHora && (
             <span className="text-xs text-gray-400 flex items-center gap-1">
               <Clock className="h-3 w-3" />
               {p.fechaHora.slice(11, 16)}
@@ -120,6 +129,10 @@ export default function PatientSidebar({
       </button>
     );
   };
+
+  if (isLoading && !collapsed) {
+    return <PatientSidebarSkeleton />;
+  }
 
   if (collapsed) {
     return (
@@ -192,7 +205,6 @@ export default function PatientSidebar({
               fechaHora: activeCita.fechaHora,
             }}
             isActive
-            showTime
           />
         ) : (
           <div className="rounded-lg border border-dashed border-white/40 bg-white/10 px-3 py-3">
@@ -202,7 +214,7 @@ export default function PatientSidebar({
       </div>
 
       {/* Para hoy */}
-      <div className="px-4 py-3">
+      <div className="px-4 py-2">
         <p className="text-xs font-semibold uppercase text-white/90">Para hoy</p>
         {todayFuture.length > 0 ? (
           <div className="mt-2 space-y-1">
@@ -226,7 +238,7 @@ export default function PatientSidebar({
       </div>
 
       {/* General */}
-      <div className="flex-1 overflow-y-auto px-4 py-3">
+      <div className="flex-1 overflow-y-auto px-4 py-2">
         <p className="text-xs font-semibold uppercase text-white/90 mb-2">General</p>
         {generalList.length > 0 ? (
           <div className="space-y-1">

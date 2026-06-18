@@ -152,14 +152,14 @@ export default function TreatmentTab() {
           Análisis indicados por tus doctores. Puedes subir el PDF de tus resultados para completarlos.
         </p>
 
-        {allAnalysisOrders.length === 0 ? (
+        {allAnalysisOrders.filter((item) => item.order.estado !== 'COMPLETADA').length === 0 ? (
           <div className="mt-6 flex flex-col items-center gap-3 rounded-xl border-2 border-dashed border-gray-300 py-10">
             <FlaskConical className="h-10 w-10 text-gray-300" />
             <p className="text-sm text-gray-500">No tienes análisis indicados</p>
           </div>
         ) : (
           <div className="mt-6 grid gap-6 sm:grid-cols-2">
-            {allAnalysisOrders.map((item, idx) => {
+            {allAnalysisOrders.filter((item) => item.order.estado !== 'COMPLETADA').map((item, idx) => {
               const order = item.order;
               const isUploading = uploadingId === order.id;
               const isCompleted = order.estado === 'COMPLETADA';

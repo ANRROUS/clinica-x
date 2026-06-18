@@ -26,13 +26,13 @@ export default function DoctorPacientesPage() {
     setMounted(true);
   }, []);
 
-  const { data: citasData } = useQuery({
+  const { data: citasData, isLoading: isLoadingCitas } = useQuery({
     queryKey: ['doctor-calendar', dateRange],
     queryFn: () => getDoctorCalendar(dateRange),
     enabled: isAuthenticated,
   });
 
-  const { data: slotDurationData } = useQuery({
+  const { data: slotDurationData, isLoading: isLoadingSlot } = useQuery({
     queryKey: ['doctorSlotDuration'],
     queryFn: async () => {
       const res = await getDoctorSlotDuration();
@@ -61,6 +61,7 @@ export default function DoctorPacientesPage() {
         citas={citas}
         slotDuration={slotDuration}
         onSelectPatient={(id) => router.push(`/doctor/pacientes/${id}`)}
+        isLoading={isLoadingCitas || isLoadingSlot}
       />
 
       <div className="flex flex-1 flex-col overflow-hidden bg-gray-50">

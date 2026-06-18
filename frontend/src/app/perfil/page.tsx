@@ -37,13 +37,17 @@ export default function PerfilPage() {
   return (
     <div className="flex min-h-screen flex-col bg-white">
       <Header />
-      <main className="mx-auto w-full max-w-5xl flex-1 px-4 py-8">
+      <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-8">
         <ProfileHeader />
-        <ProfileTabs activeTab={activeTab} onChange={setActiveTab} />
-        <div className="mt-2">
-          {activeTab === 'consultas' && <ConsultationsTab />}
-          {activeTab === 'tratamiento' && <TreatmentTab />}
-          {activeTab === 'reservas' && <AppointmentsTab />}
+        <div className="mt-6 flex flex-col gap-6 lg:flex-row">
+          <aside className="w-full shrink-0 lg:w-56">
+            <ProfileTabs activeTab={activeTab} onChange={setActiveTab} />
+          </aside>
+          <div className="flex-1">
+            {activeTab === 'consultas' && <ConsultationsTab />}
+            {activeTab === 'tratamiento' && <TreatmentTab />}
+            {activeTab === 'reservas' && <AppointmentsTab />}
+          </div>
         </div>
       </main>
       <Footer />

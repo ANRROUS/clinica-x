@@ -15,23 +15,26 @@ const tabs: { key: TabKey; label: string }[] = [
 
 export default function ProfileTabs({ activeTab, onChange }: Props) {
   return (
-    <div className="flex items-center justify-center gap-2 overflow-x-auto py-6 sm:gap-4">
+    <nav className="flex flex-col gap-3">
       {tabs.map((tab) => {
         const isActive = activeTab === tab.key;
         return (
           <button
             key={tab.key}
             onClick={() => onChange(tab.key)}
-            className={`min-w-0 rounded-lg border-2 px-4 py-2.5 text-sm font-semibold transition whitespace-nowrap sm:min-w-[160px] sm:px-8 ${
+            className={`relative w-full rounded-lg border-2 px-4 py-3 text-left text-sm font-semibold transition ${
               isActive
                 ? 'border-[#008585] bg-[#008585] text-white'
                 : 'border-[#008585] bg-white text-[#008585] hover:bg-[#008585]/5'
             }`}
           >
             {tab.label}
+            {isActive && (
+              <span className="absolute right-3 top-1/2 h-2 w-2 -translate-y-1/2 rounded-full bg-white" />
+            )}
           </button>
         );
       })}
-    </div>
+    </nav>
   );
 }

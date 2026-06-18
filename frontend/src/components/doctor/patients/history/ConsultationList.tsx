@@ -1,6 +1,7 @@
 'use client';
 
 import { Clock, FileText, Calendar, X } from 'lucide-react';
+import { ConsultationListSkeleton } from '@/components/shared/Skeleton';
 import type { ConsultaMedicoDTO } from '@/lib/api/types';
 import { parseApiDate, formatLima } from '@clinica-x/date-utils';
 
@@ -22,13 +23,7 @@ export default function ConsultationList({
   onFilterDateChange,
 }: ConsultationListProps) {
   if (isLoading) {
-    return (
-      <div className="space-y-3">
-        {Array.from({ length: 4 }).map((_, i) => (
-          <div key={i} className="h-16 animate-pulse rounded-lg bg-gray-200" />
-        ))}
-      </div>
-    );
+    return <ConsultationListSkeleton />;
   }
 
   const finishedConsultations = consultations.filter((c) => c.estado === 'FINALIZADA');
