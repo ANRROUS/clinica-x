@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useDoctorAuthStore } from '@/store/useDoctorAuthStore';
-import { getDoctorPatients, getActivePatient, getDoctorSlotDuration } from '@/lib/api/doctor.api';
+import { getDoctorPatients } from '@/lib/api/doctor.api';
 import ConsultationList from './ConsultationList';
 import ConsultationDetail from './ConsultationDetail';
 import AIChat from './AIChat';
@@ -13,9 +13,12 @@ import { Bot } from 'lucide-react';
 
 interface ConsultationHistoryProps {
   patientId: string;
+  isActivePatient: boolean;
+  consultationId?: string;
+  isLoading?: boolean;
 }
 
-export default function ConsultationHistory({ patientId }: ConsultationHistoryProps) {
+export default function ConsultationHistory({ patientId, isActivePatient, consultationId, isLoading: isLoadingProp = false }: ConsultationHistoryProps) {
   const { isAuthenticated } = useDoctorAuthStore();
   const [selectedConsultationId, setSelectedConsultationId] = useState<string | null>(null);
   const [filterDate, setFilterDate] = useState<string>('');
@@ -26,43 +29,17 @@ export default function ConsultationHistory({ patientId }: ConsultationHistoryPr
     hasta: formatLima(hoy, 'yyyy-MM-dd'),
   };
 
-  const { data: patientsData, isLoading } = useQuery({
+  const { data: patientsData, isLoading: isLoadingPatients } = useQuery({
     queryKey: ['doctor-patients', dateRange],
     queryFn: () => getDoctorPatients(dateRange),
     enabled: isAuthenticated,
   });
 
-  const { data: activeData } = useQuery({
-    queryKey: ['doctor-active-patient'],
-    queryFn: getActivePatient,
-    enabled: isAuthenticated,
-  });
-
-  const { data: slotDurationData } = useQuery({
-    queryKey: ['doctorSlotDuration'],
-    queryFn: async () => {
-      const res = await getDoctorSlotDuration();
-      return res.success ? res.data?.duracionSlot : 30;
-    },
-    staleTime: Infinity,
-    enabled: isAuthenticated,
-  });
-  const slotDuration = slotDurationData ?? 30;
+  const isLoading = isLoadingProp || isLoadingPatients;
 
   const patients = patientsData?.data || [];
   const patientConsultations = patients.filter((c) => c.pacienteId === patientId);
   const selectedConsultation = patientConsultations.find((c) => c.id === selectedConsultationId) || null;
-
-  const isActivePatient = (() => {
-    if (!activeData?.success || !activeData.data) return false;
-    const active = activeData.data;
-    if (active.pacienteId !== patientId) return false;
-
-    const inicio = parseApiDate(active.fechaInicio);
-    const now = nowLima();
-    const appointmentEnd = new Date(inicio.getTime() + slotDuration * 60000);
-    return now >= inicio && now <= appointmentEnd;
-  })();
 
   const currentPatient = patientConsultations[0];
   const patientName = currentPatient
@@ -97,7 +74,7 @@ export default function ConsultationHistory({ patientId }: ConsultationHistoryPr
           <AIChat
             patientId={patientId}
             patientName={patientName}
-            consultationId={activeData?.data?.id || undefined}
+            consultationId={consultationId}
             lastConsultation={lastConsultation}
             onSelectDateFilter={(dateStr, consultationId) => {
               setFilterDate(dateStr);

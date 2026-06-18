@@ -27,13 +27,6 @@ const statusBadge: Record<string, string> = {
   CANCELADA: 'bg-red-50 border-red-200 text-red-700',
 };
 
-const statusLabel: Record<string, string> = {
-  CONFIRMADA: 'Confirmada',
-  EN_ATENCION: 'En Atención',
-  COMPLETADA: 'Completada',
-  CANCELADA: 'Cancelada',
-};
-
 const dayNames = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
 const monthNames = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
 
@@ -50,30 +43,10 @@ export default function CalendarDay({ currentDate, citas, onNavigateToPatient }:
 
   const dateLabel = `${dayNames[getLimaDayOfWeek(currentDate) % 7]} ${getLimaDay(currentDate)} de ${monthNames[getLimaMonth(currentDate)]}`;
 
-  const totalByStatus = useMemo(() => {
-    const counts: Record<string, number> = { CONFIRMADA: 0, EN_ATENCION: 0, COMPLETADA: 0, CANCELADA: 0 };
-    dayCitas.forEach((c) => { counts[c.estado] = (counts[c.estado] || 0) + 1; });
-    return counts;
-  }, [dayCitas]);
-
   return (
     <div>
       <div className="mb-6">
         <h3 className="text-lg font-semibold text-gray-900">{dateLabel}</h3>
-        <div className="mt-2 flex flex-wrap gap-3 text-sm">
-          <span className="flex items-center gap-1 text-blue-dark">
-            <span className="h-2 w-2 rounded-full bg-blue-dark" /> Confirmadas: {totalByStatus.CONFIRMADA}
-          </span>
-          <span className="flex items-center gap-1 text-amber-700">
-            <span className="h-2 w-2 rounded-full bg-amber-500" /> En atención: {totalByStatus.EN_ATENCION}
-          </span>
-          <span className="flex items-center gap-1 text-green-700">
-            <span className="h-2 w-2 rounded-full bg-green-500" /> Completadas: {totalByStatus.COMPLETADA}
-          </span>
-          <span className="flex items-center gap-1 text-red-700">
-            <span className="h-2 w-2 rounded-full bg-red-500" /> Canceladas: {totalByStatus.CANCELADA}
-          </span>
-        </div>
       </div>
 
       {dayCitas.length === 0 ? (
@@ -82,7 +55,7 @@ export default function CalendarDay({ currentDate, citas, onNavigateToPatient }:
           <p className="text-lg font-medium">Sin citas para este día</p>
         </div>
       ) : (
-        <div className="space-y-3">
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
           {dayCitas.map((cita) => {
             const start = parseApiDate(cita.fechaHora);
             if (isNaN(start.getTime())) return null;
@@ -98,8 +71,8 @@ export default function CalendarDay({ currentDate, citas, onNavigateToPatient }:
               >
                 <div className="flex items-start justify-between">
                   <div className="flex items-center gap-3">
-                    <div className="flex h-12 w-12 items-center justify-center rounded-full bg-white text-sm font-bold text-gray-800">
-                      {hStart}:{mStart}
+                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-brand-50 text-sm font-bold text-brand-600">
+                      {(cita.pacienteNombre?.[0] || '?').toUpperCase()}
                     </div>
                     <div>
                       <p className="font-semibold">{cita.pacienteNombre ? `${cita.pacienteNombre} ${cita.pacienteApellido || ''}`.trim() : 'Paciente'}</p>
@@ -107,21 +80,17 @@ export default function CalendarDay({ currentDate, citas, onNavigateToPatient }:
                       <p className="text-xs opacity-60">{hStart}:{mStart} – {hEnd}:{mEnd}</p>
                     </div>
                   </div>
-                  <span className="inline-flex items-center rounded-full border px-2 py-0.5 text-xs font-medium">
-                    {statusLabel[cita.estado]}
-                  </span>
-                </div>
-
-                <div className="mt-3 flex flex-wrap gap-2">
-                  {cita.estado !== 'COMPLETADA' && cita.estado !== 'CANCELADA' && (
-                    <button
-                      onClick={() => onNavigateToPatient(cita.pacienteId)}
-                      className="inline-flex items-center gap-1 rounded-md bg-brand-500 px-3 py-1.5 text-xs font-medium text-white hover:bg-brand-600 transition-colors"
-                    >
-                      <User className="h-3 w-3" />
-                      Ver paciente
-                    </button>
-                  )}
+                  <div className="flex items-start gap-2">
+                    {cita.estado !== 'COMPLETADA' && cita.estado !== 'CANCELADA' && (
+                      <button
+                        onClick={() => onNavigateToPatient(cita.pacienteId)}
+                        className="inline-flex items-center gap-1 rounded-md bg-brand-500 px-3 py-1.5 text-xs font-medium text-white hover:bg-brand-600 transition-colors"
+                      >
+                        <User className="h-3 w-3" />
+                        Ver paciente
+                      </button>
+                    )}
+                  </div>
                 </div>
               </div>
             );
