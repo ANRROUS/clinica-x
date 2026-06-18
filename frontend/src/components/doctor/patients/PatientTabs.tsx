@@ -1,12 +1,19 @@
 'use client';
 
+import { PatientTabsSkeleton } from '@/components/shared/Skeleton';
+
 interface PatientTabsProps {
   activeTab: 'historial' | 'consulta';
   onTabChange: (tab: 'historial' | 'consulta') => void;
   isActivePatient: boolean;
+  isLoading?: boolean;
 }
 
-export default function PatientTabs({ activeTab, onTabChange, isActivePatient }: PatientTabsProps) {
+export default function PatientTabs({ activeTab, onTabChange, isActivePatient, isLoading = false }: PatientTabsProps) {
+  if (isLoading) {
+    return <PatientTabsSkeleton />;
+  }
+
   return (
     <div className="flex bg-white px-6 py-3 gap-2">
       <button

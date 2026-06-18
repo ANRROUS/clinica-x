@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import { Stethoscope } from 'lucide-react';
+import { ActiveConsultationSkeleton } from '@/components/shared/Skeleton';
 import { startConsultation, finalizeConsultation } from '@/lib/api/doctor.api';
 import { getErrorMessage } from '@/lib/api/error-utils';
 import DiagnosisForm from './DiagnosisForm';
@@ -18,6 +19,7 @@ interface ActiveConsultationProps {
   patientId: string;
   patientName?: string;
   onConsultationFinalized: () => void;
+  isLoading?: boolean;
 }
 
 export default function ActiveConsultation({
@@ -25,6 +27,7 @@ export default function ActiveConsultation({
   patientId,
   patientName,
   onConsultationFinalized,
+  isLoading = false,
 }: ActiveConsultationProps) {
   const queryClient = useQueryClient();
   const [showFinalizeModal, setShowFinalizeModal] = useState(false);
@@ -42,14 +45,6 @@ export default function ActiveConsultation({
     removeMedication,
     reset: resetStore,
   } = useConsultationStore();
-
-  // Sincronizar el store cuando cambia la consulta activa
-  useEffect(() => {
-    if (consultation && storedConsultationId !== consultation.id) {
-      resetStore();
-      setConsultationId(consultation.id);
-    }
-  }, [consultation, storedConsultationId, setConsultationId, resetStore]);
 
   const startMutation = useMutation({
     mutationFn: startConsultation,
@@ -69,6 +64,18 @@ export default function ActiveConsultation({
     mutationFn: ({ id, data }: { id: string; data: { diagnostico: string; analysisOrders: typeof analysisOrders; medications: typeof medications } }) =>
       finalizeConsultation(id, data),
   });
+
+  // Sincronizar el store cuando cambia la consulta activa
+  useEffect(() => {
+    if (consultation && storedConsultationId !== consultation.id) {
+      resetStore();
+      setConsultationId(consultation.id);
+    }
+  }, [consultation, storedConsultationId, setConsultationId, resetStore]);
+
+  if (isLoading) {
+    return <ActiveConsultationSkeleton />;
+  }
 
   if (!consultation) {
     return (

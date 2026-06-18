@@ -32,13 +32,6 @@ const statusBadge: Record<string, string> = {
   CANCELADA: 'bg-red-50 text-red-700 border-red-200',
 };
 
-const statusLabel: Record<string, string> = {
-  CONFIRMADA: 'Confirmada',
-  EN_ATENCION: 'En atención',
-  COMPLETADA: 'Completada',
-  CANCELADA: 'Cancelada',
-};
-
 export default function CalendarDayModal({
   date,
   citas,
@@ -94,40 +87,36 @@ export default function CalendarDayModal({
                 const hEnd = String(getLimaHours(end)).padStart(2, '0');
                 const mEnd = String(getLimaMinutes(end)).padStart(2, '0');
                 return (
-                  <div
-                    key={cita.id}
-                    className={`rounded-lg border p-4 ${statusBadge[cita.estado] || 'bg-white border-gray-200'}`}
-                  >
-                    <div className="flex items-start justify-between">
-                      <div className="flex items-center gap-3">
-                        <div className="flex h-11 w-11 items-center justify-center rounded-full bg-brand-50 text-sm font-bold text-brand-600">
-                          {h}:{m}
-                        </div>
-                        <div>
-                          <p className="font-semibold text-gray-900">
-                            {cita.pacienteNombre ? `${cita.pacienteNombre} ${cita.pacienteApellido || ''}`.trim() : 'Paciente'}
-                          </p>
-                          <p className="text-sm text-gray-500">{cita.specialty || cita.especialidad || '—'}</p>
-                          <p className="text-xs text-gray-400">{h}:{m} – {hEnd}:{mEnd}</p>
-                        </div>
-                      </div>
-                      <span className="inline-flex items-center rounded-full border px-2 py-0.5 text-xs font-medium">
-                        {statusLabel[cita.estado]}
-                      </span>
+              <div
+                key={cita.id}
+                className={`rounded-lg border p-4 ${statusBadge[cita.estado] || 'bg-white border-gray-200'}`}
+              >
+                <div className="flex items-start justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-brand-50 text-sm font-bold text-brand-600">
+                      {(cita.pacienteNombre?.[0] || '?').toUpperCase()}
                     </div>
-
-                    <div className="mt-3 flex flex-wrap gap-2">
-                      {cita.estado !== 'COMPLETADA' && cita.estado !== 'CANCELADA' && (
-                        <button
-                          onClick={() => onNavigateToPatient(cita.pacienteId)}
-                          className="inline-flex items-center gap-1 rounded-md bg-brand-500 px-3 py-1.5 text-xs font-medium text-white hover:bg-brand-600 transition-colors"
-                        >
-                          <User className="h-3 w-3" />
-                          Ver paciente
-                        </button>
-                      )}
+                    <div>
+                      <p className="font-semibold text-gray-900">
+                        {cita.pacienteNombre ? `${cita.pacienteNombre} ${cita.pacienteApellido || ''}`.trim() : 'Paciente'}
+                      </p>
+                      <p className="text-sm text-gray-500">{cita.specialty || cita.especialidad || '—'}</p>
+                      <p className="text-xs text-gray-400">{h}:{m} – {hEnd}:{mEnd}</p>
                     </div>
                   </div>
+                  <div className="flex items-start gap-2">
+                    {cita.estado !== 'COMPLETADA' && cita.estado !== 'CANCELADA' && (
+                      <button
+                        onClick={() => onNavigateToPatient(cita.pacienteId)}
+                        className="inline-flex items-center gap-1 rounded-md bg-brand-500 px-3 py-1.5 text-xs font-medium text-white hover:bg-brand-600 transition-colors"
+                      >
+                        <User className="h-3 w-3" />
+                        Ver paciente
+                      </button>
+                    )}
+                  </div>
+                </div>
+              </div>
                 );
               })}
             </div>

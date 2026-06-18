@@ -4,6 +4,7 @@ import { useQuery } from '@tanstack/react-query';
 import { Mail, Phone } from 'lucide-react';
 import { useDoctorAuthStore } from '@/store/useDoctorAuthStore';
 import { getDoctorPatientDetail } from '@/lib/api/doctor.api';
+import { PatientHeaderSkeleton } from '@/components/shared/Skeleton';
 import ConsultationTimer from './ConsultationTimer';
 
 interface PatientHeaderProps {
@@ -12,9 +13,10 @@ interface PatientHeaderProps {
   isActivePatient?: boolean;
   fechaHora?: string;
   slotDuration?: number;
+  isLoading?: boolean;
 }
 
-export default function PatientHeader({ patientId, patientName, isActivePatient, fechaHora, slotDuration }: PatientHeaderProps) {
+export default function PatientHeader({ patientId, patientName, isActivePatient, fechaHora, slotDuration, isLoading = false }: PatientHeaderProps) {
   const { isAuthenticated } = useDoctorAuthStore();
 
   const { data } = useQuery({
@@ -22,6 +24,10 @@ export default function PatientHeader({ patientId, patientName, isActivePatient,
     queryFn: () => getDoctorPatientDetail(patientId),
     enabled: isAuthenticated && !!patientId,
   });
+
+  if (isLoading) {
+    return <PatientHeaderSkeleton />;
+  }
 
   const patient = data?.data?.patient;
   const displayName = patient ? `${patient.nombre} ${patient.apellido}`.trim() : patientName;
