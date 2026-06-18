@@ -13,6 +13,7 @@ import { getErrorMessage } from '@/lib/api/error-utils';
 import ScheduleGrid from './ScheduleGrid';
 import DoctorFormLeft from './DoctorFormLeft';
 import DangerZone from './DangerZone';
+import DoctorFormSkeleton from './DoctorFormSkeleton';
 import type { HorarioEntry } from './ScheduleGrid';
 import type { MedicoDTO, EspecialidadDTO } from '@/lib/api/types';
 
@@ -32,9 +33,12 @@ type MedicoForm = z.infer<typeof medicoSchema>;
 
 interface DoctorFormProps {
   editId?: string;
+  onSaved?: () => void;
+  onCancel?: () => void;
+  isModal?: boolean;
 }
 
-export default function DoctorForm({ editId }: DoctorFormProps) {
+export default function DoctorForm({ editId, onSaved, onCancel, isModal }: DoctorFormProps) {
   const router = useRouter();
   const queryClient = useQueryClient();
   const [schedules, setSchedules] = useState<HorarioEntry[]>([]);
@@ -49,7 +53,7 @@ export default function DoctorForm({ editId }: DoctorFormProps) {
   });
   const specialties: EspecialidadDTO[] = (specialtiesData?.data || []).filter((s) => s.activo);
 
-  const { data: doctorData } = useQuery({
+  const { data: doctorData, isLoading: isLoadingDoctor } = useQuery({
     queryKey: ['admin-doctor', editId],
     queryFn: () => getAdminDoctor(editId!),
     enabled: isEditing,
@@ -62,6 +66,7 @@ export default function DoctorForm({ editId }: DoctorFormProps) {
     handleSubmit,
     reset,
     watch,
+    setValue,
     formState: { errors },
   } = useForm<MedicoForm>({
     resolver: zodResolver(medicoSchema),
@@ -124,7 +129,8 @@ export default function DoctorForm({ editId }: DoctorFormProps) {
     onSuccess: () => {
       toast.success('Médico registrado correctamente');
       queryClient.invalidateQueries({ queryKey: ['admin-dashboard'] });
-      router.push('/admin/dashboard');
+      if (onSaved) onSaved();
+      else router.push('/admin/dashboard');
     },
     onError: (err: any) => {
       toast.error(getErrorMessage(err));
@@ -136,7 +142,8 @@ export default function DoctorForm({ editId }: DoctorFormProps) {
     onSuccess: () => {
       toast.success('Datos del médico actualizados');
       queryClient.invalidateQueries({ queryKey: ['admin-dashboard'] });
-      router.push('/admin/dashboard');
+      if (onSaved) onSaved();
+      else router.push('/admin/dashboard');
     },
     onError: (err: any) => {
       toast.error(getErrorMessage(err));
@@ -161,11 +168,19 @@ export default function DoctorForm({ editId }: DoctorFormProps) {
       return;
     }
 
+    // Auto-generar username si está vacío
+    let username = data.username?.trim();
+    if (!username) {
+      username = data.email.split('@')[0];
+      if (username.length < 4) {
+        username = `medico_${data.dni}`;
+      }
+    }
+
+    const payload = { ...data, username, schedules };
+
     if (isEditing) {
-      const body: any = {
-        ...data,
-        schedules,
-      };
+      const body: any = { ...payload };
       if (!body.password) delete body.password;
       updateMutation.mutate({ id: editId!, body });
     } else {
@@ -173,34 +188,39 @@ export default function DoctorForm({ editId }: DoctorFormProps) {
         toast.error('La contraseña debe tener al menos 8 caracteres');
         return;
       }
-      createMutation.mutate({ ...data, password: data.password, schedules });
+      createMutation.mutate({ ...payload, password: data.password } as any);
     }
   };
 
   const isPending = createMutation.isPending || updateMutation.isPending;
 
+  if (isEditing && isLoadingDoctor) {
+    return <DoctorFormSkeleton />;
+  }
+
   return (
     <div className="mx-auto max-w-6xl">
-      <div className="rounded-2xl border border-gray-200 bg-white p-8 shadow-sm">
+      <div className={`bg-white p-8 ${isModal ? '' : 'rounded-2xl border border-gray-200 shadow-sm'}`}>
         <div className="mb-8 flex items-start justify-between">
           <div>
             <h2 className="text-xl font-bold text-gray-900">
-              {isEditing ? 'Nuevo Médico / Actualizar Médico' : 'Nuevo Médico / Actualizar Médico'}
+              {isEditing ? 'Editar doctor' : 'Nuevo Médico'}
             </h2>
             <p className="mt-1 text-sm text-gray-500">
-              {isEditing ? 'Aquí podrás registrar o actualizar los datos del médico indicado' : 'Aquí podrás registrar o actualizar los datos del médico indicado'}
+              {isEditing ? 'Actualiza los datos del médico' : 'Registra los datos del médico'}
             </p>
           </div>
           <button
-            onClick={() => router.push('/admin/dashboard')}
-            className="text-sm font-semibold"
-            style={{ color: '#008585' }}
+            onClick={onCancel ? onCancel : () => router.push('/admin/dashboard')}
+            className="rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-semibold text-gray-700 shadow-sm transition-colors hover:bg-gray-50 hover:text-[#008585]"
           >
-            {'<<'} Regresar
+            {onCancel ? 'Cancelar' : '<< Regresar'}
           </button>
         </div>
 
         <form onSubmit={handleSubmit(onSubmit)}>
+          <input type="hidden" {...register('username')} />
+
           <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
             <DoctorFormLeft
               register={register}
@@ -214,17 +234,55 @@ export default function DoctorForm({ editId }: DoctorFormProps) {
             />
 
             <div className="space-y-6">
-              <div>
-                <h3 className="text-lg font-bold text-gray-900">Horario de atención</h3>
-                <p className="mt-1 text-sm text-gray-500">Elige el horario</p>
-                <div className="mt-4">
-                  <ScheduleGrid
-                    schedules={schedules}
-                    onChange={setSchedules}
-                    shift={watchShift || 'MANANA'}
-                    error={scheduleError}
-                  />
+              <div className="flex items-start justify-between">
+                <div>
+                  <h3 className="text-lg font-bold text-gray-900">Horario de atención</h3>
+                  <p className="mt-1 text-sm text-gray-500">Elige el horario</p>
                 </div>
+                <div className="text-right">
+                  <label className="mb-1 block text-xs font-semibold" style={{ color: '#008585' }}>
+                    Turno
+                  </label>
+                  <button
+                    type="button"
+                    onClick={() =>
+                      setValue('shift', watchShift === 'MANANA' ? 'TARDE' : 'MANANA', { shouldValidate: true })
+                    }
+                    className="relative inline-flex h-9 w-44 items-center rounded-full border-2 border-[#008585] bg-[#008585] px-1 transition-colors"
+                    aria-label={watchShift === 'TARDE' ? 'Tarde' : 'Mañana'}
+                  >
+                    <span
+                      className={`absolute left-1 top-1 inline-block h-6 w-20 rounded-full bg-white text-xs font-semibold leading-6 text-[#008585] shadow transition-transform duration-300 ${
+                        watchShift === 'TARDE' ? 'translate-x-[calc(100%+2px)]' : 'translate-x-0'
+                      }`}
+                    />
+                    <span
+                      className={`z-10 w-1/2 text-center text-xs font-semibold transition-colors duration-300 ${
+                        watchShift === 'TARDE' ? 'text-white' : 'text-[#008585]'
+                      }`}
+                    >
+                      Mañana
+                    </span>
+                    <span
+                      className={`z-10 w-1/2 text-center text-xs font-semibold transition-colors duration-300 ${
+                        watchShift === 'TARDE' ? 'text-[#008585]' : 'text-white'
+                      }`}
+                    >
+                      Tarde
+                    </span>
+                  </button>
+                  {errors.shift && (
+                    <p className="mt-1 text-xs text-red-500">{errors.shift.message}</p>
+                  )}
+                </div>
+              </div>
+              <div className="mt-4">
+                <ScheduleGrid
+                  schedules={schedules}
+                  onChange={setSchedules}
+                  shift={watchShift || 'MANANA'}
+                  error={scheduleError}
+                />
               </div>
             </div>
           </div>

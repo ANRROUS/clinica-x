@@ -1,14 +1,15 @@
 'use client';
 
-import { useMemo } from 'react';
+import { useMemo, useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import Link from 'next/link';
 import { Plus } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
 import { getAdminSpecialties } from '@/lib/api/admin.api';
 import DoctorFilterDropdown from './DoctorFilterDropdown';
 import DoctorTableRow from './DoctorTableRow';
+import DoctorForm from '@/components/admin/doctor-form/DoctorForm';
 import type { MedicoDTO, EspecialidadDTO } from '@/lib/api/types';
-import { useState } from 'react';
 
 interface DoctorsTableProps {
   doctors: MedicoDTO[];
@@ -17,12 +18,24 @@ interface DoctorsTableProps {
 
 export default function DoctorsTable({ doctors, loading }: DoctorsTableProps) {
   const [filter, setFilter] = useState('');
+  const [editingDoctorId, setEditingDoctorId] = useState<string | null>(null);
 
   const { data: specialtiesData } = useQuery({
     queryKey: ['admin-specialties'],
     queryFn: getAdminSpecialties,
   });
   const specialties: EspecialidadDTO[] = (specialtiesData?.data || []).filter((s) => s.activo);
+
+  useEffect(() => {
+    if (editingDoctorId) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [editingDoctorId]);
 
   const filtered = useMemo(() => {
     let result = doctors;
@@ -91,7 +104,7 @@ export default function DoctorsTable({ doctors, loading }: DoctorsTableProps) {
               </tr>
             ) : (
               filtered.map((doctor) => (
-                <DoctorTableRow key={doctor.id} doctor={doctor} />
+                <DoctorTableRow key={doctor.id} doctor={doctor} onEdit={setEditingDoctorId} />
               ))
             )}
           </tbody>
@@ -101,6 +114,21 @@ export default function DoctorsTable({ doctors, loading }: DoctorsTableProps) {
       <p className="text-xs text-gray-500">
         Mostrando {filtered.length} de {doctors.length} médicos
       </p>
+
+      {editingDoctorId &&
+        createPortal(
+          <div className="fixed inset-0 z-[9999] flex items-center justify-center overflow-hidden bg-black/50 p-4">
+            <div className="w-full max-w-6xl max-h-[90vh] overflow-y-auto">
+              <DoctorForm
+                editId={editingDoctorId}
+                onCancel={() => setEditingDoctorId(null)}
+                onSaved={() => setEditingDoctorId(null)}
+                isModal
+              />
+            </div>
+          </div>,
+          document.body
+        )}
     </div>
   );
 }

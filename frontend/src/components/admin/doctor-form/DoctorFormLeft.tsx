@@ -1,7 +1,7 @@
 'use client';
 
 import Image from 'next/image';
-import { Eye, EyeOff, Stethoscope, Fingerprint, Mail, Phone, User } from 'lucide-react';
+import { Eye, EyeOff, Stethoscope, Fingerprint, Mail, Phone } from 'lucide-react';
 import type { UseFormRegister, FieldErrors } from 'react-hook-form';
 import type { EspecialidadDTO } from '@/lib/api/types';
 
@@ -50,8 +50,8 @@ export default function DoctorFormLeft({
             className="object-cover"
           />
         </div>
-        <p className="mt-4 text-lg font-semibold text-gray-900">
-          {displayName || 'Dra. Angelina Alva'}
+        <p className={`mt-4 text-lg font-semibold ${displayName ? 'text-gray-900' : 'text-gray-400'}`}>
+          {displayName || 'Nombre del médico'}
         </p>
         {displaySpecialty && (
           <span
@@ -73,7 +73,7 @@ export default function DoctorFormLeft({
               <input
                 {...register('nombre')}
                 className="w-full rounded-lg border border-gray-300 py-2 pl-9 pr-3 text-sm focus:border-[#008585] focus:outline-none focus:ring-1 focus:ring-[#008585]"
-                placeholder="Alejandro"
+                placeholder="Ej: María Elena"
               />
             </div>
             {errors.nombre && <p className="mt-1 text-xs text-red-500">{errors.nombre.message}</p>}
@@ -83,7 +83,7 @@ export default function DoctorFormLeft({
             <input
               {...register('apellido')}
               className="w-full rounded-lg border border-gray-300 py-2 px-3 text-sm focus:border-[#008585] focus:outline-none focus:ring-1 focus:ring-[#008585]"
-              placeholder="Rivera"
+                placeholder="Ej: Vargas López"
             />
             {errors.apellido && <p className="mt-1 text-xs text-red-500">{errors.apellido.message}</p>}
           </div>
@@ -96,7 +96,7 @@ export default function DoctorFormLeft({
                 inputMode="numeric"
                 maxLength={8}
                 className="w-full rounded-lg border border-gray-300 py-2 pl-9 pr-3 text-sm focus:border-[#008585] focus:outline-none focus:ring-1 focus:ring-[#008585]"
-                placeholder="71135924"
+                placeholder="Ej: 45678912"
               />
             </div>
             {errors.dni && <p className="mt-1 text-xs text-red-500">{errors.dni.message}</p>}
@@ -109,7 +109,7 @@ export default function DoctorFormLeft({
                 {...register('email')}
                 type="email"
                 className="w-full rounded-lg border border-gray-300 py-2 pl-9 pr-3 text-sm focus:border-[#008585] focus:outline-none focus:ring-1 focus:ring-[#008585]"
-                placeholder="doctor@gmail.com"
+                placeholder="Ej: maria.vargas@clinica.com"
               />
             </div>
             {errors.email && <p className="mt-1 text-xs text-red-500">{errors.email.message}</p>}
@@ -121,46 +121,11 @@ export default function DoctorFormLeft({
               <input
                 {...register('telefono')}
                 className="w-full rounded-lg border border-gray-300 py-2 pl-9 pr-3 text-sm focus:border-[#008585] focus:outline-none focus:ring-1 focus:ring-[#008585]"
-                placeholder="+5255 1234 5678"
+                placeholder="Ej: +51 987 654 321"
               />
             </div>
           </div>
-          <div>
-            <label className="mb-1 block text-xs font-semibold" style={{ color: '#008585' }}>Usuario</label>
-            <div className="relative">
-              <User className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
-              <input
-                {...register('username')}
-                className="w-full rounded-lg border border-gray-300 py-2 pl-9 pr-3 text-sm focus:border-[#008585] focus:outline-none focus:ring-1 focus:ring-[#008585]"
-                placeholder="Jungkook"
-              />
-            </div>
-            {errors.username && <p className="mt-1 text-xs text-red-500">{errors.username.message}</p>}
-          </div>
-          <div>
-            <label className="mb-1 block text-xs font-semibold" style={{ color: '#008585' }}>Turno</label>
-            <div className="flex items-center gap-6 pt-1">
-              <label className="flex items-center gap-2 cursor-pointer">
-                <input
-                  type="radio"
-                  value="MANANA"
-                  {...register('shift')}
-                  className="h-4 w-4 border-gray-300 text-[#008585] focus:ring-[#008585]"
-                />
-                <span className="text-sm text-gray-700">Mañana</span>
-              </label>
-              <label className="flex items-center gap-2 cursor-pointer">
-                <input
-                  type="radio"
-                  value="TARDE"
-                  {...register('shift')}
-                  className="h-4 w-4 border-gray-300 text-[#008585] focus:ring-[#008585]"
-                />
-                <span className="text-sm text-gray-700">Tarde</span>
-              </label>
-            </div>
-            {errors.shift && <p className="mt-1 text-xs text-red-500">{errors.shift.message}</p>}
-          </div>
+
           <div>
             <label className="mb-1 block text-xs font-semibold" style={{ color: '#008585' }}>Contraseña</label>
             <div className="relative">
