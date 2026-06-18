@@ -5,7 +5,7 @@
  */
 
 import { prisma } from '@/shared/prisma-client';
-import { Prisma } from '@/generated/prisma';
+import { Prisma } from '@/shared/prisma-client';
 import { Cita } from '@/modules/citas/domain/entities/cita.entity';
 import type { ICitaRepository } from '@/modules/citas/domain/ports/out/cita.repository.port';
 import { parseLimaDate } from '@clinica-x/date-utils';
