@@ -99,10 +99,11 @@ JWT_SECRET=change_this_secret_to_something_very_long_123456
 CORS_ORIGIN=http://localhost:3100
 EOF
 
-# 8. tests-selenium .env
-cat <<EOF > tests-selenium/.env
-FRONTEND_URL=http://localhost:3100
-HEADLESS=true
+# 8. test-usabilidad .env
+cat <<EOF > test-usabilidad/.env
+FRONTEND_URL=https://clinica-x.up.railway.app
+API_URL=https://clinica-x.up.railway.app/api
+PAGESPEED_API_KEY=\${PAGESPEED_API_KEY:-}
 EOF
 
 echo "Variables de entorno configuradas exitosamente."

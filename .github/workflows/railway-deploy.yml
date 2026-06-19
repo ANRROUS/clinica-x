@@ -237,28 +237,13 @@ jobs:
           exit 1
 
   # =============================================================================
-  # SELENIUM USABILITY TESTS — Corre pruebas de rendimiento en PRs a develop
+  # PRUEBAS DE USABILIDAD — Lighthouse + PageSpeed Insights en PRs a develop
   # =============================================================================
-  test-selenium-usability:
-    name: 🧪 Run Selenium Usability Tests
+  test-usabilidad:
+    name: 🧪 Pruebas de Usabilidad (Lighthouse + PageSpeed)
     runs-on: ubuntu-latest
     if: github.event_name == 'pull_request' && github.base_ref == 'develop'
     
-    services:
-      postgres:
-        image: postgres:15
-        env:
-          POSTGRES_DB: postgres
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: password
-        ports:
-          - 5432:5432
-        options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
-
     steps:
       - name: 📥 Checkout repository
         uses: actions/checkout@v4
@@ -273,34 +258,35 @@ jobs:
         with:
           version: 8
 
-      - name: 🐘 Install PostgreSQL Client
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y postgresql-client
-
-      - name: ⚙️ Setup CI Environment Variables
-        run: ./scripts/setup-ci-env.sh
-
-      - name: 🗄️ Setup Database Schema
-        run: |
-          PGPASSWORD=password psql -h localhost -U postgres -d postgres -f scripts/database-schema-completo.sql
-
       - name: 📦 Install dependencies
         run: pnpm install
 
-      - name: 🛠️ Generate Prisma Clients
-        run: pnpm prisma:generate:all
+      - name: 🔦 Run Lighthouse Audits
+        run: pnpm test:usabilidad:lighthouse
+        env:
+          FRONTEND_URL: https://clinica-x.up.railway.app
+          API_URL: https://clinica-x.up.railway.app/api
 
-      - name: 🌱 Seed Database
-        run: |
-          pnpm --filter auth-service seed
-          pnpm --filter appointment-service seed
+      - name: 📊 Run PageSpeed Insights
+        run: pnpm test:usabilidad:pagespeed
+        env:
+          FRONTEND_URL: https://clinica-x.up.railway.app
+          API_URL: https://clinica-x.up.railway.app/api
+          PAGESPEED_API_KEY: ${{ secrets.PAGESPEED_API_KEY }}
 
-      - name: 🚀 Start Services and Run E2E Selenium Tests
-        run: |
-          pnpm dev:services &
-          pnpm dev:frontend &
-          npx wait-on tcp:8080 tcp:3100 --timeout 60000
-          node scripts/seed-demo.js
-          pnpm test:selenium
+      - name: 📝 Generate Consolidated Report
+        run: pnpm test:usabilidad:report
+
+      - name: 📄 Generate PDF Report
+        run: pnpm test:usabilidad:pdf
+
+      - name: 📤 Upload Usability Reports
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: evidencias-usabilidad
+          path: |
+            test-usabilidad/reports/
+            test-usabilidad/screenshots/
+          retention-days: 30
 
