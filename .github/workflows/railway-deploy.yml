@@ -21,7 +21,7 @@ on:
   push:
     branches: [main]
   pull_request:
-    branches: [main]
+    branches: [main, develop]
 
 jobs:
   # =============================================================================
@@ -30,6 +30,7 @@ jobs:
   detect-changes:
     name: 🔍 Detect Changed Services
     runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' || github.base_ref == 'main'
     outputs:
       auth-service: ${{ steps.changes.outputs.auth-service }}
       appointment-service: ${{ steps.changes.outputs.appointment-service }}
@@ -222,7 +223,7 @@ jobs:
       - deploy-ocr-service
       - deploy-api-gateway
       - deploy-frontend
-    if: always()
+    if: always() && (github.ref == 'refs/heads/main' || github.base_ref == 'main')
     runs-on: ubuntu-latest
     steps:
       - name: ✅ Notify Success
@@ -234,3 +235,72 @@ jobs:
         run: |
           echo "❌ Some services failed to deploy"
           exit 1
+
+  # =============================================================================
+  # SELENIUM USABILITY TESTS — Corre pruebas de rendimiento en PRs a develop
+  # =============================================================================
+  test-selenium-usability:
+    name: 🧪 Run Selenium Usability Tests
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request' && github.base_ref == 'develop'
+    
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_DB: postgres
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: password
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - name: 📥 Checkout repository
+        uses: actions/checkout@v4
+
+      - name: 🟢 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: 📦 Setup pnpm
+        uses: pnpm/action-setup@v3
+        with:
+          version: 8
+
+      - name: 🐘 Install PostgreSQL Client
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y postgresql-client
+
+      - name: ⚙️ Setup CI Environment Variables
+        run: ./scripts/setup-ci-env.sh
+
+      - name: 🗄️ Setup Database Schema
+        run: |
+          PGPASSWORD=password psql -h localhost -U postgres -d postgres -f scripts/database-schema-completo.sql
+
+      - name: 📦 Install dependencies
+        run: pnpm install
+
+      - name: 🛠️ Generate Prisma Clients
+        run: pnpm prisma:generate:all
+
+      - name: 🌱 Seed Database
+        run: |
+          pnpm --filter auth-service seed
+          pnpm --filter appointment-service seed
+
+      - name: 🚀 Start Services and Run E2E Selenium Tests
+        run: |
+          pnpm dev:services &
+          pnpm dev:frontend &
+          npx wait-on tcp:8080 tcp:3100 --timeout 60000
+          node scripts/seed-demo.js
+          pnpm test:selenium
+
