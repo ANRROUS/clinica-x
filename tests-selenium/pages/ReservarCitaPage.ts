@@ -22,15 +22,41 @@ export class ReservarCitaPage extends BasePage {
     await this.waitForElement(By.css('div.grid button.text-left'), 12000);
   }
 
+  async countDoctors(): Promise<number> {
+    const cards = await this.driver.findElements(By.css('div.grid button.text-left'));
+    return cards.length;
+  }
+
   async selectFirstDoctor(): Promise<void> {
-    // Doctor cards tienen text-left; el botón "Automático" no lo tiene
-    const doctorBtn = await this.waitForElement(
-      By.css('div.grid button.text-left'),
+    await this.selectNthDoctor(0);
+  }
+
+  async selectLastDoctor(): Promise<void> {
+    const cards = await this.driver.findElements(By.css('div.grid button.text-left'));
+    if (cards.length === 0) throw new Error('No se encontraron médicos disponibles');
+    await this.selectNthDoctor(cards.length - 1);
+  }
+
+  async selectDoctorByName(partialName: string): Promise<void> {
+    const btn = await this.waitForClickable(
+      By.xpath(
+        `//div[contains(@class,'grid')]//button[contains(@class,'text-left') and contains(.,'${partialName}')]`,
+      ),
       12000,
     );
-    await this.driver.executeScript('arguments[0].scrollIntoView({block:"center"});', doctorBtn);
+    await this.driver.executeScript('arguments[0].scrollIntoView({block:"center"});', btn);
     await this.sleep(300);
-    await this.driver.executeScript('arguments[0].click();', doctorBtn);
+    await this.driver.executeScript('arguments[0].click();', btn);
+  }
+
+  async selectNthDoctor(index: number): Promise<void> {
+    // Doctor cards tienen text-left; el botón "Automático" no lo tiene.
+    const cards = await this.driver.findElements(By.css('div.grid button.text-left'));
+    if (cards.length === 0) throw new Error('No se encontraron médicos disponibles');
+    const target = cards[Math.min(index, cards.length - 1)];
+    await this.driver.executeScript('arguments[0].scrollIntoView({block:"center"});', target);
+    await this.sleep(300);
+    await this.driver.executeScript('arguments[0].click();', target);
   }
 
   async waitForDays(): Promise<void> {

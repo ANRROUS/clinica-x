@@ -23,7 +23,7 @@ const medicoSchema = z.object({
   dni: z.string().length(8, 'El DNI debe tener 8 dígitos').regex(/^\d+$/, 'Solo números'),
   email: z.string().email('Correo inválido'),
   telefono: z.string().optional(),
-  username: z.string().min(4, 'Mínimo 4 caracteres').regex(/^\S+$/, 'Sin espacios'),
+  username: z.string().optional().default(''),
   specialtyId: z.string().min(1, 'Selecciona una especialidad'),
   shift: z.enum(['MANANA', 'TARDE'], { required_error: 'Selecciona un turno' }),
   password: z.string().optional(),

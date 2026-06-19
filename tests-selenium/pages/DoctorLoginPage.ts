@@ -8,15 +8,32 @@ export class DoctorLoginPage extends BasePage {
     await this.waitForElement(By.css('input[name="email"]'));
   }
 
-  async login(email: string, password: string): Promise<void> {
+  async fillEmail(email: string): Promise<void> {
     await this.clearAndType(By.css('input[name="email"]'), email);
+  }
+
+  async fillPassword(password: string): Promise<void> {
     await this.clearAndType(By.css('input[name="password"]'), password);
+  }
+
+  async submit(): Promise<void> {
     const btn = await this.waitForClickable(By.css('button[type="submit"]'));
     await btn.click();
   }
 
+  async login(email: string, password: string): Promise<void> {
+    await this.fillEmail(email);
+    await this.fillPassword(password);
+    await this.submit();
+  }
+
   async waitForRedirect(): Promise<void> {
-    // El doctor login usa window.location.href (full page reload)
     await this.waitForUrl(URLS.doctorCalendario, 15000);
+  }
+
+  async getToastMessage(): Promise<string | null> {
+    const toasts = await this.driver.findElements(By.css('[data-sonner-toast]'));
+    if (toasts.length === 0) return null;
+    return toasts[toasts.length - 1].getText();
   }
 }

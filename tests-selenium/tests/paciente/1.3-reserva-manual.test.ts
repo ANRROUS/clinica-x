@@ -1,104 +1,74 @@
-import { WebDriver, By } from 'selenium-webdriver';
+import { WebDriver } from 'selenium-webdriver';
 import { buildDriver } from '../../utils/driver';
-import { CREDENTIALS, URLS } from '../../utils/credentials';
+import { CREDENTIALS } from '../../utils/credentials';
 import { HomePage } from '../../pages/HomePage';
 import { LoginPacientePage } from '../../pages/LoginPacientePage';
 import { ReservarCitaPage } from '../../pages/ReservarCitaPage';
+import { PerfilPacientePage } from '../../pages/PerfilPacientePage';
 
 describe('1.3 — Reserva manual de cita', () => {
   let driver: WebDriver;
   let homePage: HomePage;
   let loginPage: LoginPacientePage;
   let reservarPage: ReservarCitaPage;
+  let perfilPage: PerfilPacientePage;
 
   beforeAll(async () => {
     driver = await buildDriver();
     homePage = new HomePage(driver);
     loginPage = new LoginPacientePage(driver);
     reservarPage = new ReservarCitaPage(driver);
+    perfilPage = new PerfilPacientePage(driver);
 
-    // Login desde home con paciente2 (Laura)
     await homePage.navigate();
-    await homePage.sleep(1500); // home visible
+    await homePage.sleep(4000); // [captura] home visible — reducir a 1500ms
 
     await homePage.goToLogin();
-    await loginPage.sleep(1500); // formulario vacío visible
+    await loginPage.sleep(4000); // [captura] formulario de login vacío — reducir a 1500ms
 
-    await loginPage.login(
-      CREDENTIALS.paciente2.dni,
-      CREDENTIALS.paciente2.email,
-      CREDENTIALS.paciente2.password,
-    );
-    await loginPage.sleep(1500); // formulario relleno antes de submit
+    await loginPage.fillDni(CREDENTIALS.paciente2.dni);
+    await loginPage.fillEmail(CREDENTIALS.paciente2.email);
+    await loginPage.fillPassword(CREDENTIALS.paciente2.password);
+    await loginPage.sleep(4000); // [captura] formulario relleno antes de submit — reducir a 1000ms
 
+    await loginPage.submit();
     await loginPage.waitForRedirect('/perfil');
-    await loginPage.sleep(1500); // /perfil cargado tras login
+    await perfilPage.waitForLoad();
+    await loginPage.sleep(2000);
   });
 
   afterAll(async () => {
-    // Cleanup: cancelar TODAS las citas activas de Laura para dejar la BD limpia
-    try {
-      await driver.get(`${URLS.base}/perfil`);
-      await reservarPage.sleep(3000); // esperar hidratación del auth
-
-      // Ir al tab Reservas
-      const reservasTab = await reservarPage.waitForClickable(
-        By.xpath("//button[contains(text(), 'Reservas')]"), 8000
-      );
-      await driver.executeScript('arguments[0].click();', reservasTab);
-      await reservarPage.sleep(4000); // esperar que carguen las citas desde la API
-
-      // Cancelar todas las citas activas una a una
-      let cancelado = 0;
-      for (let i = 0; i < 5; i++) {
-        const buttons = await driver.findElements(
-          By.xpath("//button[not(@disabled) and contains(text(), 'Cancelar')]")
-        );
-        if (buttons.length === 0) break;
-
-        await driver.executeScript('arguments[0].click();', buttons[0]);
-        await reservarPage.sleep(1000);
-
-        const confirmBtn = await reservarPage.waitForClickable(
-          By.xpath("//button[contains(text(), 'Sí, cancelar')]"), 5000
-        );
-        await driver.executeScript('arguments[0].click();', confirmBtn);
-        await reservarPage.sleep(2000); // esperar que la lista se actualice
-        cancelado++;
-      }
-      if (cancelado > 0) console.log(`✓ Cleanup: ${cancelado} cita(s) cancelada(s).`);
-    } catch {
-      console.warn('⚠ Cleanup: no se pudo cancelar citas (normal si el test no completó la reserva).');
-    }
-
+    // La reserva creada en este test se conserva intencionalmente:
+    // M-02 la usa para completar la consulta y P-05 para verificarla.
     await driver.quit();
   });
 
   test('Seleccionar especialidad → médico → día → slot → confirmar → redirect a /perfil', async () => {
     await homePage.navigate();
-    await homePage.sleep(1500); // home visible (logueado)
+    await homePage.sleep(4000); // [captura] home visible (sesión activa) — reducir a 1500ms
 
     await homePage.goToReservarCita();
     await reservarPage.waitForSpecialties();
-    await reservarPage.sleep(1500); // página reservar-cita cargada
+    await reservarPage.sleep(4000); // [captura] página reservar-cita con especialidades cargadas — reducir a 1500ms
 
     await reservarPage.selectFirstSpecialty();
     await reservarPage.waitForDoctors();
-    await reservarPage.sleep(1500); // especialidad seleccionada + lista de médicos visible
+    await reservarPage.sleep(4000); // [captura] especialidad seleccionada + lista de médicos visible — reducir a 1500ms
 
-    await reservarPage.selectFirstDoctor();
+    // El último médico del grid es el más recientemente creado (A-03).
+    await reservarPage.selectLastDoctor();
     await reservarPage.waitForDays();
-    await reservarPage.sleep(1500); // médico seleccionado + calendario visible
+    await reservarPage.sleep(4000); // [captura] Doctor Test Selenium seleccionado + calendario visible — reducir a 1500ms
 
     const hasDays = await reservarPage.hasAvailableDays();
     if (!hasDays) {
-      console.warn('⚠ SKIP: No hay días disponibles. Verificar seed.');
-      return;
+      throw new Error(
+        'El primer médico disponible no tiene días habilitados. ' +
+        'Verificar que A-03 y A-04 se ejecutaron correctamente y el médico tiene horarios activos.',
+      );
     }
 
-    // Otras citas (de seed o pruebas manuales) pueden ocupar el slot que la UI
-    // todavía muestra como disponible. En vez de depender de un índice fijo,
-    // se intenta con varias combinaciones de día/slot hasta lograr la reserva.
+    // Iterar días → slots hasta conseguir una reserva exitosa.
     const totalDias = await reservarPage.countAvailableDays();
     let reservada = false;
     let ultimoError = '';
@@ -106,7 +76,7 @@ describe('1.3 — Reserva manual de cita', () => {
     for (let dia = 0; dia < totalDias && !reservada; dia++) {
       await reservarPage.selectNthAvailableDay(dia);
       await reservarPage.waitForSlots();
-      await reservarPage.sleep(2000); // día seleccionado + slots visibles
+      await reservarPage.sleep(4000); // [captura] día seleccionado + slots disponibles — reducir a 1500ms
 
       const hasSlots = await reservarPage.hasAvailableSlots();
       if (!hasSlots) continue;
@@ -114,29 +84,27 @@ describe('1.3 — Reserva manual de cita', () => {
       const totalSlots = await reservarPage.countAvailableSlots();
       for (let slot = 0; slot < totalSlots && !reservada; slot++) {
         await reservarPage.selectNthAvailableSlot(slot);
-        await reservarPage.sleep(1500); // slot seleccionado
+        await reservarPage.sleep(4000); // [captura] slot seleccionado — reducir a 1000ms
 
         await reservarPage.clickConfirmarReserva();
         await reservarPage.waitForModal();
-        await reservarPage.sleep(1500); // modal de confirmación visible
+        await reservarPage.sleep(4000); // [captura] modal de confirmación visible — reducir a 1500ms
 
         await reservarPage.acceptModal();
 
         try {
-          await reservarPage.waitForUrl('/perfil', 8000);
+          await reservarPage.waitForUrl('/perfil', 10000);
           reservada = true;
         } catch {
           const currentUrl = await driver.getCurrentUrl();
           if (currentUrl.includes('/reservar-cita')) {
             const toastMsg = await reservarPage.getToastMessage();
-            ultimoError = `día[${dia}] slot[${slot}] rechazado por la API. Mensaje real: "${toastMsg ?? '(sin toast detectado)'}"`;
-            console.warn(`⚠ Intento día[${dia}] slot[${slot}] rechazado: "${toastMsg}"`);
-            // El modal no se cierra solo cuando la reserva falla (bug del frontend),
-            // hay que cerrarlo manualmente antes de reintentar con otro slot/día.
+            ultimoError = `día[${dia}] slot[${slot}]: "${toastMsg ?? '(sin toast)'}"`;
+            console.warn(`⚠ Intento rechazado: ${ultimoError}`);
             await reservarPage.closeModalIfOpen();
             await reservarPage.sleep(1000);
           } else {
-            throw new Error(`URL inesperada tras acceptModal: ${currentUrl}`);
+            throw new Error(`URL inesperada tras aceptar modal: ${currentUrl}`);
           }
         }
       }
@@ -144,12 +112,14 @@ describe('1.3 — Reserva manual de cita', () => {
 
     if (!reservada) {
       throw new Error(
-        `No se pudo reservar tras probar todas las combinaciones de día/slot disponibles. Último error: ${ultimoError}. ` +
-        'Probablemente todos los slots visibles ya están ocupados por citas de otros pacientes (seed o pruebas manuales).',
+        `No se pudo reservar en ningún día/slot disponible. Último error: ${ultimoError}. ` +
+        'Verificar que al menos un médico activo tiene horarios futuros disponibles.',
       );
     }
 
-    await reservarPage.sleep(3000); // reserva confirmada, /perfil cargado
+    await perfilPage.waitForLoad();
+    await perfilPage.sleep(4000); // [captura] /perfil cargado con reserva confirmada — reducir a 2000ms
+
     const url = await driver.getCurrentUrl();
     expect(url).toContain('/perfil');
   });
