@@ -1,7 +1,7 @@
 'use client';
 
 import Image from 'next/image';
-import { Eye, EyeOff, Stethoscope, Fingerprint, Mail, Phone } from 'lucide-react';
+import { Eye, EyeOff, Stethoscope, Fingerprint, Mail, Phone, User } from 'lucide-react';
 import type { UseFormRegister, FieldErrors } from 'react-hook-form';
 import type { EspecialidadDTO } from '@/lib/api/types';
 
@@ -146,22 +146,33 @@ export default function DoctorFormLeft({
             {errors.password && <p className="mt-1 text-xs text-red-500">{errors.password.message}</p>}
           </div>
 
-          <div className="flex items-end">
-            <div className="w-full">
-              <label className="mb-1 block text-xs font-semibold" style={{ color: '#008585' }}>Especialidad *</label>
-              <select
-                {...register('specialtyId')}
-                className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-[#008585] focus:outline-none focus:ring-1 focus:ring-[#008585]"
-              >
-                <option value="">Seleccionar...</option>
-                {specialties.map((s) => (
-                  <option key={s.id} value={s.id}>
-                    {s.nombre}
-                  </option>
-                ))}
-              </select>
-              {errors.specialtyId && <p className="mt-1 text-xs text-red-500">{errors.specialtyId.message}</p>}
+          <div>
+            <label className="mb-1 block text-xs font-semibold" style={{ color: '#008585' }}>Usuario</label>
+            <div className="relative">
+              <User className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
+              <input
+                {...register('username')}
+                className="w-full rounded-lg border border-gray-300 py-2 pl-9 pr-3 text-sm focus:border-[#008585] focus:outline-none focus:ring-1 focus:ring-[#008585]"
+                placeholder="Ej: mvargas"
+              />
             </div>
+            {errors.username && <p className="mt-1 text-xs text-red-500">{errors.username.message}</p>}
+          </div>
+
+          <div>
+            <label className="mb-1 block text-xs font-semibold" style={{ color: '#008585' }}>Especialidad *</label>
+            <select
+              {...register('specialtyId')}
+              className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-[#008585] focus:outline-none focus:ring-1 focus:ring-[#008585]"
+            >
+              <option value="">Seleccionar...</option>
+              {specialties.map((s) => (
+                <option key={s.id} value={s.id}>
+                  {s.nombre}
+                </option>
+              ))}
+            </select>
+            {errors.specialtyId && <p className="mt-1 text-xs text-red-500">{errors.specialtyId.message}</p>}
           </div>
         </div>
       </div>

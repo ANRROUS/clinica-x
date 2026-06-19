@@ -21,7 +21,7 @@ on:
   push:
     branches: [main]
   pull_request:
-    branches: [main]
+    branches: [main, develop]
 
 jobs:
   # =============================================================================
@@ -30,6 +30,7 @@ jobs:
   detect-changes:
     name: 🔍 Detect Changed Services
     runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' || github.base_ref == 'main'
     outputs:
       auth-service: ${{ steps.changes.outputs.auth-service }}
       appointment-service: ${{ steps.changes.outputs.appointment-service }}
@@ -222,7 +223,7 @@ jobs:
       - deploy-ocr-service
       - deploy-api-gateway
       - deploy-frontend
-    if: always()
+    if: always() && (github.ref == 'refs/heads/main' || github.base_ref == 'main')
     runs-on: ubuntu-latest
     steps:
       - name: ✅ Notify Success
@@ -234,3 +235,58 @@ jobs:
         run: |
           echo "❌ Some services failed to deploy"
           exit 1
+
+  # =============================================================================
+  # PRUEBAS DE USABILIDAD — Lighthouse + PageSpeed Insights en PRs a develop
+  # =============================================================================
+  test-usabilidad:
+    name: 🧪 Pruebas de Usabilidad (Lighthouse + PageSpeed)
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request' && github.base_ref == 'develop'
+    
+    steps:
+      - name: 📥 Checkout repository
+        uses: actions/checkout@v4
+
+      - name: 🟢 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: 📦 Setup pnpm
+        uses: pnpm/action-setup@v3
+        with:
+          version: 8
+
+      - name: 📦 Install dependencies
+        run: pnpm install
+
+      - name: 🔦 Run Lighthouse Audits
+        run: pnpm test:usabilidad:lighthouse
+        env:
+          FRONTEND_URL: https://clinica-x.up.railway.app
+          API_URL: https://clinica-x.up.railway.app/api
+
+      - name: 📊 Run PageSpeed Insights
+        run: pnpm test:usabilidad:pagespeed
+        env:
+          FRONTEND_URL: https://clinica-x.up.railway.app
+          API_URL: https://clinica-x.up.railway.app/api
+          PAGESPEED_API_KEY: ${{ secrets.PAGESPEED_API_KEY }}
+
+      - name: 📝 Generate Consolidated Report
+        run: pnpm test:usabilidad:report
+
+      - name: 📄 Generate PDF Report
+        run: pnpm test:usabilidad:pdf
+
+      - name: 📤 Upload Usability Reports
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: evidencias-usabilidad
+          path: |
+            test-usabilidad/reports/
+            test-usabilidad/screenshots/
+          retention-days: 30
+

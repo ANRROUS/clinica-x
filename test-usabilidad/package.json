@@ -1,0 +1,24 @@
+{
+  "name": "@clinica-x/test-usabilidad",
+  "version": "2.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "lighthouse": "tsx src/lighthouse/run-lighthouse.ts",
+    "pagespeed": "tsx src/pagespeed/run-pagespeed.ts",
+    "report": "tsx src/report/generate-report.ts",
+    "pdf": "tsx src/report/generate-pdf.ts",
+    "test:all": "pnpm lighthouse && pnpm pagespeed && pnpm report",
+    "test:all:pdf": "pnpm lighthouse && pnpm pagespeed && pnpm report && pnpm pdf"
+  },
+  "dependencies": {
+    "lighthouse": "^12.2.1",
+    "chrome-launcher": "^1.1.2"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "puppeteer": "^22.15.0",
+    "tsx": "^4.19.0",
+    "typescript": "^5.5.0"
+  }
+}
