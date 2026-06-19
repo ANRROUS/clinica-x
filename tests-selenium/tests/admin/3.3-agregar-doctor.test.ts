@@ -1,6 +1,7 @@
 import { WebDriver } from 'selenium-webdriver';
 import { buildDriver } from '../../utils/driver';
 import { CREDENTIALS } from '../../utils/credentials';
+import { saveLastDoctor } from '../../utils/lastDoctor';
 import { AdminLoginPage } from '../../pages/AdminLoginPage';
 import { AdminDashboardPage } from '../../pages/AdminDashboardPage';
 import { AdminDoctorFormPage } from '../../pages/AdminDoctorFormPage';
@@ -45,7 +46,6 @@ describe('3.3 — Agregar nuevo doctor', () => {
     await formPage.fillDni(dniRandom);
     await formPage.fillEmail(`doctor.selenium.${dniRandom}@test.com`);
     await formPage.fillTelefono(telRandom);
-    await formPage.fillUsuario(`drSelenium${dniRandom.slice(-4)}`);
     await formPage.selectEspecialidad();
     await formPage.selectTurnoManana();
     await formPage.fillPassword('12345678');
@@ -66,6 +66,9 @@ describe('3.3 — Agregar nuevo doctor', () => {
         'Puede reflejar una falla real de los microservicios de administración, no un error del test.',
       );
     }
+
+    // Guardar credenciales del médico recién creado para los tests M-01 y M-02.
+    saveLastDoctor({ email: `doctor.selenium.${dniRandom}@test.com`, password: '12345678' });
 
     await formPage.sleep(4000); // [captura] dashboard cargado con doctor creado — reducir a 1500ms
     const url = await driver.getCurrentUrl();

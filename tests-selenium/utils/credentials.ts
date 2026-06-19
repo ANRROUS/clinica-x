@@ -5,8 +5,8 @@ export const CREDENTIALS = {
     password: 'Admin123!',
   },
   medico: {
-    email: 'maria.garcia@clinicax.com',
-    password: 'Medico123!',
+    email: 'doctor.selenium@test.com',
+    password: '12345678',
   },
   paciente: {
     dni: '70364946',

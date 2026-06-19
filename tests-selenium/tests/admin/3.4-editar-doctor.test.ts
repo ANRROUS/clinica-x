@@ -20,46 +20,46 @@ describe('3.4 — Editar doctor: nombre, teléfono y horario', () => {
     await loginPage.navigate();
     await loginPage.login(CREDENTIALS.admin.email, CREDENTIALS.admin.password);
     await loginPage.waitForRedirect();
-    await loginPage.sleep(2000); // dashboard cargado tras login
+    await loginPage.sleep(2000);
   });
 
   afterAll(async () => {
     await driver.quit();
   });
 
-  test('Editar doctor existente → formulario modal → guardar cambios', async () => {
+  test('Editar doctor existente → modal → guardar con datos nuevos', async () => {
     await dashboardPage.waitForLoad();
     await dashboardPage.sleep(4000); // [captura] dashboard visible — reducir a 1500ms
 
-    // Tras el pull, el botón editar ya no navega a /edit sino que abre un modal.
-    // Se intenta editar "Doctor Test Selenium" (si 3.3 lo creó); si no existe,
-    // se edita el primer médico de la tabla.
-    try {
-      await dashboardPage.clickEditarDoctorByName('Doctor Test Selenium');
-    } catch {
-      await dashboardPage.clickEditarPrimerDoctor();
-    }
+    await dashboardPage.clickEditarPrimerDoctor();
 
-    // El modal carga el formulario (puede mostrar skeleton mientras hace fetch del doctor).
+    // El modal carga el formulario con los datos precargados del doctor.
     await formPage.waitForLoad();
     await formPage.sleep(4000); // [captura] modal con formulario pre-cargado — reducir a 2000ms
 
-    await formPage.fillNombre('Doctor Test');
-    await formPage.fillApellido('Actualizado');
-    await formPage.fillTelefono('912345678');
-    // Por si acaso el precargado de DNI/email falla (el pull lo arreglará, pero se mantiene como red de seguridad).
-    await formPage.ensureValidDni();
+    // Leer el DNI precargado para usarlo como identificador en el nombre editado.
+    const dni = await formPage.getFieldValue('dni');
+
+    const ts = Date.now();
+    const telRandom = '9' + ts.toString().slice(-8);
+
+    await formPage.fillNombre(`Dr`);
+    await formPage.fillApellido(dni);
+    await formPage.fillTelefono(telRandom);
     await formPage.ensureValidEmail();
+
     await formPage.sleep(4000); // [captura] datos actualizados en el formulario — reducir a 1500ms
 
-    // Marcar celda adicional: martes (dayIndex=1), primera fila del turno del doctor.
-    await formPage.clickHorarioCell(1, 0);
-    await formPage.sleep(4000); // [captura] celda de horario marcada — reducir a 1000ms
+    // Marcar celdas en fila 1 (no fila 0, que ya fue seleccionada en 3.3 y se desmarcaría).
+    // El doctor queda con lunes-fila0 (de 3.3) + lunes-fila1, martes-fila1, miércoles-fila1,
+    // lo que da múltiples slots para que P-07 (reprogramar cita) tenga opciones disponibles.
+    await formPage.clickHorarioCell(0, 1);
+    await formPage.clickHorarioCell(1, 1);
+    await formPage.clickHorarioCell(2, 1);
+    await formPage.sleep(4000); // [captura] celdas de horario marcadas — reducir a 1000ms
 
     await formPage.clickGuardarCambios();
 
-    // El éxito se detecta por el cierre del modal (input[name="nombre"] desaparece del DOM).
-    // Si tras 15s sigue visible, la edición falló — se captura el toast y se falla el test.
     try {
       await formPage.waitForFormHidden();
     } catch {

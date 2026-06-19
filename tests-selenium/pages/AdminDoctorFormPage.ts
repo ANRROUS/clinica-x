@@ -56,7 +56,24 @@ export class AdminDoctorFormPage extends BasePage {
   }
 
   async fillUsuario(username: string): Promise<void> {
-    await this.clearAndType(By.css('input[name="username"]'), username);
+    const inputs = await this.driver.findElements(By.css('input[name="username"]'));
+    if (inputs.length === 0) return;
+    const inputType = await inputs[0].getAttribute('type');
+    if (inputType === 'hidden') {
+      // El schema Zod exige username min(4). El input es hidden (react-hook-form), así que
+      // se usa el setter nativo de HTMLInputElement + eventos para que RHF registre el valor.
+      await this.driver.executeScript(
+        'var s = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, "value").set;' +
+        's.call(arguments[0], arguments[1]);' +
+        'arguments[0].dispatchEvent(new Event("input", {bubbles:true}));' +
+        'arguments[0].dispatchEvent(new Event("change", {bubbles:true}));',
+        inputs[0],
+        username,
+      );
+    } else {
+      await inputs[0].clear();
+      await inputs[0].sendKeys(username);
+    }
   }
 
   async fillPassword(password: string): Promise<void> {
@@ -68,6 +85,10 @@ export class AdminDoctorFormPage extends BasePage {
   }
 
   async selectEspecialidad(): Promise<void> {
+    // Las especialidades llegan de una query asíncrona; esperar a que aparezca al menos una opción real.
+    await this.waitForElement(
+      By.css('select[name="specialtyId"] option:not([value=""])'), 10000,
+    );
     const select = await this.waitForElement(By.css('select[name="specialtyId"]'));
     const options = await select.findElements(By.css('option:not([value=""])'));
     if (options.length > 0) {
@@ -75,33 +96,50 @@ export class AdminDoctorFormPage extends BasePage {
     }
   }
 
-  // DoctorFormLeft.tsx tiene radio inputs para turno (siempre presentes en el DOM).
-  // Se hace clic en el radio MANANA para asegurarse de que quede seleccionado.
-  async selectTurnoManana(): Promise<void> {
-    const radio = await this.waitForElement(
-      By.css('input[name="shift"][value="MANANA"]'),
-      8000,
+  // Localiza el toggle de turno usando JS para evitar problemas de encoding con 'ñ' en XPath.
+  // El botón tiene aria-label='Mañana' cuando el turno activo es MANANA y 'Tarde' cuando es TARDE.
+  private async findShiftToggle(): Promise<any> {
+    return this.driver.executeScript(
+      `return Array.from(document.querySelectorAll('button[type="button"]'))` +
+      `.find(function(b){ var l = b.getAttribute('aria-label'); return l === 'Tarde' || l === 'Mañana'; });`,
     );
-    await this.driver.executeScript('arguments[0].scrollIntoView({block:"center"});', radio);
-    await this.sleep(200);
-    await this.driver.executeScript('arguments[0].click();', radio);
   }
 
+  // Asegura turno MANANA: si el toggle muestra 'Tarde' (estado actual = TARDE), lo pulsa para cambiar.
+  async selectTurnoManana(): Promise<void> {
+    await this.sleep(500);
+    const btn = await this.findShiftToggle();
+    if (!btn) throw new Error('No se encontró el toggle de turno en el formulario');
+    const label: string = await (btn as any).getAttribute('aria-label');
+    if (label === 'Tarde') {
+      await this.driver.executeScript('arguments[0].scrollIntoView({block:"center"});', btn);
+      await this.sleep(200);
+      await this.driver.executeScript('arguments[0].click();', btn);
+      await this.sleep(300);
+    }
+  }
+
+  // Asegura turno TARDE: si el toggle muestra 'Mañana' (estado actual = MANANA), lo pulsa para cambiar.
   async selectTurnoTarde(): Promise<void> {
-    const radio = await this.waitForElement(
-      By.css('input[name="shift"][value="TARDE"]'),
-      8000,
-    );
-    await this.driver.executeScript('arguments[0].scrollIntoView({block:"center"});', radio);
-    await this.sleep(200);
-    await this.driver.executeScript('arguments[0].click();', radio);
+    await this.sleep(500);
+    const btn = await this.findShiftToggle();
+    if (!btn) throw new Error('No se encontró el toggle de turno en el formulario');
+    const label: string = await (btn as any).getAttribute('aria-label');
+    if (label !== 'Tarde') {
+      await this.driver.executeScript('arguments[0].scrollIntoView({block:"center"});', btn);
+      await this.sleep(200);
+      await this.driver.executeScript('arguments[0].click();', btn);
+      await this.sleep(300);
+    }
   }
 
   async clickHorarioCell(dayIndex: number, slotRowIndex: number): Promise<void> {
     // Tabla row-major: 5 columnas de días (Lun-Vie).
     // idx = slotRowIndex * 5 + dayIndex
-    await this.waitForElement(By.css('table tbody tr td button'), 8000);
-    const cells = await this.driver.findElements(By.css('table tbody tr td button'));
+    // Se usa "form table ..." para no confundir con los botones de la tabla del dashboard
+    // que siguen en el DOM detrás del modal de edición.
+    await this.waitForElement(By.css('form table tbody tr td button'), 8000);
+    const cells = await this.driver.findElements(By.css('form table tbody tr td button'));
     const idx = slotRowIndex * 5 + dayIndex;
     if (!cells[idx]) {
       throw new Error(
