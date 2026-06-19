@@ -19,6 +19,7 @@ describe('3.1 — Login de admin', () => {
   test('Login con email + password → redirect a /admin/dashboard', async () => {
     await loginPage.navigate();
     await loginPage.sleep(2000); // formulario vacío visible
+    await loginPage.validateUsabilityMetrics('Login Administrador');
 
     await loginPage.login(CREDENTIALS.admin.email, CREDENTIALS.admin.password);
     await loginPage.sleep(2000); // formulario relleno antes de submit
