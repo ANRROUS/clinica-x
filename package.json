@@ -18,9 +18,9 @@
     "dev:file": "pnpm --filter file-service dev",
     "dev:gateway": "pnpm --filter api-gateway dev",
     "dev:frontend": "pnpm --filter frontend dev",
-"dev:ai": "cd services\\ai-service && .venv\\Scripts\\python.exe -m uvicorn src.main:app --reload --port 3005",
-"dev:ai:install": "cd services\\ai-service && python -m venv .venv && .venv\\Scripts\\pip.exe install -r requirements.txt",
-"lint": "pnpm -r run lint",
+    "dev:ai": "cd services\\ai-service && .venv\\Scripts\\python.exe -m uvicorn src.main:app --reload --port 3005",
+    "dev:ai:install": "cd services\\ai-service && python -m venv .venv && .venv\\Scripts\\pip.exe install -r requirements.txt",
+    "lint": "pnpm -r run lint",
     "format": "prettier --write \"**/*.{ts,tsx,js,json,md}\" --ignore-path .gitignore",
     "prisma:generate:all": "pnpm --filter auth-service prisma:generate && pnpm --filter appointment-service prisma:generate && pnpm --filter clinical-service prisma:generate && pnpm --filter file-service prisma:generate && pnpm --filter ocr-service prisma:generate",
     "prisma:migrate:all": "pnpm --filter auth-service prisma:migrate && pnpm --filter appointment-service prisma:migrate && pnpm --filter clinical-service prisma:migrate && pnpm --filter file-service prisma:migrate",
@@ -63,7 +63,13 @@
     "test:selenium:admin:agregar-doctor": "pnpm --filter @clinica-x/tests-selenium test:admin:agregar-doctor",
     "test:selenium:admin:editar-doctor": "pnpm --filter @clinica-x/tests-selenium test:admin:editar-doctor",
     "test:selenium:admin:desactivar-doctor": "pnpm --filter @clinica-x/tests-selenium test:admin:desactivar-doctor",
-    "test:selenium:admin:dni-duplicado": "pnpm --filter @clinica-x/tests-selenium test:admin:dni-duplicado"
+    "test:selenium:admin:dni-duplicado": "pnpm --filter @clinica-x/tests-selenium test:admin:dni-duplicado",
+    "test:usabilidad": "pnpm --filter @clinica-x/test-usabilidad test:all",
+    "test:usabilidad:lighthouse": "pnpm --filter @clinica-x/test-usabilidad lighthouse",
+    "test:usabilidad:pagespeed": "pnpm --filter @clinica-x/test-usabilidad pagespeed",
+    "test:usabilidad:report": "pnpm --filter @clinica-x/test-usabilidad report",
+    "test:usabilidad:pdf": "pnpm --filter @clinica-x/test-usabilidad pdf",
+    "test:usabilidad:all:pdf": "pnpm --filter @clinica-x/test-usabilidad test:all:pdf"
   },
   "devDependencies": {
     "@types/node": "^20.11.0",

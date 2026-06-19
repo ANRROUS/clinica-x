@@ -27,6 +27,8 @@ describe('3.2 — Verificar dashboard con KPIs', () => {
   test('Existen 4 KPIs y al menos una fila de médicos en la tabla', async () => {
     await dashboardPage.waitForLoad();
     await dashboardPage.sleep(4000); // [captura] tabla y KPIs visibles — reducir a 2000ms
+    await dashboardPage.sleep(2000); // tabla y KPIs visibles
+    await dashboardPage.validateUsabilityMetrics('Panel de Administrador');
 
     const kpiCards = await dashboardPage.getKpiCards();
     expect(kpiCards.length).toBe(4);

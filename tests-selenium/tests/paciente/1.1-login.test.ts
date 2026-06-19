@@ -28,6 +28,8 @@ describe('1.1 — Login paciente existente', () => {
 
     await homePage.goToLogin();
     await homePage.sleep(4000); // [captura] formulario de login vacío — reducir a 1500ms
+    await loginPage.sleep(3000); // formulario vacío visible
+    await loginPage.validateUsabilityMetrics('Login Paciente');
 
     // Rellenar campos por separado para capturar el formulario antes de enviarlo.
     await loginPage.fillDni(CREDENTIALS.paciente.dni);
@@ -41,6 +43,8 @@ describe('1.1 — Login paciente existente', () => {
     // Verificar que /perfil cargó correctamente con los tabs del perfil visibles.
     await perfilPage.waitForLoad();
     await perfilPage.sleep(4000); // [captura] /perfil cargado con tabs Consultas/Tratamiento/Reservas — reducir a 2000ms
+    await loginPage.sleep(3000); // página /perfil cargada
+    await loginPage.validateUsabilityMetrics('Portal del Paciente');
 
     const url = await driver.getCurrentUrl();
     expect(url).toContain('/perfil');

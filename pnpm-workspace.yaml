@@ -3,6 +3,8 @@ packages:
   - 'services/*'
   - 'frontend'
   - 'tests-selenium'
+  - 'e2e-legacy'
+  - 'test-usabilidad'
 allowBuilds:
   '@prisma/client': false
   '@prisma/engines': false

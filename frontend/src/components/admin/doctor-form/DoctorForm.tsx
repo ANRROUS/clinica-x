@@ -29,6 +29,10 @@ const medicoSchema = z.object({
   password: z.string().optional(),
 });
 
+const medicoCreateSchema = medicoSchema.extend({
+  password: z.string().min(8, 'Mínimo 8 caracteres'),
+});
+
 type MedicoForm = z.infer<typeof medicoSchema>;
 
 interface DoctorFormProps {
@@ -69,7 +73,7 @@ export default function DoctorForm({ editId, onSaved, onCancel, isModal }: Docto
     setValue,
     formState: { errors },
   } = useForm<MedicoForm>({
-    resolver: zodResolver(medicoSchema),
+    resolver: zodResolver(isEditing ? medicoSchema : medicoCreateSchema),
     defaultValues: isEditing
       ? undefined
       : {
@@ -184,11 +188,7 @@ export default function DoctorForm({ editId, onSaved, onCancel, isModal }: Docto
       if (!body.password) delete body.password;
       updateMutation.mutate({ id: editId!, body });
     } else {
-      if (!data.password || data.password.length < 8) {
-        toast.error('La contraseña debe tener al menos 8 caracteres');
-        return;
-      }
-      createMutation.mutate({ ...payload, password: data.password } as any);
+      createMutation.mutate({ ...payload, password: data.password! } as any);
     }
   };
 
@@ -219,8 +219,6 @@ export default function DoctorForm({ editId, onSaved, onCancel, isModal }: Docto
         </div>
 
         <form onSubmit={handleSubmit(onSubmit)}>
-          <input type="hidden" {...register('username')} />
-
           <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
             <DoctorFormLeft
               register={register}
