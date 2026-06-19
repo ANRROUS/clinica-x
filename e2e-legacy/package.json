@@ -1,0 +1,25 @@
+{
+  "name": "@clinica-x/test-usabilidad",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "test": "jest && node scripts/generar-reporte.js",
+    "test:paciente": "jest tests/paciente/ && node scripts/generar-reporte.js",
+    "test:medico": "jest tests/medico/ && node scripts/generar-reporte.js",
+    "test:admin": "jest tests/admin/ && node scripts/generar-reporte.js",
+    "test:usabilidad": "jest && node scripts/generar-reporte.js"
+  },
+  "dependencies": {
+    "dotenv": "^16.0.0",
+    "selenium-webdriver": "^4.20.0"
+  },
+  "devDependencies": {
+    "@types/jest": "^29.0.0",
+    "@types/node": "^20.0.0",
+    "@types/selenium-webdriver": "^4.1.0",
+    "jest": "^29.0.0",
+    "jest-html-reporters": "^3.1.7",
+    "ts-jest": "^29.0.0",
+    "typescript": "^5.0.0"
+  }
+}

@@ -25,8 +25,10 @@ describe('Flujo Médico', () => {
   // ─────────────────────────────────────────────
   test('2.1 Login de médico → redirect a /doctor/calendario', async () => {
     await loginPage.navigate();
+    await loginPage.validateUsabilityMetrics('Login Médico');
     await loginPage.login(CREDENTIALS.medico.email, CREDENTIALS.medico.password);
     await loginPage.waitForRedirect();
+    await loginPage.validateUsabilityMetrics('Portal del Médico');
     const url = await driver.getCurrentUrl();
     expect(url).toContain('/doctor/calendario');
   });
