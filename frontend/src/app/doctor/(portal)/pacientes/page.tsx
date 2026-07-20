@@ -7,14 +7,15 @@ import { CalendarX2 } from 'lucide-react';
 import { useDoctorAuthStore } from '@/store/useDoctorAuthStore';
 import { getDoctorCalendar, getDoctorSlotDuration } from '@/lib/api/doctor.api';
 import PatientSidebar from '@/components/doctor/patients/PatientSidebar';
-import { nowLima, addDaysLima, formatLima } from '@clinica-x/date-utils';
+import { nowLima, addDaysLima, addYearsLima, formatLima } from '@clinica-x/date-utils';
 
 export default function DoctorPacientesPage() {
   const { isAuthenticated } = useDoctorAuthStore();
   const router = useRouter();
   const [dateRange, setDateRange] = useState(() => {
-    const desde = nowLima();
-    const hasta = addDaysLima(desde, 30);
+    const hoy = nowLima();
+    const desde = addYearsLima(hoy, -1);
+    const hasta = addDaysLima(hoy, 30);
     return {
       desde: formatLima(desde, 'yyyy-MM-dd'),
       hasta: formatLima(hasta, 'yyyy-MM-dd'),
