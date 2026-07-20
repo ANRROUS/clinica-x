@@ -45,6 +45,9 @@ supabase/.temp/
 scripts/*-out.txt
 scripts/*-err.txt
 
+# Python
+__pycache__/
+
 # Misc
 *.tsbuildinfo
 .eslintcache

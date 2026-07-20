@@ -61,7 +61,7 @@ export class PrismaCitaRepository implements ICitaRepository {
   }
 
   async buscarPorMedico(medicoId: string, fechaDesde?: Date, fechaHasta?: Date): Promise<Cita[]> {
-    const where: any = { medicoId };
+    const where: any = { medicoId, estado: { not: 'CANCELADA' } };
     if (fechaDesde || fechaHasta) {
       where.fechaHora = {};
       if (fechaDesde) where.fechaHora.gte = fechaDesde;

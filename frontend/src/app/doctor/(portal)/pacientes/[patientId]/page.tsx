@@ -10,7 +10,7 @@ import PatientHeader from '@/components/doctor/patients/PatientHeader';
 import PatientTabs from '@/components/doctor/patients/PatientTabs';
 import ActiveConsultation from '@/components/doctor/patients/consultation/ActiveConsultation';
 import ConsultationHistory from '@/components/doctor/patients/history/ConsultationHistory';
-import { nowLima, addDaysLima, formatLima, parseApiDate } from '@clinica-x/date-utils';
+import { nowLima, addDaysLima, addYearsLima, formatLima, parseApiDate } from '@clinica-x/date-utils';
 
 export default function DoctorPatientDetailPage() {
   const { isAuthenticated } = useDoctorAuthStore();
@@ -43,7 +43,7 @@ export default function DoctorPatientDetailPage() {
   const dateRange = useMemo(() => {
     const hoy = nowLima();
     return {
-      desde: formatLima(hoy, 'yyyy-MM-dd'),
+      desde: formatLima(addYearsLima(hoy, -1), 'yyyy-MM-dd'),
       hasta: formatLima(addDaysLima(hoy, 30), 'yyyy-MM-dd'),
     };
   }, []);
