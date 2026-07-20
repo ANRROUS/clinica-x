@@ -7,7 +7,10 @@
  * ============================================================================
  */
 
-const { spawn } = require('child_process');
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'Admin123!';
+const DOCTOR_PASSWORD = process.env.DOCTOR_PASSWORD || 'Doctor123!';
+const MEDICO_PASSWORD = process.env.MEDICO_PASSWORD || 'Medico123!';
+const PACIENTE_PASSWORD = process.env.PACIENTE_PASSWORD || 'Paciente123!';
 const path = require('path');
 
 const root = __dirname;
@@ -58,7 +61,7 @@ async function main() {
     r = await fetchJson('http://localhost:8080/api/auth/login', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ dni: '00000000', email: 'admin@clinicax.com', password: 'Admin123!' }),
+      body: JSON.stringify({ dni: '00000000', email: 'admin@clinicax.com', password: ADMIN_PASSWORD }),
     });
     console.log('login admin:', r.status, r.body.success ? 'OK' : 'FAIL');
     const adminToken = r.body.data?.token;
@@ -98,7 +101,7 @@ async function main() {
         body: JSON.stringify({
           nombre: 'Test', apellido: 'Doctor', dni: '99999999', email: 'testdoc@x.com',
           telefono: '999999999', username: 'testdoctor', specialtyId, shift: 'MANANA',
-          password: 'Doctor123!', schedules: [{ diaSemana: 1, horaInicio: '08:00', horaFin: '12:00' }],
+          password: DOCTOR_PASSWORD, schedules: [{ diaSemana: 1, horaInicio: '08:00', horaFin: '12:00' }],
         }),
       });
       console.log('crear médico:', r.status, JSON.stringify(r.body));
@@ -117,7 +120,7 @@ async function main() {
         body: JSON.stringify({
           nombre: 'Test', apellido: 'Doctor', dni: '99999998', email: 'testdoc2@x.com',
           telefono: '999999999', username: 'testdoctor2', specialtyId: 'a1b2c3d4-e5f6-7890-abcd-ef1234567890', shift: 'MANANA',
-          password: 'Doctor123!', schedules: [{ diaSemana: 1, horaInicio: '08:00', horaFin: '12:00' }],
+          password: DOCTOR_PASSWORD, schedules: [{ diaSemana: 1, horaInicio: '08:00', horaFin: '12:00' }],
         }),
       });
       console.log('crear médico2:', r.status, JSON.stringify(r.body));
@@ -149,7 +152,7 @@ async function main() {
     r = await fetchJson('http://localhost:8080/api/auth/register', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ dni: dniPaciente, email: emailPaciente, password: 'Paciente123!' }),
+      body: JSON.stringify({ dni: dniPaciente, email: emailPaciente, password: PACIENTE_PASSWORD }),
     });
     console.log('register paciente:', r.status, r.body.success ? 'OK' : 'FAIL', r.body.error?.mensaje || '');
 
@@ -157,7 +160,7 @@ async function main() {
     r = await fetchJson('http://localhost:8080/api/auth/login', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ dni: dniPaciente, email: emailPaciente, password: 'Paciente123!' }),
+      body: JSON.stringify({ dni: dniPaciente, email: emailPaciente, password: PACIENTE_PASSWORD }),
     });
     console.log('login paciente:', r.status, r.body.success ? 'OK' : 'FAIL');
     const patientToken = r.body.data?.token;
@@ -232,7 +235,7 @@ async function main() {
       body: JSON.stringify({
         nombre: 'Medico', apellido: 'Prueba', dni: dniMedico, email: emailMedico,
         telefono: '999888777', username: 'medicoprueba', specialtyId, shift: 'MANANA',
-        password: 'Medico123!', schedules: [
+        password: MEDICO_PASSWORD, schedules: [
           { diaSemana: 1, horaInicio: '09:00', horaFin: '13:00' },
           { diaSemana: 2, horaInicio: '09:00', horaFin: '13:00' },
         ],
@@ -243,7 +246,7 @@ async function main() {
     r = await fetchJson('http://localhost:8080/api/auth/login', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ dni: dniMedico, email: emailMedico, password: 'Medico123!' }),
+      body: JSON.stringify({ dni: dniMedico, email: emailMedico, password: MEDICO_PASSWORD }),
     });
     console.log('login médico:', r.status, r.body.success ? 'OK' : 'FAIL');
     const doctorToken = r.body.data?.token;

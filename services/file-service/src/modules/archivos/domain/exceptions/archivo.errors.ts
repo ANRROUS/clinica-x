@@ -26,7 +26,7 @@ export class TipoMimeNoPermitidoError extends ErrorDominio {
 
 export class TamanoArchivoExcedidoError extends ErrorDominio {
   readonly codigo = 'TAMANO_ARCHIVO_EXCEDIDO';
-  readonly httpStatus = 400;
+  readonly httpStatus = 413;
 
   constructor(maxBytes: number) {
     super(`El archivo excede el tamaño máximo permitido de ${maxBytes} bytes`);

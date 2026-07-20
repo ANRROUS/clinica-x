@@ -50,9 +50,13 @@ function check(step, result, expectedStatus, checkFn) {
 // ============================================================================
 // CREDENCIALES DE DEMO (del script seed-demo.js)
 // ============================================================================
-const ADMIN = { dni: '00000000', email: 'admin@clinicax.com', password: 'Admin123!' };
-const MEDICO = { dni: '10101010', email: 'maria.garcia@clinicax.com', password: 'Medico123!' };
-const PACIENTE = { dni: '60606060', email: 'juan.perez@email.com', password: 'Paciente123!' };
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'Admin123!';
+const MEDICO_PASSWORD = process.env.MEDICO_PASSWORD || 'Medico123!';
+const PACIENTE_PASSWORD = process.env.PACIENTE_PASSWORD || 'Paciente123!';
+
+const ADMIN = { dni: '00000000', email: 'admin@clinicax.com', password: ADMIN_PASSWORD };
+const MEDICO = { dni: '10101010', email: 'maria.garcia@clinicax.com', password: MEDICO_PASSWORD };
+const PACIENTE = { dni: '60606060', email: 'juan.perez@email.com', password: PACIENTE_PASSWORD };
 
 async function main() {
   console.log('\n==========================================');
@@ -96,7 +100,7 @@ async function main() {
       nombre: 'Test', apellido: 'Doctor', dni: `99${uniq}`, email: `testdoc${uniq}@clinicax.com`,
       telefono: '900000000', username: `testdoc${uniq}`,
       specialtyId: doctors[0]?.specialtyId || espMap?.MedicinaGeneral,
-      shift: 'MANANA', password: 'Medico123!',
+      shift: 'MANANA', password: MEDICO_PASSWORD,
       schedules: [{ diaSemana: 1, horaInicio: '09:00', horaFin: '13:00' }],
     }),
   });

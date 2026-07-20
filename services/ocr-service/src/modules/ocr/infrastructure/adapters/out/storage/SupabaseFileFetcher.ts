@@ -10,6 +10,11 @@ export class SupabaseFileFetcher implements FileFetcher {
   async download(archivoId: string, keyS3: string): Promise<{ buffer: Buffer; filename: string; mimeType: string }> {
     logger.info({ archivoId, keyS3 }, 'Descargando archivo desde Supabase Storage');
 
+    const SAFE_KEY_PATTERN = /^[a-zA-Z0-9_\-\/]+$/;
+    if (!SAFE_KEY_PATTERN.test(keyS3) || keyS3.includes('..')) {
+      throw new Error('keyS3 contiene caracteres no permitidos');
+    }
+
     const url = `${env.SUPABASE_URL}/storage/v1/object/${env.SUPABASE_BUCKET}/${keyS3}`;
 
     try {
