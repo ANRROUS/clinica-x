@@ -70,11 +70,26 @@ async function runPageSpeed() {
         const apiUrl = `https://www.googleapis.com/pagespeedonline/v5/runPagespeed?url=${encodedUrl}&key=${API_KEY}&strategy=${strategy}&category=performance`;
 
         console.log(`   📱 Consultando ${strategy}...`);
-        const response = await fetch(apiUrl);
+        const controller = new AbortController();
+        const timeout = setTimeout(() => controller.abort(), 45_000);
+        let response: Response;
+        try {
+          response = await fetch(apiUrl, { signal: controller.signal });
+        } finally {
+          clearTimeout(timeout);
+        }
 
         if (!response.ok) {
           const errorText = await response.text();
-          console.error(`   ❌ Error ${strategy}: ${response.status} - ${errorText.substring(0, 200)}`);
+          if (response.status === 429) {
+            const retryAfter = response.headers.get('Retry-After');
+            const waitSec = retryAfter ? parseInt(retryAfter, 10) : 30;
+            console.error(`   ⚠️ Cuota PageSpeed agotada (429). Esperando ${waitSec}s...`);
+            console.error(`   ❌ Error ${strategy}: 429 - ${errorText.substring(0, 150)}`);
+            await new Promise(resolve => setTimeout(resolve, waitSec * 1000));
+          } else {
+            console.error(`   ❌ Error ${strategy}: ${response.status} - ${errorText.substring(0, 200)}`);
+          }
           continue;
         }
 
@@ -108,10 +123,14 @@ async function runPageSpeed() {
 
         console.log(`   ✅ ${strategy}: Performance ${(perf * 100).toFixed(0)} | LCP ${Math.round(lcp)}ms | FCP ${Math.round(fcp)}ms`);
 
-        // Rate limit: esperar 1 segundo entre requests
-        await new Promise(resolve => setTimeout(resolve, 1000));
+        // Rate limit: esperar 3 segundos entre requests para no agotar la cuota gratuita
+        await new Promise(resolve => setTimeout(resolve, 3000));
       } catch (err) {
-        console.error(`   ❌ Error ${strategy}: ${(err as Error).message}`);
+        if ((err as Error).name === 'AbortError') {
+          console.error(`   ⏱️ Timeout ${strategy}: la petición superó 45s, saltando...`);
+        } else {
+          console.error(`   ❌ Error ${strategy}: ${(err as Error).message}`);
+        }
       }
     }
 

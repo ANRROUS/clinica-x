@@ -10,7 +10,7 @@ export interface AuditUrl {
 }
 
 export const FRONTEND_URL = process.env.FRONTEND_URL ?? 'https://clinica-x.up.railway.app';
-export const API_URL = process.env.API_URL ?? 'https://clinica-x.up.railway.app/api';
+export const API_URL = process.env.API_URL ?? 'https://backend-clinica.up.railway.app/api';
 
 export const AUDIT_URLS: AuditUrl[] = [
   {
@@ -136,8 +136,8 @@ export const CREDENTIALS = {
     dni: '70364946',
   },
   medico: {
-    email: 'maria.garcia@clinicax.com',
-    password: 'Medico123!',
+    email: '22222222@gmail.com',
+    password: 'Leo123456',
   },
   admin: {
     email: 'admin@clinicax.com',
