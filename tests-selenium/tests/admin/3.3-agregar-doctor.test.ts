@@ -1,6 +1,7 @@
 import { WebDriver } from 'selenium-webdriver';
 import { buildDriver } from '../../utils/driver';
 import { CREDENTIALS } from '../../utils/credentials';
+import { saveLastDoctor } from '../../utils/lastDoctor';
 import { AdminLoginPage } from '../../pages/AdminLoginPage';
 import { AdminDashboardPage } from '../../pages/AdminDashboardPage';
 import { AdminDoctorFormPage } from '../../pages/AdminDoctorFormPage';
@@ -20,7 +21,7 @@ describe('3.3 — Agregar nuevo doctor', () => {
     await loginPage.navigate();
     await loginPage.login(CREDENTIALS.admin.email, CREDENTIALS.admin.password);
     await loginPage.waitForRedirect();
-    await loginPage.sleep(2000); // dashboard cargado tras login
+    await loginPage.sleep(4000); // [captura] dashboard cargado tras login — reducir a 2000ms
   });
 
   afterAll(async () => {
@@ -28,30 +29,31 @@ describe('3.3 — Agregar nuevo doctor', () => {
   });
 
   test('Crear doctor desde "Nuevo Doctor" → redirect a /admin/dashboard', async () => {
+    const ts = Date.now();
+    const dniRandom = ts.toString().slice(-8);
+    const telRandom = '9' + ts.toString().slice(-8);
+
     await dashboardPage.waitForLoad();
-    await dashboardPage.sleep(1500); // dashboard visible
+    await dashboardPage.sleep(4000); // [captura] dashboard visible — reducir a 1500ms
 
     await dashboardPage.clickAgregarDoctor();
     await formPage.waitForUrl('/admin/doctors/new', 8000);
     await formPage.waitForLoad();
-    await formPage.sleep(1500); // formulario vacío visible
+    await formPage.sleep(4000); // [captura] formulario vacío visible — reducir a 1500ms
 
-    // El formulario separa Nombre y Apellido; el plan original pedía un
-    // "nombre completo" único, así que se reparte entre ambos campos.
     await formPage.fillNombre('Doctor Test');
     await formPage.fillApellido('Selenium');
-    await formPage.fillDni('99887766'); // DNI asumido como no existente en BD
-    await formPage.fillEmail('doctor.selenium@test.com');
-    await formPage.fillTelefono('987654321');
-    await formPage.fillUsuario('drSelenium');
+    await formPage.fillDni(dniRandom);
+    await formPage.fillEmail(`doctor.selenium.${dniRandom}@test.com`);
+    await formPage.fillTelefono(telRandom);
     await formPage.selectEspecialidad();
     await formPage.selectTurnoManana();
-    await formPage.fillPassword('Doctor123!');
-    await formPage.sleep(1500); // formulario relleno
+    await formPage.fillPassword('12345678');
+    await formPage.sleep(4000); // [captura] formulario relleno — reducir a 1500ms
 
-    // Lunes (día 0) 08:00-08:30 (primera fila del turno Mañana)
+    // Lunes (día 0), primera fila de slots (00:00-00:30 en turno Mañana — válido por frontend)
     await formPage.clickHorarioCell(0, 0);
-    await formPage.sleep(1000); // celda de horario marcada
+    await formPage.sleep(4000); // [captura] celda de horario marcada — reducir a 1000ms
 
     await formPage.clickGuardarCambios();
 
@@ -65,7 +67,10 @@ describe('3.3 — Agregar nuevo doctor', () => {
       );
     }
 
-    await formPage.sleep(1500); // dashboard cargado con el doctor creado
+    // Guardar credenciales del médico recién creado para los tests M-01 y M-02.
+    saveLastDoctor({ email: `doctor.selenium.${dniRandom}@test.com`, password: '12345678' });
+
+    await formPage.sleep(4000); // [captura] dashboard cargado con doctor creado — reducir a 1500ms
     const url = await driver.getCurrentUrl();
     expect(url).toContain('/admin/dashboard');
   });
