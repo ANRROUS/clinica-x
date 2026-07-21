@@ -22,7 +22,7 @@ COPY packages ./packages
 COPY frontend ./frontend
 
 # Instalar dependencias del workspace (filtrando)
-RUN pnpm install --frozen-lockfile --ignore-scripts --filter frontend... || pnpm install --ignore-scripts --filter frontend...
+RUN pnpm install --frozen-lockfile --ignore-scripts --filter frontend...
 
 # Compilar packages compartidos + el frontend
 RUN pnpm --filter @clinica-x/shared-types build \
