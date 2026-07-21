@@ -1,6 +1,6 @@
 import { fileURLToPath } from 'node:url';
-import * as fs from 'fs';
-import * as path from 'path';
+import * as fs from 'node:fs';
+import * as path from 'node:path';
 import { AUDIT_URLS, FRONTEND_URL } from '../config/urls.js';
 import { PageSpeedResult } from '../types.js';
 
@@ -18,6 +18,74 @@ if (fs.existsSync(envPath)) {
 const API_KEY = process.env.PAGESPEED_API_KEY ?? '';
 const REPORTS_DIR = path.resolve(__dirname, '../../reports/pagespeed');
 
+async function auditUrl(
+  urlConfig: typeof AUDIT_URLS[number],
+  effectiveUrl: string,
+  strategy: 'mobile' | 'desktop',
+): Promise<{
+  performance: number;
+  lcp: number;
+  fcp: number;
+  cls: number;
+  inp: number;
+  ttfb: number;
+} | null> {
+  try {
+    const encodedUrl = encodeURIComponent(effectiveUrl);
+    const apiUrl = `https://www.googleapis.com/pagespeedonline/v5/runPagespeed?url=${encodedUrl}&key=${API_KEY}&strategy=${strategy}&category=performance`;
+
+    console.log(`   📱 Consultando ${strategy}...`);
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 45_000);
+    let response: Response;
+    try {
+      response = await fetch(apiUrl, { signal: controller.signal });
+    } finally {
+      clearTimeout(timeout);
+    }
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      if (response.status === 429) {
+        const retryAfter = response.headers.get('Retry-After');
+        const waitSec = retryAfter ? Number.parseInt(retryAfter, 10) : 30;
+        console.error(`   ⚠️ Cuota PageSpeed agotada (429). Esperando ${waitSec}s...`);
+        console.error(`   ❌ Error ${strategy}: 429 - ${errorText.substring(0, 150)}`);
+        await new Promise(resolve => setTimeout(resolve, waitSec * 1000));
+      } else {
+        console.error(`   ❌ Error ${strategy}: ${response.status} - ${errorText.substring(0, 200)}`);
+      }
+      return null;
+    }
+
+    const data = await response.json() as any;
+    const lighthouseResult = data.lighthouseResult;
+    const categories = lighthouseResult?.categories ?? {};
+    const audits = lighthouseResult?.audits ?? {};
+
+    const performance = categories.performance?.score ?? 0;
+    const lcp = audits['largest-contentful-paint']?.numericValue ?? 0;
+    const fcp = audits['first-contentful-paint']?.numericValue ?? 0;
+    const cls = audits['cumulative-layout-shift']?.numericValue ?? 0;
+    const inp = audits['interaction-to-next-paint']?.numericValue ?? 0;
+    const ttfb = audits['server-response-time']?.numericValue ?? audits['ttfb']?.numericValue ?? 0;
+
+    console.log(`   ✅ ${strategy}: Performance ${(performance * 100).toFixed(0)} | LCP ${Math.round(lcp)}ms | FCP ${Math.round(fcp)}ms`);
+
+    // Rate limit: esperar 3 segundos entre requests para no agotar la cuota gratuita
+    await new Promise(resolve => setTimeout(resolve, 3000));
+
+    return { performance, lcp, fcp, cls, inp, ttfb };
+  } catch (err) {
+    if ((err as Error).name === 'AbortError') {
+      console.error(`   ⏱️ Timeout ${strategy}: la petición superó 45s, saltando...`);
+    } else {
+      console.error(`   ❌ Error ${strategy}: ${(err as Error).message}`);
+    }
+    return null;
+  }
+}
+
 async function runPageSpeed() {
   fs.mkdirSync(REPORTS_DIR, { recursive: true });
 
@@ -34,9 +102,7 @@ async function runPageSpeed() {
   for (const urlConfig of AUDIT_URLS) {
     // PageSpeed Insights solo funciona con URLs públicas
     // Para rutas protegidas, usamos la URL base de login como proxy
-    const effectiveUrl = urlConfig.type === 'protected'
-      ? `${FRONTEND_URL}${urlConfig.path}` // Intentamos auditarla (puede que redirija a login)
-      : `${FRONTEND_URL}${urlConfig.path}`;
+    const effectiveUrl = `${FRONTEND_URL}${urlConfig.path}`;
 
     console.log(`\n📡 Auditando PageSpeed: ${urlConfig.id} - ${urlConfig.name}`);
     console.log(`   URL: ${effectiveUrl}`);
@@ -65,72 +131,24 @@ async function runPageSpeed() {
     };
 
     for (const strategy of strategies) {
-      try {
-        const encodedUrl = encodeURIComponent(effectiveUrl);
-        const apiUrl = `https://www.googleapis.com/pagespeedonline/v5/runPagespeed?url=${encodedUrl}&key=${API_KEY}&strategy=${strategy}&category=performance`;
+      const auditResult = await auditUrl(urlConfig, effectiveUrl, strategy);
 
-        console.log(`   📱 Consultando ${strategy}...`);
-        const controller = new AbortController();
-        const timeout = setTimeout(() => controller.abort(), 45_000);
-        let response: Response;
-        try {
-          response = await fetch(apiUrl, { signal: controller.signal });
-        } finally {
-          clearTimeout(timeout);
-        }
+      if (!auditResult) continue;
 
-        if (!response.ok) {
-          const errorText = await response.text();
-          if (response.status === 429) {
-            const retryAfter = response.headers.get('Retry-After');
-            const waitSec = retryAfter ? parseInt(retryAfter, 10) : 30;
-            console.error(`   ⚠️ Cuota PageSpeed agotada (429). Esperando ${waitSec}s...`);
-            console.error(`   ❌ Error ${strategy}: 429 - ${errorText.substring(0, 150)}`);
-            await new Promise(resolve => setTimeout(resolve, waitSec * 1000));
-          } else {
-            console.error(`   ❌ Error ${strategy}: ${response.status} - ${errorText.substring(0, 200)}`);
-          }
-          continue;
-        }
-
-        const data = await response.json() as any;
-        const lighthouseResult = data.lighthouseResult;
-        const categories = lighthouseResult?.categories ?? {};
-        const audits = lighthouseResult?.audits ?? {};
-
-        const perf = categories.performance?.score ?? 0;
-        const lcp = audits['largest-contentful-paint']?.numericValue ?? 0;
-        const fcp = audits['first-contentful-paint']?.numericValue ?? 0;
-        const cls = audits['cumulative-layout-shift']?.numericValue ?? 0;
-        const inp = audits['interaction-to-next-paint']?.numericValue ?? 0;
-        const ttfb = audits['server-response-time']?.numericValue ?? audits['ttfb']?.numericValue ?? 0;
-
-        if (strategy === 'mobile') {
-          result.mobilePerformance = perf;
-          result.mobileLcp = lcp;
-          result.mobileFcp = fcp;
-          result.mobileCls = cls;
-          result.mobileInp = inp;
-          result.mobileTtfb = ttfb;
-        } else {
-          result.desktopPerformance = perf;
-          result.desktopLcp = lcp;
-          result.desktopFcp = fcp;
-          result.desktopCls = cls;
-          result.desktopInp = inp;
-          result.desktopTtfb = ttfb;
-        }
-
-        console.log(`   ✅ ${strategy}: Performance ${(perf * 100).toFixed(0)} | LCP ${Math.round(lcp)}ms | FCP ${Math.round(fcp)}ms`);
-
-        // Rate limit: esperar 3 segundos entre requests para no agotar la cuota gratuita
-        await new Promise(resolve => setTimeout(resolve, 3000));
-      } catch (err) {
-        if ((err as Error).name === 'AbortError') {
-          console.error(`   ⏱️ Timeout ${strategy}: la petición superó 45s, saltando...`);
-        } else {
-          console.error(`   ❌ Error ${strategy}: ${(err as Error).message}`);
-        }
+      if (strategy === 'mobile') {
+        result.mobilePerformance = auditResult.performance;
+        result.mobileLcp = auditResult.lcp;
+        result.mobileFcp = auditResult.fcp;
+        result.mobileCls = auditResult.cls;
+        result.mobileInp = auditResult.inp;
+        result.mobileTtfb = auditResult.ttfb;
+      } else {
+        result.desktopPerformance = auditResult.performance;
+        result.desktopLcp = auditResult.lcp;
+        result.desktopFcp = auditResult.fcp;
+        result.desktopCls = auditResult.cls;
+        result.desktopInp = auditResult.inp;
+        result.desktopTtfb = auditResult.ttfb;
       }
     }
 
@@ -154,8 +172,10 @@ export { runPageSpeed };
 
 const isMain = process.argv[1]?.endsWith('run-pagespeed.ts');
 if (isMain) {
-  runPageSpeed().catch((err) => {
+  try {
+    await runPageSpeed();
+  } catch (err) {
     console.error('Error fatal:', err);
     process.exit(1);
-  });
+  }
 }

@@ -10,4 +10,5 @@ allowBuilds:
   '@prisma/engines': false
   esbuild: false
   prisma: false
+  puppeteer: false
   unrs-resolver: false

@@ -70,10 +70,7 @@ def synthesizer_node(state: AgentState) -> dict:
 
     try:
         tool_result_obj = json.loads(tool_result_str)
-        if isinstance(tool_result_obj, list):
-            data_preview = json.dumps(tool_result_obj, indent=2, ensure_ascii=False)[:3000]
-        else:
-            data_preview = json.dumps(tool_result_obj, indent=2, ensure_ascii=False)[:3000]
+        data_preview = json.dumps(tool_result_obj, indent=2, ensure_ascii=False)[:3000]
     except json.JSONDecodeError:
         data_preview = tool_result_str[:3000]
 

@@ -16,10 +16,10 @@ import {
 import CalendarDayModal from './CalendarDayModal';
 
 interface CalendarMonthProps {
-  currentDate: Date;
-  citas: CitaCalendarioDTO[];
-  onNavigateToPatient: (patientId: string) => void;
-  onDayClick?: (date: Date) => void;
+  readonly currentDate: Date;
+  readonly citas: CitaCalendarioDTO[];
+  readonly onNavigateToPatient: (patientId: string) => void;
+  readonly onDayClick?: (date: Date) => void;
 }
 
 const dayLabels = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'];
@@ -72,7 +72,7 @@ export default function CalendarMonth({ currentDate, citas, onNavigateToPatient,
       </div>
       <div className="grid grid-cols-7 gap-px border-x border-b border-gray-200 bg-gray-100">
         {Array.from({ length: firstDayOffset }).map((_, i) => (
-          <div key={`empty-${i}`} className="bg-gray-50 p-2" />
+          <div key={`offset-${firstDayOffset}-${i}`} className="bg-gray-50 p-2" />
         ))}
         {Array.from({ length: daysInMonth }).map((_, i) => {
           const day = i + 1;
@@ -81,11 +81,22 @@ export default function CalendarMonth({ currentDate, citas, onNavigateToPatient,
           return (
             <div
               key={day}
+              role="button"
+              tabIndex={0}
               onClick={() => {
                 const clickedDate = buildLimaDate(
                   `${getLimaYear(currentDate)}-${String(getLimaMonth(currentDate) + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`
                 );
                 setSelectedDay({ date: clickedDate, citas: dayCitas });
+              }}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault();
+                  const clickedDate = buildLimaDate(
+                    `${getLimaYear(currentDate)}-${String(getLimaMonth(currentDate) + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`
+                  );
+                  setSelectedDay({ date: clickedDate, citas: dayCitas });
+                }
               }}
               className={`min-h-[100px] bg-white p-2 cursor-pointer hover:bg-gray-50 ${isToday ? 'ring-2 ring-inset ring-brand-500' : ''}`}
             >
@@ -99,6 +110,7 @@ export default function CalendarMonth({ currentDate, citas, onNavigateToPatient,
                   const m = String(getLimaMinutes(time)).padStart(2, '0');
                   return (
                     <button
+                      type="button"
                       key={cita.id}
                       onClick={() => onNavigateToPatient(cita.pacienteId)}
                       className={`w-full truncate rounded px-1.5 py-0.5 text-left text-xs font-medium ${statusColors[cita.estado] || 'bg-gray-100 text-gray-800'} cursor-pointer hover:opacity-80`}
