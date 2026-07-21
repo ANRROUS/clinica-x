@@ -16,7 +16,7 @@ const ALLOWED_MIME_TYPES = ['application/pdf', 'image/jpeg', 'image/png'];
 
 const upload = multer({
   storage: multer.memoryStorage(),
-  limits: { fileSize: MAX_FILE_SIZE_BYTES },
+  limits: { fileSize: MAX_FILE_SIZE_BYTES, files: 1 }, // NOSONAR: límite explícito de 10 MB, solo 1 archivo
   fileFilter: (_req, file, cb) => {
     if (ALLOWED_MIME_TYPES.includes(file.mimetype)) {
       cb(null, true);

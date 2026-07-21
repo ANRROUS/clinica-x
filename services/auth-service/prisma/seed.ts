@@ -54,7 +54,7 @@ async function main() {
   // ─── Usuario TEST OCR ──────────────────────────────────────────────────
   const testDni = '99999999';
   const testEmail = 'andres.salesland@gmail.com';
-  const testPassword = 'Andres123Clinica';
+  const testPassword = process.env['SEED_TEST_PASSWORD'] ?? 'Andres123Clinica';
   const testId = '702dc3eb-d2cc-442d-b764-4e9f91095182';
 
   const testExistente = await prisma.usuario.findUnique({
