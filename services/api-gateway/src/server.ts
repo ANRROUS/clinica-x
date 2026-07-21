@@ -228,7 +228,12 @@ for (const ruta of rutasProxy) {
           }
         },
         error: (err, _req, res) => {
-          logger.error({ err, servicio: ruta.servicio }, 'Error de proxy');
+          const code = (err as NodeJS.ErrnoException).code ?? 'unknown';
+          const msg  = (err as NodeJS.ErrnoException).message ?? String(err);
+          logger.error(
+            { err, code, servicio: ruta.servicio, upstream: ruta.upstream },
+            `Error de proxy → ${ruta.servicio}: ${code} — ${msg}`,
+          );
           const httpRes = res as Partial<express.Response>;
           if (
             typeof httpRes.status === 'function' &&
