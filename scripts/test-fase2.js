@@ -13,11 +13,14 @@ function request(options, body) {
   });
 }
 
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'Admin123!';
+const DOCTOR_PASSWORD = process.env.DOCTOR_PASSWORD || 'Doctor123!';
+
 async function main() {
   // 1. Login admin
   const loginRes = await request(
     { hostname: 'localhost', port: 3000, path: '/api/auth/login', method: 'POST', headers: { 'Content-Type': 'application/json' } },
-    JSON.stringify({ dni: '00000000', email: 'admin@clinicax.com', password: 'Admin123!' })
+    JSON.stringify({ dni: '00000000', email: 'admin@clinicax.com', password: ADMIN_PASSWORD })
   );
   console.log('LOGIN:', loginRes.status);
   const loginData = JSON.parse(loginRes.body);
@@ -45,7 +48,7 @@ async function main() {
       username: 'drAnghelina',
       specialtyId: '4c2dceed-452d-41e0-933b-a55c6cc70c8c', // Medicina General
       shift: 'MANANA',
-      password: 'Doctor123!',
+      password: DOCTOR_PASSWORD,
       schedules: [
         { diaSemana: 1, horaInicio: '08:00', horaFin: '08:30' },
         { diaSemana: 1, horaInicio: '08:30', horaFin: '09:00' },

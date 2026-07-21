@@ -19,8 +19,8 @@ const diaSemanaLabels: Record<number, string> = {
 };
 
 interface DoctorTableRowProps {
-  doctor: MedicoDTO;
-  onEdit: (id: string) => void;
+  readonly doctor: MedicoDTO;
+  readonly onEdit: (id: string) => void;
 }
 
 export default function DoctorTableRow({ doctor, onEdit }: DoctorTableRowProps) {
@@ -102,6 +102,7 @@ export default function DoctorTableRow({ doctor, onEdit }: DoctorTableRowProps) 
         <td className="whitespace-nowrap px-6 py-4">
           <div className="flex items-center gap-3">
             <button
+              type="button"
               onClick={() => onEdit(doctor.id)}
               className="text-gray-800"
               title="Editar"
@@ -109,6 +110,7 @@ export default function DoctorTableRow({ doctor, onEdit }: DoctorTableRowProps) 
               <Pencil className="h-4 w-4" />
             </button>
             <button
+              type="button"
               onClick={() => setShowConfirm(true)}
               disabled={statusMutation.isPending}
               className="relative inline-flex h-5 w-9 items-center rounded-full transition-colors focus:outline-none"
@@ -141,6 +143,7 @@ export default function DoctorTableRow({ doctor, onEdit }: DoctorTableRowProps) 
             </p>
             <div className="mt-6 flex justify-end gap-3">
               <button
+                type="button"
                 onClick={() => setShowConfirm(false)}
                 disabled={statusMutation.isPending}
                 className="rounded-lg border border-gray-300 px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-50 disabled:opacity-50"
@@ -148,6 +151,7 @@ export default function DoctorTableRow({ doctor, onEdit }: DoctorTableRowProps) 
                 Cancelar
               </button>
               <button
+                type="button"
                 onClick={confirmAction}
                 disabled={statusMutation.isPending}
                 className="inline-flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-semibold text-white disabled:opacity-50"

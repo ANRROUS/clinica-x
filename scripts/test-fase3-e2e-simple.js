@@ -4,6 +4,10 @@
 
 const GW = 'http://localhost:8080';
 
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'Admin123!';
+const PACIENTE_PASSWORD = process.env.PACIENTE_PASSWORD || 'Paciente123!';
+const MEDICO_PASSWORD = process.env.MEDICO_PASSWORD || 'Medico123!';
+
 async function fetchJson(url, opts = {}) {
   const res = await fetch(url, opts);
   const text = await res.text();
@@ -21,7 +25,7 @@ async function main() {
   // 1. Login admin
   let r = await fetchJson(`${GW}/api/auth/login`, {
     method: 'POST', headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ dni: '00000000', email: 'admin@clinicax.com', password: 'Admin123!' }),
+    body: JSON.stringify({ dni: '00000000', email: 'admin@clinicax.com', password: ADMIN_PASSWORD }),
   });
   log('1. Login admin', r.status, r.body.success);
   const adminToken = r.body.data?.token;
@@ -43,14 +47,14 @@ async function main() {
   // 3. Registrar paciente
   r = await fetchJson(`${GW}/api/auth/register`, {
     method: 'POST', headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ dni: dniPaciente, email: emailPaciente, password: 'Paciente123!', nombre: 'Paciente', apellido: 'Test' }),
+    body: JSON.stringify({ dni: dniPaciente, email: emailPaciente, password: PACIENTE_PASSWORD, nombre: 'Paciente', apellido: 'Test' }),
   });
   log('3. Register paciente', r.status, r.body.success, r.body.error?.mensaje || '');
 
   // 4. Login paciente
   r = await fetchJson(`${GW}/api/auth/login`, {
     method: 'POST', headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ dni: dniPaciente, email: emailPaciente, password: 'Paciente123!' }),
+    body: JSON.stringify({ dni: dniPaciente, email: emailPaciente, password: PACIENTE_PASSWORD }),
   });
   log('4. Login paciente', r.status, r.body.success);
   const patientToken = r.body.data?.token;
@@ -113,7 +117,7 @@ async function main() {
     body: JSON.stringify({
       nombre: 'Medico', apellido: 'Prueba', dni: dniMedico, email: emailMedico,
       telefono: '999888777', username: usernameMedico, specialtyId, shift: 'MANANA',
-      password: 'Medico123!', schedules: [{ diaSemana: 1, horaInicio: '09:00', horaFin: '13:00' }],
+      password: MEDICO_PASSWORD, schedules: [{ diaSemana: 1, horaInicio: '09:00', horaFin: '13:00' }],
     }),
   });
   log('11. Crear médico prueba', r.status, r.body.success, r.body.error?.mensaje || '');
@@ -121,7 +125,7 @@ async function main() {
   // 12. Login médico
   r = await fetchJson(`${GW}/api/auth/login`, {
     method: 'POST', headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ dni: dniMedico, email: emailMedico, password: 'Medico123!' }),
+    body: JSON.stringify({ dni: dniMedico, email: emailMedico, password: MEDICO_PASSWORD }),
   });
   log('12. Login médico', r.status, r.body.success);
   const doctorToken = r.body.data?.token;

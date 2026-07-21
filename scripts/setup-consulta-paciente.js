@@ -20,8 +20,10 @@ const BASE_URL = process.env.API_BASE_URL || 'http://localhost:8080';
 // ─── Credenciales ───────────────────────────────────────────────────────────
 const ADMIN_CREDENTIALS = {
   email: 'admin@clinicax.com',
-  password: 'Admin123!',
+  password: process.env.ADMIN_PASSWORD || 'Admin123!',
 };
+
+const DOCTOR_PASSWORD = process.env.DOCTOR_PASSWORD || 'Doctor123!';
 
 const DOCTOR_DATA = {
   nombre: 'Dr. Test',
@@ -32,7 +34,7 @@ const DOCTOR_DATA = {
   username: 'dr.test.auto',
   specialtyId: '', // se llena dinámicamente
   shift: 'MANANA',
-  password: 'Doctor123!',
+  password: DOCTOR_PASSWORD,
   schedules: [
     { diaSemana: 1, horaInicio: '08:00', horaFin: '12:00' },
     { diaSemana: 2, horaInicio: '08:00', horaFin: '12:00' },
@@ -45,7 +47,7 @@ const DOCTOR_DATA = {
 const PATIENT_DATA = {
   dni: '71132903',
   email: 'anrrous.work@gmail.com',
-  password: 'Arthuro71132902',
+  password: process.env.PATIENT_PASSWORD || 'Arthuro71132902',
   nombre: 'Andrés',
   apellido: 'Pineda',
   telefono: '987654321',
@@ -226,11 +228,9 @@ async function main() {
     console.log('   👤 Paciente:');
     console.log(`      DNI:    ${PATIENT_DATA.dni}`);
     console.log(`      Email:  ${PATIENT_DATA.email}`);
-    console.log(`      Pass:   ${PATIENT_DATA.password}`);
     console.log('');
     console.log('   👨‍⚕️ Médico:');
     console.log(`      Email:  ${DOCTOR_DATA.email}`);
-    console.log(`      Pass:   ${DOCTOR_DATA.password}`);
     console.log('');
     console.log('   📋 Consulta:');
     console.log(`      ID:     ${finalized.id}`);

@@ -20,6 +20,10 @@
 
 const GW = process.env.GW_URL || 'http://localhost:8080';
 
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'Admin123!';
+const MEDICO_PASSWORD = process.env.MEDICO_PASSWORD || 'Medico123!';
+const PACIENTE_PASSWORD = process.env.PACIENTE_PASSWORD || 'Paciente123!';
+
 async function fetchJson(url, opts = {}) {
   const res = await fetch(url, opts);
   const text = await res.text();
@@ -53,7 +57,7 @@ async function main() {
     body: JSON.stringify({
       dni: '00000000',
       email: 'admin@clinicax.com',
-      password: 'Admin123!',
+      password: ADMIN_PASSWORD,
     }),
   });
 
@@ -94,7 +98,7 @@ async function main() {
       nombre: 'María', apellido: 'García', dni: '10101010', email: 'maria.garcia@clinicax.com',
       telefono: '911123456', username: 'drGarcia', shift: 'MANANA',
       specialtyNombre: 'Medicina General',
-      password: 'Medico123!',
+      password: MEDICO_PASSWORD,
       schedules: [
         { diaSemana: 1, horaInicio: '08:00', horaFin: '12:00' },
         { diaSemana: 2, horaInicio: '08:00', horaFin: '12:00' },
@@ -107,7 +111,7 @@ async function main() {
       nombre: 'Carlos', apellido: 'López', dni: '20202020', email: 'carlos.lopez@clinicax.com',
       telefono: '922234567', username: 'drLopez', shift: 'TARDE',
       specialtyNombre: 'Cardiología',
-      password: 'Medico123!',
+      password: MEDICO_PASSWORD,
       schedules: [
         { diaSemana: 1, horaInicio: '14:00', horaFin: '18:00' },
         { diaSemana: 2, horaInicio: '14:00', horaFin: '18:00' },
@@ -120,7 +124,7 @@ async function main() {
       nombre: 'Ana', apellido: 'Martínez', dni: '30303030', email: 'ana.martinez@clinicax.com',
       telefono: '933345678', username: 'draMartinez', shift: 'MANANA',
       specialtyNombre: 'Dermatología',
-      password: 'Medico123!',
+      password: MEDICO_PASSWORD,
       schedules: [
         { diaSemana: 1, horaInicio: '09:00', horaFin: '13:00' },
         { diaSemana: 3, horaInicio: '09:00', horaFin: '13:00' },
@@ -131,7 +135,7 @@ async function main() {
       nombre: 'Roberto', apellido: 'Sánchez', dni: '40404040', email: 'roberto.sanchez@clinicax.com',
       telefono: '944456789', username: 'drSanchez', shift: 'TARDE',
       specialtyNombre: 'Traumatología',
-      password: 'Medico123!',
+      password: MEDICO_PASSWORD,
       schedules: [
         { diaSemana: 2, horaInicio: '15:00', horaFin: '19:00' },
         { diaSemana: 4, horaInicio: '15:00', horaFin: '19:00' },
@@ -141,7 +145,7 @@ async function main() {
       nombre: 'Laura', apellido: 'Fernández', dni: '50505050', email: 'laura.fernandez@clinicax.com',
       telefono: '955567890', username: 'draFernandez', shift: 'MANANA',
       specialtyNombre: 'Pediatría',
-      password: 'Medico123!',
+      password: MEDICO_PASSWORD,
       schedules: [
         { diaSemana: 1, horaInicio: '08:30', horaFin: '12:30' },
         { diaSemana: 2, horaInicio: '08:30', horaFin: '12:30' },
@@ -173,7 +177,7 @@ async function main() {
         username: m.username,
         specialtyId,
         shift: m.shift,
-        password: m.password,
+        password: MEDICO_PASSWORD,
         schedules: m.schedules,
       }),
     });
@@ -202,7 +206,7 @@ async function main() {
     r = await fetchJson(`${GW}/api/auth/login`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ dni: m.dni, email: m.email, password: m.password }),
+      body: JSON.stringify({ dni: m.dni, email: m.email, password: MEDICO_PASSWORD }),
     });
     if (r.body.success) {
       medicoTokens.push({ token: r.body.data.token, dni: m.dni, username: m.username });
@@ -217,10 +221,10 @@ async function main() {
   // =========================================================================
   console.log('\n--- 5. Crear pacientes ---');
   const pacientes = [
-    { nombre: 'Juan', apellido: 'Pérez', dni: '60606060', email: 'juan.perez@email.com', password: 'Paciente123!' },
-    { nombre: 'Lucía', apellido: 'Rodríguez', dni: '70707070', email: 'lucia.rodriguez@email.com', password: 'Paciente123!' },
-    { nombre: 'Pedro', apellido: 'Gómez', dni: '80808080', email: 'pedro.gomez@email.com', password: 'Paciente123!' },
-    { nombre: 'Sofía', apellido: 'Torres', dni: '90909090', email: 'sofia.torres@email.com', password: 'Paciente123!' },
+    { nombre: 'Juan', apellido: 'Pérez', dni: '60606060', email: 'juan.perez@email.com', password: PACIENTE_PASSWORD },
+    { nombre: 'Lucía', apellido: 'Rodríguez', dni: '70707070', email: 'lucia.rodriguez@email.com', password: PACIENTE_PASSWORD },
+    { nombre: 'Pedro', apellido: 'Gómez', dni: '80808080', email: 'pedro.gomez@email.com', password: PACIENTE_PASSWORD },
+    { nombre: 'Sofía', apellido: 'Torres', dni: '90909090', email: 'sofia.torres@email.com', password: PACIENTE_PASSWORD },
   ];
 
   const pacienteTokens = [];
@@ -515,18 +519,18 @@ async function main() {
   console.log('========================================');
   console.log('\nCredenciales de demo:\n');
   console.log('  ADMIN:');
-  console.log('    DNI: 00000000 | Email: admin@clinicax.com | Password: Admin123!');
+  console.log('    DNI: 00000000 | Email: admin@clinicax.com | Password:', ADMIN_PASSWORD);
   console.log('    Portal: http://localhost:3100/admin/login\n');
 
   console.log('  MÉDICOS:');
   for (const m of medicos) {
-    console.log(`    DNI: ${m.dni} | Email: ${m.email} | Password: ${m.password} | User: ${m.username} | ${m.specialtyNombre} (${m.shift})`);
+    console.log(`    DNI: ${m.dni} | Email: ${m.email} | Password: ${MEDICO_PASSWORD} | User: ${m.username} | ${m.specialtyNombre} (${m.shift})`);
   }
   console.log('    Portal: http://localhost:3100/doctor/login\n');
 
   console.log('  PACIENTES:');
   for (const p of pacientes) {
-    console.log(`    DNI: ${p.dni} | Email: ${p.email} | Password: ${p.password} | ${p.nombre} ${p.apellido}`);
+    console.log(`    DNI: ${p.dni} | Email: ${p.email} | Password: ${PACIENTE_PASSWORD} | ${p.nombre} ${p.apellido}`);
   }
   console.log('    Portal: http://localhost:3100/login\n');
 

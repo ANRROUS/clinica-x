@@ -1,7 +1,6 @@
 'use client';
 
 import { useState } from 'react';
-import Link from 'next/link';
 import { Phone, Mail, MapPin, Clock, X } from 'lucide-react';
 
 function Popup({
@@ -10,16 +9,21 @@ function Popup({
   title,
   children,
 }: {
-  isOpen: boolean;
-  onClose: () => void;
-  title: string;
-  children: React.ReactNode;
+  readonly isOpen: boolean;
+  readonly onClose: () => void;
+  readonly title: string;
+  readonly children: React.ReactNode;
 }) {
   if (!isOpen) return null;
   return (
     <div
+      role="button"
+      tabIndex={0}
       className="fixed inset-0 z-[100] flex items-center justify-center px-4"
       onClick={onClose}
+      onKeyDown={(e) => {
+        if (e.key === 'Escape') onClose();
+      }}
     >
       {/* Overlay oscuro */}
       <div className="absolute inset-0 bg-black/60" />
@@ -29,6 +33,7 @@ function Popup({
         onClick={(e) => e.stopPropagation()}
       >
         <button
+          type="button"
           onClick={onClose}
           className="absolute right-4 top-4 text-white/70 transition hover:text-white md:right-6 md:top-6"
         >
@@ -180,6 +185,7 @@ export default function Footer() {
               <ul className="mt-4 space-y-3 text-sm text-white/80">
                 <li>
                   <button
+                    type="button"
                     onClick={() => setTermsOpen(true)}
                     className="hover:text-white hover:underline"
                   >
@@ -188,6 +194,7 @@ export default function Footer() {
                 </li>
                 <li>
                   <button
+                    type="button"
                     onClick={() => setCookiesOpen(true)}
                     className="hover:text-white hover:underline"
                   >
@@ -196,6 +203,7 @@ export default function Footer() {
                 </li>
                 <li>
                   <button
+                    type="button"
                     onClick={() => setPrivacyOpen(true)}
                     className="hover:text-white hover:underline"
                   >
