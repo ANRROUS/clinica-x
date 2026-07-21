@@ -17,8 +17,9 @@ function Popup({
   if (!isOpen) return null;
   return (
     <div
-      role="button"
-      tabIndex={0}
+      role="dialog"
+      aria-modal="true"
+      aria-label={title}
       className="fixed inset-0 z-[100] flex items-center justify-center px-4"
       onClick={onClose}
       onKeyDown={(e) => {

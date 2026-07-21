@@ -25,6 +25,8 @@ import { env } from './env';
 import { logger } from './logger';
 import { rutasProxy, rutasPublicas } from './proxy/routes';
 import { nowLima } from '@clinica-x/date-utils';
+import { isCircuitOpen, recordSuccess, recordFailure, getAllCircuitStates } from './resilience/circuit-breaker';
+import { isBulkheadFull, acquireBulkhead, releaseBulkhead, getBulkheadStats } from './resilience/bulkhead';
 
 const app = express();
 
@@ -49,12 +51,25 @@ app.use(requestIdMiddleware());
 app.use(requestLogger(logger, 'api-gateway'));
 
 // ─── Rate limit global ──────────────────────────────────────────────────────
+// Patrón ISO 25010 — Madurez: prevenir saturación y ataques DoS.
+// Respuesta en formato estándar del proyecto al superar 300 req/min/IP.
+// RATE_LIMIT_MAX permite reducir el límite en pruebas (ej: RATE_LIMIT_MAX=10).
+const RATE_LIMIT_MAX = env.RATE_LIMIT_MAX ?? 300;
 app.use(
   rateLimit({
-    windowMs: 60_000, // 1 min
-    max: 300, // 300 req/min/IP
+    windowMs: 60_000,        // ventana de 1 minuto
+    max: RATE_LIMIT_MAX,     // máximo 300 peticiones por IP (ajustable con RATE_LIMIT_MAX)
     standardHeaders: true,
     legacyHeaders: false,
+    handler: (_req, res) => {
+      res.status(429).json({
+        success: false,
+        error: {
+          codigo: 'RATE_LIMIT_EXCEDIDO',
+          mensaje: 'Demasiadas peticiones. Intente nuevamente en 1 minuto.',
+        },
+      });
+    },
   }),
 );
 
@@ -66,6 +81,8 @@ app.get('/health', (_req, res) => {
       service: 'api-gateway',
       status: 'ok',
       upstreams: rutasProxy.map((r) => ({ prefijo: r.prefijo, upstream: r.upstream })),
+      circuits: getAllCircuitStates(),
+      bulkheads: getBulkheadStats(),
       timestamp: nowLima().toISOString(),
     },
   });
@@ -215,19 +232,66 @@ app.use(
 );
 
 // ─── Proxies por prefijo ────────────────────────────────────────────────────
+// Patrón ISO 25010 — Tolerancia a Fallos: Circuit Breaker + TimeLimiter
+// por cada upstream registrado en rutasProxy.
 for (const ruta of rutasProxy) {
+  // Circuit Breaker: rechaza la petición si el circuito está abierto,
+  // sin llegar al microservicio caído.
+  app.use(ruta.prefijo, (req, res, next) => {
+    if (isCircuitOpen(ruta.servicio)) {
+      logger.warn({ servicio: ruta.servicio }, 'Circuit OPEN — petición rechazada sin reenvío');
+      res.status(503).json({
+        success: false,
+        error: {
+          codigo: 'SERVICIO_NO_DISPONIBLE',
+          mensaje: `El servicio ${ruta.servicio} está temporalmente fuera de servicio. Intente en unos segundos.`,
+        },
+      });
+      return;
+    }
+    next();
+  });
+
+  // Bulkhead: rechaza la petición si el pool de concurrencia del servicio está lleno.
+  // Libera el slot automáticamente cuando la respuesta (exitosa o fallida) finaliza.
+  app.use(ruta.prefijo, (req, res, next) => {
+    if (isBulkheadFull(ruta.servicio)) {
+      logger.warn({ servicio: ruta.servicio }, 'Bulkhead FULL — petición rechazada por sobrecarga');
+      res.status(429).json({
+        success: false,
+        error: {
+          codigo: 'SERVICIO_SATURADO',
+          mensaje: `El servicio ${ruta.servicio} está procesando demasiadas peticiones simultáneas. Intente en unos segundos.`,
+        },
+      });
+      return;
+    }
+    acquireBulkhead(ruta.servicio);
+    res.on('finish', () => releaseBulkhead(ruta.servicio));
+    next();
+  });
+
   app.use(
     createProxyMiddleware({
       target: ruta.upstream,
       changeOrigin: true,
       pathFilter: ruta.prefijo,
+      // TimeLimiter: cancela la conexión al upstream si tarda más de 30 s.
+      proxyTimeout: 30_000,
+      timeout: 30_000,
       on: {
         proxyReq: (proxyReq, req) => {
           if (req.headers['x-request-id']) {
             proxyReq.setHeader('x-request-id', String(req.headers['x-request-id']));
           }
         },
+        proxyRes: (_proxyRes, _req2, _res2) => {
+          // Petición exitosa → Circuit Breaker registra éxito.
+          recordSuccess(ruta.servicio);
+        },
         error: (err, _req, res) => {
+          // Fallo de red o timeout → Circuit Breaker registra fallo.
+          recordFailure(ruta.servicio);
           logger.error({ err, servicio: ruta.servicio }, 'Error de proxy');
           const httpRes = res as Partial<express.Response>;
           if (

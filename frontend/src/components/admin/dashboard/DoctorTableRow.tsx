@@ -106,6 +106,7 @@ export default function DoctorTableRow({ doctor, onEdit }: DoctorTableRowProps) 
               onClick={() => onEdit(doctor.id)}
               className="text-gray-800"
               title="Editar"
+              aria-label="Editar médico"
             >
               <Pencil className="h-4 w-4" />
             </button>
@@ -116,6 +117,7 @@ export default function DoctorTableRow({ doctor, onEdit }: DoctorTableRowProps) 
               className="relative inline-flex h-5 w-9 items-center rounded-full transition-colors focus:outline-none"
               style={{ backgroundColor: doctor.activo ? '#008585' : '#D1D5DB' }}
               title={doctor.activo ? 'Desactivar' : 'Activar'}
+              aria-label={doctor.activo ? 'Desactivar médico' : 'Activar médico'}
             >
               <span
                 className="inline-block h-3.5 w-3.5 transform rounded-full bg-white transition-transform"
