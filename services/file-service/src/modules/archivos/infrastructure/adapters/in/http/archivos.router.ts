@@ -11,7 +11,20 @@ import multer from 'multer';
 import { requireRole } from '@clinica-x/shared-middleware';
 import type { ArchivosController } from './archivos.controller';
 
-const upload = multer({ storage: multer.memoryStorage() });
+const MAX_FILE_SIZE_BYTES = 10 * 1024 * 1024; // 10 MB
+const ALLOWED_MIME_TYPES = ['application/pdf', 'image/jpeg', 'image/png'];
+
+const upload = multer({
+  storage: multer.memoryStorage(),
+  limits: { fileSize: MAX_FILE_SIZE_BYTES },
+  fileFilter: (_req, file, cb) => {
+    if (ALLOWED_MIME_TYPES.includes(file.mimetype)) {
+      cb(null, true);
+    } else {
+      cb(new multer.MulterError('LIMIT_UNEXPECTED_FILE', file.fieldname));
+    }
+  },
+});
 
 export function createArchivosRouter(controller: ArchivosController): Router {
   const router = Router();

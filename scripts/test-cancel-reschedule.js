@@ -1,4 +1,6 @@
 const GW = 'http://localhost:8080';
+const PACIENTE_PASSWORD = process.env.PACIENTE_PASSWORD || 'Paciente123!';
+
 async function f(url, opts = {}) {
   const r = await fetch(url, opts);
   const t = await r.text();
@@ -13,14 +15,14 @@ async function f(url, opts = {}) {
   // register
   let r = await f(`${GW}/api/auth/register`, {
     method: 'POST', headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ dni, email, password: 'Paciente123!', nombre: 'P', apellido: 'T' }),
+    body: JSON.stringify({ dni, email, password: PACIENTE_PASSWORD, nombre: 'P', apellido: 'T' }),
   });
   console.log('reg', r.s, r.b.success ? 'OK' : r.b.error?.mensaje);
 
   // login
   r = await f(`${GW}/api/auth/login`, {
     method: 'POST', headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ dni, email, password: 'Paciente123!' }),
+    body: JSON.stringify({ dni, email, password: PACIENTE_PASSWORD }),
   });
   const tk = r.b.data?.token;
   console.log('login', r.s, tk ? 'OK' : 'FAIL');

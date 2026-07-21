@@ -4,6 +4,10 @@
 
 const GATEWAY = 'http://localhost:8080';
 
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'Admin123!';
+const PACIENTE_PASSWORD = process.env.PACIENTE_PASSWORD || 'Paciente123!';
+const TEMPORAL_PASSWORD = process.env.TEMPORAL_PASSWORD || 'Temporal123!';
+
 async function request(method, path, body, token) {
   const url = `${GATEWAY}${path}`;
   const headers = { 'Content-Type': 'application/json' };
@@ -25,7 +29,7 @@ async function main() {
 
   // 1. Login admin
   console.log('1. Login admin...');
-  const adminToken = await login('00000000', 'admin@clinicax.com', 'Admin123!');
+  const adminToken = await login('00000000', 'admin@clinicax.com', ADMIN_PASSWORD);
   if (!adminToken) { console.error('   ❌ Falló login admin'); process.exit(1); }
   console.log('   ✅ Login admin OK');
 
@@ -39,9 +43,9 @@ async function main() {
   const pacienteEmail = 'paciente_test@clinicax.com';
   await request('POST', '/api/auth/register', {
     dni: pacienteDni, nombre: 'Test', apellido: 'Paciente', email: pacienteEmail,
-    password: 'Paciente123!', telefono: '999999999',
+    password: PACIENTE_PASSWORD, telefono: '999999999',
   });
-  const pacienteToken = await login(pacienteDni, pacienteEmail, 'Paciente123!');
+  const pacienteToken = await login(pacienteDni, pacienteEmail, PACIENTE_PASSWORD);
   if (!pacienteToken) { console.error('   ❌ Falló login paciente'); process.exit(1); }
   console.log('   ✅ Paciente OK');
 
@@ -52,7 +56,7 @@ async function main() {
   const medicoRes = await request('POST', '/api/admin/doctors', {
     dni: medicoDni, nombre: 'Test', apellido: 'Médico', email: medicoEmail,
     telefono: '888888888', username: 'medico_test', specialtyId: especialidadId,
-    shift: 'MANANA', password: 'Temporal123!',
+    shift: 'MANANA', password: TEMPORAL_PASSWORD,
     schedules: [{ diaSemana: 1, horaInicio: '08:00', horaFin: '12:00' }],
   }, adminToken);
   console.log(`   ${medicoRes.data.success ? '✅' : '❌'} Crear médico: ${medicoRes.data.success ? 'OK' : medicoRes.data.error?.mensaje || 'Error'}`);
@@ -62,7 +66,7 @@ async function main() {
   let medicoToken = null;
   if (medicoRes.data.success) {
     console.log('5. Login médico...');
-    medicoToken = await login(medicoDni, medicoEmail, 'Temporal123!');
+    medicoToken = await login(medicoDni, medicoEmail, TEMPORAL_PASSWORD);
     console.log(`   ${medicoToken ? '✅' : '❌'} Login médico`);
   }
 
