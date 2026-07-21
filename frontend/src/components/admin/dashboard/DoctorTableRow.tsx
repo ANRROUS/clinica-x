@@ -63,7 +63,7 @@ export default function DoctorTableRow({ doctor, onEdit }: DoctorTableRowProps) 
   });
 
   const uniqueDays = doctor.schedules
-    ? [...new Set(doctor.schedules.map((s) => s.diaSemana))].sort().map((d) => diaSemanaLabels[d]).join(', ')
+    ? [...new Set(doctor.schedules.map((s) => s.diaSemana))].sort((a, b) => a - b).map((d) => diaSemanaLabels[d]).join(', ')
     : '';
 
   useEffect(() => {

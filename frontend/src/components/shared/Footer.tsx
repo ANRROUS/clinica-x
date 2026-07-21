@@ -32,6 +32,7 @@ function Popup({
       <div
         className="relative z-10 w-full max-w-2xl rounded-md bg-[#343434] p-8 text-white shadow-2xl md:p-10"
         onClick={(e) => e.stopPropagation()}
+        onKeyDown={(e) => e.stopPropagation()}
       >
         <button
           type="button"
