@@ -22,7 +22,7 @@ COPY packages ./packages
 COPY frontend ./frontend
 
 # Instalar dependencias del workspace (filtrando)
-RUN pnpm install --frozen-lockfile --filter frontend... || pnpm install --filter frontend...
+RUN pnpm install --frozen-lockfile --ignore-scripts --filter frontend... || pnpm install --ignore-scripts --filter frontend...
 
 # Compilar packages compartidos + el frontend
 RUN pnpm --filter @clinica-x/shared-types build \
@@ -49,6 +49,9 @@ WORKDIR /app/frontend
 
 # Puerto por defecto de Next.js en producción
 EXPOSE 3100
+
+# Ejecutar como usuario no-root
+USER node
 
 # Railway asigna el puerto dinámicamente, pero Next.js usa 3100 internamente
 # y Railway hace el mapeo externo

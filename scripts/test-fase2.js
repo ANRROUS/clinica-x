@@ -13,8 +13,8 @@ function request(options, body) {
   });
 }
 
-const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'Admin123!';
-const DOCTOR_PASSWORD = process.env.DOCTOR_PASSWORD || 'Doctor123!';
+const ADMIN_PASSWORD = process.env['ADMIN_PASSWORD'] ?? '';
+const DOCTOR_PASSWORD = process.env['DOCTOR_PASSWORD'] ?? '';
 
 async function main() {
   // 1. Login admin

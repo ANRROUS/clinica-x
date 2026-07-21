@@ -1,7 +1,7 @@
 import fetch from 'node-fetch';
 
 const GW = 'http://localhost:8080';
-const PACIENTE_PASSWORD = process.env.PACIENTE_PASSWORD || 'Paciente123!';
+const PACIENTE_PASSWORD = process.env['PACIENTE_PASSWORD'] ?? '';
 
 async function main() {
   const uniq = Date.now().toString().slice(-6);
@@ -35,7 +35,7 @@ async function main() {
     body: JSON.stringify({
       dni: dniPaciente,
       email: emailPaciente,
-      password: 'Paciente123!'
+      password: PACIENTE_PASSWORD
     })
   });
   

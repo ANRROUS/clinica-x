@@ -1,21 +1,21 @@
 export const CREDENTIALS = {
   admin: {
     email: 'admin@clinicax.com',
-    password: process.env.ADMIN_PASSWORD ?? 'Admin123!',
+    password: process.env['ADMIN_PASSWORD'] ?? '',
   },
   medico: {
     email: 'maria.garcia@clinicax.com',
-    password: process.env.MEDICO_PASSWORD ?? 'Medico123!',
+    password: process.env['MEDICO_PASSWORD'] ?? '',
   },
   paciente: {
     dni: '70364946',
     email: 'lu.a.tru.sul@gmail.com',
-    password: process.env.PACIENTE_PASSWORD ?? '12345678',
+    password: process.env['PACIENTE_PASSWORD'] ?? '',
   },
   paciente2: {
     dni: '72029832',
     email: 'lauracabezass@gmail.com',
-    password: process.env.PACIENTE_PASSWORD ?? '12345678',
+    password: process.env['PACIENTE_PASSWORD'] ?? '',
   },
   nuevoPaciente: () => {
     const suffix = Date.now().toString().slice(-8);
@@ -24,7 +24,7 @@ export const CREDENTIALS = {
       apellido: 'Paciente',
       dni: suffix,
       email: `nuevo.paciente.${suffix}@test.com`,
-      password: process.env.NUEVO_PACIENTE_PASSWORD ?? 'Test1234!',
+      password: process.env['NUEVO_PACIENTE_PASSWORD'] ?? '',
     };
   },
 };

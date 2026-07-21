@@ -4,9 +4,9 @@
 
 const GATEWAY = 'http://localhost:8080';
 
-const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'Admin123!';
-const PACIENTE_PASSWORD = process.env.PACIENTE_PASSWORD || 'Paciente123!';
-const TEMPORAL_PASSWORD = process.env.TEMPORAL_PASSWORD || 'Temporal123!';
+const ADMIN_PASSWORD = process.env['ADMIN_PASSWORD'] ?? '';
+const PACIENTE_PASSWORD = process.env['PACIENTE_PASSWORD'] ?? '';
+const TEMPORAL_PASSWORD = process.env['TEMPORAL_PASSWORD'] ?? '';
 
 async function request(method, path, body, token) {
   const url = `${GATEWAY}${path}`;

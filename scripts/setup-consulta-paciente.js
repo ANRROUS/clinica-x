@@ -20,10 +20,10 @@ const BASE_URL = process.env.API_BASE_URL || 'http://localhost:8080';
 // ─── Credenciales ───────────────────────────────────────────────────────────
 const ADMIN_CREDENTIALS = {
   email: 'admin@clinicax.com',
-  password: process.env.ADMIN_PASSWORD || 'Admin123!',
+  password: process.env['ADMIN_PASSWORD'] ?? '',
 };
 
-const DOCTOR_PASSWORD = process.env.DOCTOR_PASSWORD || 'Doctor123!';
+const DOCTOR_PASSWORD = process.env['DOCTOR_PASSWORD'] ?? '';
 
 const DOCTOR_DATA = {
   nombre: 'Dr. Test',
@@ -47,7 +47,7 @@ const DOCTOR_DATA = {
 const PATIENT_DATA = {
   dni: '71132903',
   email: 'anrrous.work@gmail.com',
-  password: process.env.PATIENT_PASSWORD || 'Arthuro71132902',
+  password: process.env['PATIENT_PASSWORD'] ?? '',
   nombre: 'Andrés',
   apellido: 'Pineda',
   telefono: '987654321',

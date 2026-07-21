@@ -7,10 +7,10 @@
  * ============================================================================
  */
 
-const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'Admin123!';
-const DOCTOR_PASSWORD = process.env.DOCTOR_PASSWORD || 'Doctor123!';
-const MEDICO_PASSWORD = process.env.MEDICO_PASSWORD || 'Medico123!';
-const PACIENTE_PASSWORD = process.env.PACIENTE_PASSWORD || 'Paciente123!';
+const ADMIN_PASSWORD = process.env['ADMIN_PASSWORD'] ?? '';
+const DOCTOR_PASSWORD = process.env['DOCTOR_PASSWORD'] ?? '';
+const MEDICO_PASSWORD = process.env['MEDICO_PASSWORD'] ?? '';
+const PACIENTE_PASSWORD = process.env['PACIENTE_PASSWORD'] ?? '';
 const path = require('path');
 
 const root = __dirname;

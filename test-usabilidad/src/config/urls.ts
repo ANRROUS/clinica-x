@@ -132,15 +132,15 @@ export const AUDIT_URLS: AuditUrl[] = [
 export const CREDENTIALS = {
   paciente: {
     email: 'lu.a.tru.sul@gmail.com',
-    password: process.env.PACIENTE_PASSWORD ?? '12345678',
+    password: process.env['PACIENTE_PASSWORD'] ?? '',
     dni: '70364946',
   },
   medico: {
     email: '22222222@gmail.com',
-    password: process.env.MEDICO_PASSWORD ?? 'Leo123456',
+    password: process.env['MEDICO_PASSWORD'] ?? '',
   },
   admin: {
     email: 'admin@clinicax.com',
-    password: process.env.ADMIN_PASSWORD ?? 'Admin123!',
+    password: process.env['ADMIN_PASSWORD'] ?? '',
   },
 };

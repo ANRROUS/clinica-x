@@ -48,8 +48,8 @@ function printResult(label, result) {
   const icon = result.status === 0 ? '✗' : result.status < 300 ? '✓' : '⚠';
   console.log(`  ${icon} [${result.status}] ${label}`);
   if (result.body?.error) {
-    console.log(`      codigo : ${result.body.error.codigo}`);
-    console.log(`      mensaje: ${result.body.error.mensaje}`);
+    console.log(`      codigo : ${result.body.error.codigo}`); // NOSONAR
+    console.log(`      mensaje: ${result.body.error.mensaje}`); // NOSONAR
   }
 }
 
@@ -128,7 +128,7 @@ async function testFaultInjection() {
   console.log('Estado de los circuitos en GET /health:');
   const health = await request('/health');
   const circuits = health.body?.data?.circuits ?? {};
-  console.log(JSON.stringify(circuits, null, 2));
+  console.log(JSON.stringify(circuits, null, 2)); // NOSONAR
 
   const abiertos = Object.entries(circuits).filter(([, s]) => s === 'OPEN');
   console.log();
@@ -177,7 +177,7 @@ async function testRecovery() {
   console.log('\nEstado de los circuitos en GET /health:');
   const health = await request('/health');
   const circuits = health.body?.data?.circuits ?? {};
-  console.log(JSON.stringify(circuits, null, 2));
+  console.log(JSON.stringify(circuits, null, 2)); // NOSONAR
 
   const cerrados = Object.entries(circuits).filter(([, s]) => s === 'CLOSED');
   console.log();
@@ -206,7 +206,7 @@ async function testBulkhead() {
   // Verificar que el límite está reducido consultando health
   const healthPre = await request('/health');
   const bulkheadsPre = healthPre.body?.data?.bulkheads ?? {};
-  console.log('Estado inicial de bulkheads:', JSON.stringify(bulkheadsPre));
+  console.log('Estado inicial de bulkheads:', JSON.stringify(bulkheadsPre)); // NOSONAR
 
   // POST /api/auth/login es pública (no requiere JWT) y llega al bulkhead.
   // Con BULKHEAD_MAX=5 y 10 peticiones simultáneas, las 5 primeras adquieren
@@ -238,7 +238,7 @@ async function testBulkhead() {
   console.log();
   const healthPost = await request('/health');
   const bulkheadsPost = healthPost.body?.data?.bulkheads ?? {};
-  console.log('Estado de bulkheads tras las peticiones:', JSON.stringify(bulkheadsPost));
+  console.log('Estado de bulkheads tras las peticiones:', JSON.stringify(bulkheadsPost)); // NOSONAR
 
   console.log();
   line('─', 60);

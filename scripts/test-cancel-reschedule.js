@@ -1,5 +1,5 @@
 const GW = 'http://localhost:8080';
-const PACIENTE_PASSWORD = process.env.PACIENTE_PASSWORD || 'Paciente123!';
+const PACIENTE_PASSWORD = process.env['PACIENTE_PASSWORD'] ?? '';
 
 async function f(url, opts = {}) {
   const r = await fetch(url, opts);

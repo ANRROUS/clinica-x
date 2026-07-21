@@ -4,9 +4,9 @@
 
 const GW = 'http://localhost:8080';
 
-const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'Admin123!';
-const PACIENTE_PASSWORD = process.env.PACIENTE_PASSWORD || 'Paciente123!';
-const MEDICO_PASSWORD = process.env.MEDICO_PASSWORD || 'Medico123!';
+const ADMIN_PASSWORD = process.env['ADMIN_PASSWORD'] ?? '';
+const PACIENTE_PASSWORD = process.env['PACIENTE_PASSWORD'] ?? '';
+const MEDICO_PASSWORD = process.env['MEDICO_PASSWORD'] ?? '';
 
 async function fetchJson(url, opts = {}) {
   const res = await fetch(url, opts);
