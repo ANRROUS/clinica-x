@@ -9,4 +9,4 @@ COPY services/ai-service/src/ ./src/
 
 EXPOSE 3005
 
-CMD ["uvicorn", "src.main:app", "--host", "0.0.0.0", "--port", "3005"]
+CMD ["sh", "-c", "uvicorn src.main:app --host 0.0.0.0 --port ${PORT:-3005}"]
