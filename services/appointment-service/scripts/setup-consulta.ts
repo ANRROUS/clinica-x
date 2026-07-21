@@ -23,7 +23,7 @@ const INTERNAL_API_KEY = 'internal-dev-key-change-in-prod';
 
 const ADMIN_CREDENTIALS = {
   email: 'admin@clinicax.com',
-  password: 'Admin123!',
+  password: process.env['ADMIN_PASSWORD'] ?? '',
 };
 
 const DOCTOR_USER = {
@@ -32,7 +32,7 @@ const DOCTOR_USER = {
   dni: '88888888',
   email: 'test.doctor@clinicax.com',
   telefono: '999999999',
-  password: 'Doctor123!',
+  password: process.env['DOCTOR_PASSWORD'] ?? '',
   rol: 'MEDICO',
   username: 'dr.test.auto',
   shift: 'MANANA' as const,
@@ -48,7 +48,7 @@ const DOCTOR_USER = {
 const PATIENT_DATA = {
   dni: '71132903',
   email: 'anrrous.work@gmail.com',
-  password: 'Arthuro71132902',
+  password: process.env['PATIENT_PASSWORD'] ?? '',
   nombre: 'Andrés',
   apellido: 'Pineda',
   telefono: '987654321',

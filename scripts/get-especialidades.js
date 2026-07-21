@@ -4,7 +4,7 @@ async function login() {
   const res = await fetch(`${GATEWAY}/api/auth/login`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ dni: '00000000', email: 'admin@clinicax.com', password: 'Admin123!' }),
+    body: JSON.stringify({ dni: '00000000', email: 'admin@clinicax.com', password: process.env['ADMIN_PASSWORD'] ?? '' }),
   });
   const data = await res.json();
   return data.data.token;

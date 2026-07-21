@@ -15,7 +15,7 @@ export class SupabaseFileFetcher implements FileFetcher {
       throw new Error('keyS3 contiene caracteres no permitidos');
     }
 
-    const url = `${env.SUPABASE_URL}/storage/v1/object/${env.SUPABASE_BUCKET}/${keyS3}`;
+    const url = `${env.SUPABASE_URL}/storage/v1/object/${encodeURIComponent(env.SUPABASE_BUCKET)}/${keyS3.split('/').map(encodeURIComponent).join('/')}`;
 
     try {
       const response = await axios.get<ArrayBuffer>(url, {

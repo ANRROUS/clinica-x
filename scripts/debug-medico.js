@@ -2,7 +2,7 @@ const GATEWAY = 'http://localhost:8080';
 
 const ADMIN_DNI = process.env.ADMIN_DNI || '00000000';
 const ADMIN_EMAIL = process.env.ADMIN_EMAIL || 'admin@clinicax.com';
-const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'Admin123!';
+const ADMIN_PASSWORD = process.env['ADMIN_PASSWORD'] ?? '';
 
 async function login() {
   const r = await fetch(`${GATEWAY}/api/auth/login`, {

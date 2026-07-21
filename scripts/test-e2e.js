@@ -50,9 +50,9 @@ function check(step, result, expectedStatus, checkFn) {
 // ============================================================================
 // CREDENCIALES DE DEMO (del script seed-demo.js)
 // ============================================================================
-const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'Admin123!';
-const MEDICO_PASSWORD = process.env.MEDICO_PASSWORD || 'Medico123!';
-const PACIENTE_PASSWORD = process.env.PACIENTE_PASSWORD || 'Paciente123!';
+const ADMIN_PASSWORD = process.env['ADMIN_PASSWORD'] ?? '';
+const MEDICO_PASSWORD = process.env['MEDICO_PASSWORD'] ?? '';
+const PACIENTE_PASSWORD = process.env['PACIENTE_PASSWORD'] ?? '';
 
 const ADMIN = { dni: '00000000', email: 'admin@clinicax.com', password: ADMIN_PASSWORD };
 const MEDICO = { dni: '10101010', email: 'maria.garcia@clinicax.com', password: MEDICO_PASSWORD };
