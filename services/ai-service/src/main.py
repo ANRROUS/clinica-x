@@ -1,3 +1,4 @@
+import asyncio
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
@@ -14,12 +15,23 @@ async def lifespan(app: FastAPI):
     logger.info(f"   Auth Service: {settings.AUTH_SERVICE_URL}")
     if not settings.GEMINI_API_KEY:
         logger.warning("   ⚠ GEMINI_API_KEY no configurada — el chat usará respuestas simuladas")
-    try:
-        await get_pool()
-        logger.info("   Conexión a BD de chat establecida")
-    except Exception as e:
-        logger.warning(f"   ⚠ No se pudo conectar a la BD de chat: {e}")
+
+    async def _connect_db():
+        try:
+            await get_pool()
+            logger.info("   Conexión a BD de chat establecida")
+        except asyncio.TimeoutError:
+            logger.warning("   ⚠ Timeout conectando a BD de chat — continuando sin BD")
+        except Exception as e:
+            logger.warning(f"   ⚠ No se pudo conectar a la BD de chat: {e}")
+
+    db_task = asyncio.create_task(_connect_db())
     yield
+    db_task.cancel()
+    try:
+        await db_task
+    except asyncio.CancelledError:
+        pass
     await close_pool()
     logger.info("ai-service detenido correctamente")
 
