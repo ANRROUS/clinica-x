@@ -50,9 +50,16 @@ export default function CalendarDayModal({
   const dateLabel = `${dayNames[getLimaDayOfWeek(date) % 7]}, ${getLimaDay(date)} de ${monthNames[getLimaMonth(date)]} ${getLimaYear(date)}`;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40" onClick={onClose}>
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/40"
+      role="presentation"
+      onClick={onClose}
+      onKeyDown={(e) => { if (e.key === 'Escape') onClose(); }}
+    >
       <div
         className="mx-4 w-full max-w-lg rounded-xl bg-white shadow-2xl"
+        role="dialog"
+        aria-modal="true"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-center justify-between border-b border-gray-200 px-6 py-4">

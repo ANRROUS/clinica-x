@@ -38,6 +38,10 @@ export class AuthServiceClient implements IAuthServiceClient {
     const url = `${this.baseUrl}/api/auth/register`;
     logger.debug({ url }, 'Llamando a auth-service para crear usuario médico');
 
+    // TimeLimiter: cancela si auth-service no responde en 30 s.
+    const ctrl = new AbortController();
+    const timer = setTimeout(() => ctrl.abort(), 30_000);
+    try {
     const response = await fetch(url, {
       method: 'POST',
       headers: {
@@ -53,7 +57,9 @@ export class AuthServiceClient implements IAuthServiceClient {
         telefono: dto.telefono,
         rol: 'MEDICO',
       }),
+      signal: ctrl.signal,
     });
+    clearTimeout(timer);
 
     if (!response.ok) {
       let errorBody: any;
@@ -70,6 +76,10 @@ export class AuthServiceClient implements IAuthServiceClient {
 
     const json = (await response.json()) as any;
     return { id: json.data.usuario.id };
+    } catch (err) {
+      clearTimeout(timer);
+      throw err;
+    }
   }
 
   async actualizarUsuario(
@@ -94,6 +104,9 @@ export class AuthServiceClient implements IAuthServiceClient {
     if (dto.telefono !== undefined) body.telefono = dto.telefono;
     if (dto.password) body.password = dto.password;
 
+    const ctrl2 = new AbortController();
+    const timer2 = setTimeout(() => ctrl2.abort(), 30_000);
+    try {
     const response = await fetch(url, {
       method: 'PUT',
       headers: {
@@ -101,7 +114,9 @@ export class AuthServiceClient implements IAuthServiceClient {
         'X-Internal-Api-Key': env.INTERNAL_API_KEY,
       },
       body: JSON.stringify(body),
+      signal: ctrl2.signal,
     });
+    clearTimeout(timer2);
 
     if (!response.ok) {
       let errorBody: any;
@@ -115,6 +130,7 @@ export class AuthServiceClient implements IAuthServiceClient {
       logger.error({ status: response.status, code, message }, 'auth-service respondió error al actualizar usuario');
       throw new AuthServiceClientError(response.status, code, message);
     }
+    } catch (err) { clearTimeout(timer2); throw err; }
   }
 
   async obtenerUsuariosPorIds(ids: string[]): Promise<Array<{
@@ -129,13 +145,18 @@ export class AuthServiceClient implements IAuthServiceClient {
     const url = `${this.baseUrl}/api/auth/internal/users?ids=${encodeURIComponent(ids.join(','))}`;
     logger.debug({ url, total: ids.length }, 'Llamando a auth-service para obtener usuarios por ids');
 
+    const ctrl3 = new AbortController();
+    const timer3 = setTimeout(() => ctrl3.abort(), 30_000);
+    try {
     const response = await fetch(url, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
         'X-Internal-Api-Key': env.INTERNAL_API_KEY,
       },
+      signal: ctrl3.signal,
     });
+    clearTimeout(timer3);
 
     if (!response.ok) {
       let errorBody: any;
@@ -159,5 +180,6 @@ export class AuthServiceClient implements IAuthServiceClient {
       email: string;
       telefono?: string;
     }>;
+    } catch (err) { clearTimeout(timer3); throw err; }
   }
 }

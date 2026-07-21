@@ -15,6 +15,8 @@ const envSchema = z.object({
   JWT_SECRET: z.string().min(8, 'JWT_SECRET debe tener al menos 8 caracteres'),
   CORS_ORIGIN: z.string().default('http://localhost:3100'),
   NODE_ENV: z.enum(['development', 'production', 'test']).default('development'),
+  RATE_LIMIT_MAX: z.coerce.number().int().positive().optional(),
+  BULKHEAD_MAX: z.coerce.number().int().positive().optional(),
 });
 
 const parsed = envSchema.safeParse(process.env);
